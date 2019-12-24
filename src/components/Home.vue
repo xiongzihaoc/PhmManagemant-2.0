@@ -14,9 +14,10 @@
         />
       </div>
       <el-menu
-        background-color="#304156"
-        text-color="#BFCBD9"
-        active-text-color="#42B983"
+        background-color="#393836"
+        text-color="#fff"
+        active-text-color="orange"
+        active-background-color="red"
         :unique-opened="true"
         :collapse="isCollapse"
         :collapse-transition="false"
@@ -57,7 +58,7 @@
         <div class="header_right">
           <el-dropdown @command="handleCommand">
             <span class="el-dropdown-link aaa">
-              <img class="logoutImg" src="../assets/images/header.gif" alt />
+              <img class="logoutImg" src="../assets/images/angry.gif" alt />
               <span class="loginName">{{loginName}}</span>
               <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
@@ -118,14 +119,14 @@ export default {
   methods: {
     // 退出
     async logout() {
-      const { data: res } = await this.$http.post("user/userSignOut.do", {});
+      const { data: res } = await this.$http.get("user/signOut", {});
       if (res.code != 200) return this.$message.error("退出失败");
       window.sessionStorage.clear();
       this.$router.push("/login");
     },
     // 获取菜单栏数据
     async getMenuList() {
-      const { data: res } = await this.$http.post("menu/getMenuList.do", {});
+      const { data: res } = await this.$http.post("menu/navigationList", {});
       if (res.code != 200) return this.$message.error(res.msg);
       this.menuList = res.data;
     },
@@ -153,7 +154,7 @@ export default {
     },
     tabRemove(targetName) {
       // 首页不可删除
-      if (targetName == "/") {
+      if (targetName == "/index") {
         return;
       }
       this.$store.commit("delete_tabs", targetName);
@@ -207,7 +208,7 @@ export default {
   height: 100%;
 }
 .el-aside {
-  background: #304156;
+  background: #393836;
 }
 .el-header {
   height: 55px !important;
@@ -289,7 +290,7 @@ export default {
   padding-top: 20px;
 }
 .el-menu-item {
-  border-left: 2px solid #42B983;
+  border-left: 2px solid orange;
 }
 .topTags {
   height: 20px !important;

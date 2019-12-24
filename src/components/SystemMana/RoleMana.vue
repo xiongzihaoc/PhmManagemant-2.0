@@ -8,7 +8,7 @@
             <el-button slot="append" icon="el-icon-search" @click="Foodsearch"></el-button>
           </el-input>
         </el-col>
-        <!-- 添加食物按钮 -->
+        <!-- 添加角色按钮 -->
         <el-col :span="4">
           <el-button type="primary" @click="addFoodType">新增角色</el-button>
         </el-col>
@@ -17,8 +17,6 @@
       <el-table
         :data="RoleList"
         ref="singleTable"
-        highlight-current-row
-        @current-change="handleCurrentChange"
         stripe
         :header-cell-style="{background:'#f5f5f5'}"
         style="width: 100%"
@@ -26,19 +24,6 @@
         <el-table-column align="center" type="selection" width="60"></el-table-column>
         <el-table-column align="center" prop="roleId" label="序号" width="60"></el-table-column>
         <el-table-column align="center" prop="roleName" label="角色"></el-table-column>
-        <el-table-column align="center" prop="status" label="状态">
-          <!-- 作用域插槽 -->
-          <template slot-scope="scope">
-            <el-switch
-              v-model="scope.row.status"
-              active-color="#409167"
-              inactive-color="#ccc"
-              active-value="0"
-              inactive-value="1"
-              @change="userStateChanged(scope.row)"
-            ></el-switch>
-          </template>
-        </el-table-column>
         <el-table-column align="center" prop="operate" label="操作" width="140">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
@@ -62,6 +47,15 @@
           <el-form-item label="角色" prop="roleName">
             <el-input v-model="AddEditForm.roleName"></el-input>
           </el-form-item>
+          <el-form-item label="权限" prop="roleName">
+            <el-input v-model="AddEditForm.roleName"></el-input>
+          </el-form-item>
+          <el-form-item label="状态" prop="status">
+          <el-select v-model="AddEditForm.status" placeholder="请选择">
+            <el-option label="禁用" :value="0"></el-option>
+            <el-option label="启用" :value="1"></el-option>
+          </el-select>
+          </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="editAddDialogVisible = false">取 消</el-button>
@@ -80,10 +74,10 @@ export default {
       editAddDialogVisible: false,
       dialogTitle: "",
       AddEditForm: {
-        roleName: ""
+        roleName: "",
+        status: 0
       },
-      id: "",
-      currentRow: null
+      id: ""
     };
   },
   created() {
@@ -92,15 +86,17 @@ export default {
   methods: {
     // 获取列表
     async getRoleList() {
-      const { data: res } = await this.$http.post("role/getSysRoleList.do", {
+      const { data: res } = await this.$http.post("role/list", {
         roleName: this.input
       });
       if (res.code != 200) return this.$message.error("列表获取失败");
+      console.log(res);
       this.RoleList = res.rows;
+      this.AddEditForm.status = res.rows.status;
     },
     // 弹框
     showEditdialog(info) {
-      this.AddEditForm =  JSON.parse(JSON.stringify(info));;
+      this.AddEditForm = JSON.parse(JSON.stringify(info));
       this.dialogTitle = "修改";
       this.id = info.roleId;
       this.editAddDialogVisible = true;
@@ -114,19 +110,20 @@ export default {
     editAddDialogClosed() {
       this.$refs.editFormRef.resetFields();
     },
-    async AddEdit() {
+    AddEdit() {
       this.$refs.editFormRef.validate(async valid => {
-        if (!valid) return this.$message.error("登录失败");
+        if (!valid) return this.$message.error("修改失败");
         let httpUrl = "";
         let parm = {};
         if (this.dialogTitle == "修改") {
-          httpUrl = "role/updateSysRole.do";
+          httpUrl = "role/update";
           parm = {
             roleId: this.id,
-            roleName: this.AddEditForm.roleName
+            roleName: this.AddEditForm.roleName,
+            status: this.AddEditForm.status,
           };
         } else {
-          httpUrl = "role/saveSysRole.do";
+          httpUrl = "role/add";
           parm = {
             roleName: this.AddEditForm.roleName
           };
@@ -141,25 +138,6 @@ export default {
     // 搜索
     Foodsearch() {
       this.getRoleList();
-    },
-    // 改变状态
-    async userStateChanged(info) {
-      const { data: res } = await this.$http.post("role/updateSysRole.do", {
-        roleId: info.roleId,
-        status: info.status
-      });
-      if (res.code != 200) {
-        info.status = !info.status;
-        return this.$message.error("更新用户状态失败");
-      }
-      this.$message.success("更新用户状态成功");
-    },
-    // 实现表格单行选择高亮
-    setCurrent(row) {
-      this.$refs.singleTable.setCurrentRow(row);
-    },
-    handleCurrentChange(val) {
-      this.currentRow = val;
     }
   }
 };

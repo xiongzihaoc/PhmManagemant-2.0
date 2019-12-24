@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>Welcome To Index</h3>
+    <h3>V2版后台</h3>
   </div>
 </template>
 <script>

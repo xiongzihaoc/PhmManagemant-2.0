@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>患者管理</h1>
+        <h3>服务监控</h3>
     </div>
 </template>
 <script>

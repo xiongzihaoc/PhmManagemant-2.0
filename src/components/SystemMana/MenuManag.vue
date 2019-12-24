@@ -9,8 +9,6 @@
         row-key="menuId"
         ref="singleTable"
         :expand-row-keys="['1']"
-        highlight-current-row
-        @current-change="handleCurrentChange"
         style="width: 100%;margin-bottom: 20px;"
       >
         <el-table-column align="center" prop="menuName" label="名称" sortable width="180"></el-table-column>
@@ -19,7 +17,6 @@
         <el-table-column align="center" prop="icon" label="样式"></el-table-column>
         <el-table-column align="center" prop="orderNum" label="排序号"></el-table-column>
         <el-table-column align="center" prop="status" label="状态">
-          <!-- 作用域插槽 -->
           <template slot-scope="scope">
             <el-switch
               v-model="scope.row.status"
@@ -52,8 +49,14 @@
       </el-table>
     </el-card>
     <!-- 添加提示框 -->
-    <el-dialog title="添加选项" :visible.sync="addDialogVisible" width="40%" v-dialogDrag>
-      <el-form ref="editFormRef" :model="addForm" label-width="80px">
+    <el-dialog
+      title="添加选项"
+      :visible.sync="addDialogVisible"
+      width="40%"
+      @closed="addDialogClosed"
+      v-dialogDrag
+    >
+      <el-form ref="addFormRef" :model="addForm" label-width="80px">
         <el-form-item label="上一级">
           <el-input v-model="goBack" disabled></el-input>
         </el-form-item>
@@ -137,7 +140,7 @@ export default {
   methods: {
     // 获取菜单列表
     async getMenuList() {
-      const { data: res } = await this.$http.post("menu/getMenuList2.do");
+      const { data: res } = await this.$http.post("menu/list");
       this.menuList = res.data;
     },
     // 修改弹框
@@ -154,12 +157,13 @@ export default {
     editEnter() {
       this.$refs.editFormRef.validate(async valid => {
         if (!valid) return this.$message.error("登录失败");
-        const { data: res } = await this.$http.post("menu/updateSysMenu.do", {
+        const { data: res } = await this.$http.post("menu/update", {
           menuId: this.editId,
           menuName: this.editForm.menuName,
           menuType: this.editForm.menuType,
           url: this.editForm.url,
-          icon: this.editForm.icon
+          icon: this.editForm.icon,
+        //   status
         });
         if (res.code != 200) return this.$message.error("操作失败");
         this.editDialogVisible = false;
@@ -186,11 +190,15 @@ export default {
       this.addId = val.menuId;
       this.addDialogVisible = true;
     },
+    // 增加弹框关闭
+    addDialogClosed() {
+      this.$refs.addFormRef.resetFields();
+    },
     // 确定增加
     addEnter() {
-      this.$refs.editFormRef.validate(async valid => {
+      this.$refs.addFormRef.validate(async valid => {
         if (!valid) return this.$message.error("操作失败");
-        const { data: res } = await this.$http.post("menu/saveSysMenu.do", {
+        const { data: res } = await this.$http.post("menu/add", {
           parentId: this.addId,
           menuName: this.addForm.menuName,
           menuType: this.addForm.menuType,
@@ -199,13 +207,6 @@ export default {
         });
         this.addDialogVisible = false;
       });
-    },
-    // 实现表格单行选择高亮
-    setCurrent(row) {
-      this.$refs.singleTable.setCurrentRow(row);
-    },
-    handleCurrentChange(val) {
-      this.currentRow = val;
     }
   }
 };

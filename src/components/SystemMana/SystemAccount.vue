@@ -17,8 +17,6 @@
       <el-table
         stripe
         ref="singleTable"
-        highlight-current-row
-        @current-change="handleCurrentChange"
         :data="userList"
         :header-cell-style="{background:'#f5f5f5'}"
         style="width: 100%"
@@ -292,13 +290,13 @@ export default {
   created() {
     this.getUserList();
     this.getRoleList();
-    this.getHosMenuList();
+    // this.getHosMenuList();
   },
 
   methods: {
     // 获取用户列表
     async getUserList() {
-      const { data: res } = await this.$http.post("user/getUserList.do", {
+      const { data: res } = await this.$http.post("user/list", {
         pageSize: this.pageSize,
         pageNum: this.pageNum,
         userName: this.input
@@ -309,16 +307,16 @@ export default {
     },
     // 获取角色列表
     async getRoleList() {
-      const { data: res } = await this.$http.post("role/getSysRoleList.do", {});
+      const { data: res } = await this.$http.post("role/list", {});
       if (res.code != 200) return this.$message.error("列表获取失败");
       this.RoleList = res.rows;
     },
-    // 获取部门列表
-    async getHosMenuList() {
-      const { data: res } = await this.$http.post("dept/getDeptList.do", {});
-      this.hosMenuList = res.data;
-      this.idArr.push(res.data[0].id);
-    },
+    // // 获取部门列表
+    // async getHosMenuList() {
+    //   const { data: res } = await this.$http.post("dept/getDeptList.do", {});
+    //   this.hosMenuList = res.data;
+    //   this.idArr.push(res.data[0].id);
+    // },
     // 分页
     handleSizeChange(newSize) {
       this.pageSize = newSize;
@@ -341,7 +339,7 @@ export default {
     edit() {
       this.$refs.editFormRef.validate(async valid => {
         if (!valid) return this.$message.error("失败");
-        const { data: res } = await this.$http.post("user/updateSysUser.do", {
+        const { data: res } = await this.$http.post("user/update", {
           acId: this.editId,
           roleId: this.editForm.roleId,
           deptId: this.editForm.deptId,
@@ -392,12 +390,12 @@ export default {
     addEnter() {
       this.$refs.addFormRef.validate(async valid => {
         if (!valid) return this.$message.error("失败");
-        const { data: res } = await this.$http.post("user/saveSysUser.do", {
+        const { data: res } = await this.$http.post("user/add", {
           userName: this.addForm.userName,
-          userEmail: this.addForm.userEmail,
+          email: this.addForm.userEmail,
           loginName: this.addForm.loginName,
           userPhone: this.addForm.userPhone,
-          userPassword: this.$md5(this.addForm.userPassword),
+          password: this.$md5(this.addForm.userPassword),
           roleId: this.addForm.roleId,
           deptId: this.addForm.deptId
         });
@@ -438,13 +436,6 @@ export default {
       this.editTransit = val.deptName;
       this.editForm.deptId = val.id;
     },
-    // 实现表格单行选择高亮
-    setCurrent(row) {
-      this.$refs.singleTable.setCurrentRow(row);
-    },
-    handleCurrentChange(val) {
-      this.currentRow = val;
-    }
   }
 };
 </script>
@@ -462,7 +453,6 @@ export default {
 
 .tree /deep/ .el-tree-node__children {
   padding-left: 16px;
-  color: red;
 }
 
 .tree /deep/ .el-tree-node :last-child:before {
@@ -470,7 +460,6 @@ export default {
   color: #409eff;
 }
 .tree /deep/ .el-tree-node :first-child:before {
-  height: 38px;
   color: #409eff;
 }
 

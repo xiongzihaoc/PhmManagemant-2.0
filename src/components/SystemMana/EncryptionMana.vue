@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>医生管理</h1>
+        <h3>加密管理</h3>
     </div>
 </template>
 <script>

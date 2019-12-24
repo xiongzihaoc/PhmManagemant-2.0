@@ -41,6 +41,7 @@
 
       <el-button
         :loading="loading"
+        class="loginBtn"
         type="primary"
         :disabled="isDisabled"
         style="width:100%;margin-bottom:30px;"
@@ -83,13 +84,15 @@ export default {
       }, 2000);
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return;
-        const { data: res } = await this.$http.post("user/userLogin.do", {
+        const { data: res } = await this.$http.post("user/login", {
           loginName: this.loginForm.loginName,
-          userPassword: this.$md5(this.loginForm.userPassword)
+          password: this.$md5(this.loginForm.userPassword)
         });
         if (res.code != 200) return this.$message.error("用户名或者密码错误");
         // this.$message.success("登录成功");
         // token 存入 sessionstorage
+        console.log(res);
+        
         window.sessionStorage.setItem("token", res.data.token);
         // 跳转
         window.localStorage.setItem("loginName", this.loginForm.loginName);
@@ -148,7 +151,7 @@ $cursor: #fff;
 </style>
 
 <style lang="scss" scoped>
-$bg: #2d3a4b;
+$bg: #393836;
 $dark_gray: #889aa4;
 $light_gray: #eee;
 
@@ -160,7 +163,7 @@ $light_gray: #eee;
 
   .login-form {
     position: relative;
-    width: 520px;
+    width: 400px;
     max-width: 100%;
     padding: 160px 35px 0;
     margin: 0 auto;
@@ -212,5 +215,9 @@ $light_gray: #eee;
     height: 45px;
     border-radius: 40px 40px 40px 40px;
   }
+}
+.loginBtn {
+  background-color: orange;
+  border: none;
 }
 </style>

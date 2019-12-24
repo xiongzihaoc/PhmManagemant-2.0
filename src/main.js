@@ -23,7 +23,7 @@ Router.prototype.push = function push(location) {
 // 导入axios
 import axios from 'axios'
 // 配置axios
-axios.defaults.baseURL = 'http://test.phmzykj.com/zhuoya_manager/'
+axios.defaults.baseURL = 'http://192.168.0.105:8085/zhuoya-web/'
 // axios请求拦截器
 axios.interceptors.request.use(function (config) {
   Nprogress.start()
