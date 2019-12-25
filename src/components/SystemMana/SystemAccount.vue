@@ -22,12 +22,12 @@
         style="width: 100%"
       >
         <el-table-column align="center" type="selection" width="60"></el-table-column>
-        <el-table-column align="center" prop="acId" label="序号" width="60"></el-table-column>
+        <el-table-column align="center" prop="userId" label="序号" width="60"></el-table-column>
         <el-table-column align="center" prop="userName" label="用户名"></el-table-column>
         <el-table-column align="center" prop="loginName" label="登录名"></el-table-column>
         <el-table-column align="center" prop="roleName" label="角色"></el-table-column>
-        <el-table-column align="center" prop="deptName" label="部门"></el-table-column>
-        <el-table-column align="center" prop="userEmail" label="邮箱"></el-table-column>
+        <!-- <el-table-column align="center" prop="deptName" label="部门"></el-table-column> -->
+        <el-table-column align="center" prop="email" label="邮箱"></el-table-column>
         <el-table-column align="center" prop="loginIp" label="IP"></el-table-column>
         <el-table-column align="center" prop="userPhone" label="手机号"></el-table-column>
         <el-table-column align="center" prop="operate" label="操作" width="180">
@@ -75,15 +75,15 @@
         <el-form-item label="登录名" prop="loginName">
           <el-input v-model="editForm.loginName" disabled></el-input>
         </el-form-item>
-        <el-form-item label="邮箱" prop="userEmail">
-          <el-input v-model="editForm.userEmail"></el-input>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="editForm.email"></el-input>
         </el-form-item>
         <el-form-item label="手机号" prop="userPhone">
           <el-input v-model="editForm.userPhone"></el-input>
         </el-form-item>
-        <el-form-item label="部门" prop="deptName">
+        <!-- <el-form-item label="部门" prop="deptName">
           <el-input v-model="EditValue" @click.native="deptEdit"></el-input>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="角色" prop="roleName">
           <el-select v-model="editForm.roleId" placeholder="请选择">
             <el-option
@@ -94,10 +94,16 @@
             ></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="状态" prop="status">
+          <el-select v-model="editForm.status" placeholder="请选择">
+            <el-option label="启用" :value="'1'"></el-option>
+            <el-option label="禁用" :value="'0'"></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="edit">确 定</el-button>
+        <el-button type="primary" @click="editPageEnter">确 定</el-button>
       </span>
     </el-dialog>
     <!-- 添加页面 -->
@@ -112,21 +118,21 @@
         <el-form-item label="用户名" prop="userName">
           <el-input v-model="addForm.userName"></el-input>
         </el-form-item>
-        <el-form-item label="密码" prop="userPassword">
-          <el-input v-model="addForm.userPassword"></el-input>
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="addForm.password"></el-input>
         </el-form-item>
         <el-form-item label="登录名" prop="loginName">
           <el-input v-model="addForm.loginName"></el-input>
         </el-form-item>
-        <el-form-item label="邮箱" prop="userEmail">
-          <el-input v-model="addForm.userEmail"></el-input>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="addForm.email"></el-input>
         </el-form-item>
         <el-form-item label="手机号" prop="userPhone">
           <el-input v-model="addForm.userPhone"></el-input>
         </el-form-item>
-        <el-form-item label="部门" prop="deptName">
+        <!-- <el-form-item label="部门" prop="deptName">
           <el-input v-model="addValue" @click.native="deptAdd"></el-input>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="角色" prop="roleName">
           <el-select v-model="addForm.roleId" placeholder="请选择">
             <el-option
@@ -160,7 +166,7 @@
               :props="defaultProps"
               node-key="id"
               :indent="0"
-              icon-class='el-icon-circle-plus'
+              icon-class="el-icon-circle-plus"
               :default-expanded-keys="idArr"
               @node-click="handleNodeAddClick"
             ></el-tree>
@@ -228,19 +234,20 @@ export default {
       // 修改
       editForm: {
         userName: "",
-        userEmail: "",
+        email: "",
         userPhone: "",
         roleId: null,
-        deptId: null
+        deptId: null,
+        status: 0
       },
       addDialogVisible: false,
       // 新增
       addForm: {
         userName: "",
-        userEmail: "",
+        email: "",
         userPhone: "",
         loginName: "",
-        userPassword: "",
+        password: "",
         roleId: null,
         deptId: null
       },
@@ -274,7 +281,7 @@ export default {
         ],
         userPassword: [
           { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 5, max: 16, message: "长度在 5 到 16 个字符", trigger: "blur" }
+          { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
         ],
         userEmail: [
           { required: true, message: "邮箱不能为空", trigger: "blur" },
@@ -307,7 +314,7 @@ export default {
     },
     // 获取角色列表
     async getRoleList() {
-      const { data: res } = await this.$http.post("role/list", {});
+      const { data: res } = await this.$http.post("role/list", { status: '1' });
       if (res.code != 200) return this.$message.error("列表获取失败");
       this.RoleList = res.rows;
     },
@@ -328,7 +335,7 @@ export default {
     },
     // 修改
     showEditdialog(info) {
-      this.editId = info.acId;
+      this.editId = info.userId;
       this.editForm = JSON.parse(JSON.stringify(info));
       this.editDialogVisible = true;
       this.EditValue = info.deptName;
@@ -336,26 +343,23 @@ export default {
     editDialogClosed() {
       this.$refs.editFormRef.resetFields();
     },
-    edit() {
-      this.$refs.editFormRef.validate(async valid => {
-        if (!valid) return this.$message.error("失败");
-        const { data: res } = await this.$http.post("user/update", {
-          acId: this.editId,
-          roleId: this.editForm.roleId,
-          deptId: this.editForm.deptId,
-          userName: this.editForm.userName,
-          userEmail: this.editForm.userEmail,
-          userPhone: this.editForm.userPhone,
-          userPassword: this.$md5(this.editForm.userPassword)
-        });
-        if (res.code != 200) {
-          return this.$message.error("修改用户信息失败");
-        } else {
-          this.$message.success("修改用户成功");
-          this.editDialogVisible = false;
-          this.getUserList();
-        }
+    async editPageEnter() {
+      const { data: res } = await this.$http.post("user/update", {
+        userId: this.editId,
+        roleId: this.editForm.roleId,
+        deptId: this.editForm.deptId,
+        userName: this.editForm.userName,
+        email: this.editForm.email,
+        userPhone: this.editForm.userPhone,
+        status: this.editForm.status
       });
+      if (res.code != 200) {
+        return this.$message.error("修改用户信息失败");
+      } else {
+        this.$message.success("修改用户成功");
+        this.editDialogVisible = false;
+        this.getUserList();
+      }
     },
     // 删除
     async removeUserById(id) {
@@ -387,24 +391,21 @@ export default {
       this.addDialogVisible = true;
       this.addForm = {};
     },
-    addEnter() {
-      this.$refs.addFormRef.validate(async valid => {
-        if (!valid) return this.$message.error("失败");
-        const { data: res } = await this.$http.post("user/add", {
-          userName: this.addForm.userName,
-          email: this.addForm.userEmail,
-          loginName: this.addForm.loginName,
-          userPhone: this.addForm.userPhone,
-          password: this.$md5(this.addForm.userPassword),
-          roleId: this.addForm.roleId,
-          deptId: this.addForm.deptId
-        });
-        this.addDialogVisible = false;
-        this.getUserList();
+    async addEnter() {
+      const { data: res } = await this.$http.post("user/add", {
+        userName: this.addForm.userName,
+        email: this.addForm.email,
+        loginName: this.addForm.loginName,
+        userPhone: this.addForm.userPhone,
+        password: this.$md5(this.addForm.password),
+        roleId: this.addForm.roleId,
+        deptId: this.addForm.deptId
       });
+      this.addDialogVisible = false;
+      this.getUserList();
     },
     addDialogClosed() {
-      this.$refs.addFormRef.resetFields();
+      // this.$refs.addFormRef.resetFields();
     },
     // 部门新增
     deptAdd() {
@@ -435,7 +436,7 @@ export default {
     handleNodeEditClick(val) {
       this.editTransit = val.deptName;
       this.editForm.deptId = val.id;
-    },
+    }
   }
 };
 </script>

@@ -16,18 +16,6 @@
         <el-table-column align="center" prop="url" label="路径"></el-table-column>
         <el-table-column align="center" prop="icon" label="样式"></el-table-column>
         <el-table-column align="center" prop="orderNum" label="排序号"></el-table-column>
-        <el-table-column align="center" prop="status" label="状态">
-          <template slot-scope="scope">
-            <el-switch
-              v-model="scope.row.status"
-              active-color="#409167"
-              inactive-color="#ccc"
-              active-value="0"
-              inactive-value="1"
-              @change="userStateChanged(scope.row)"
-            ></el-switch>
-          </template>
-        </el-table-column>
         <el-table-column align="center" prop="operate" label="操作" width="180">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
@@ -99,6 +87,12 @@
         <el-form-item label="样式" prop="icon">
           <el-input v-model="editForm.icon"></el-input>
         </el-form-item>
+        <el-form-item label="状态" prop="status">
+          <el-select v-model="editForm.status" placeholder="请选择">
+            <el-option label="启用" :value="'1'"></el-option>
+            <el-option label="禁用" :value="'0'"></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">取 消</el-button>
@@ -112,14 +106,14 @@ export default {
   data() {
     return {
       input: "",
-      currentRow: null,
       menuList: [],
       addDialogVisible: false,
       addForm: {
         menuName: "",
         menuType: "",
         icon: "",
-        url: ""
+        url: "",
+        status: ""
       },
       addId: 0,
       editDialogVisible: false,
@@ -127,7 +121,8 @@ export default {
         menuName: "",
         menuType: "",
         icon: "",
-        url: ""
+        url: "",
+        status: ""
       },
       idArr: [],
       editId: 0,
@@ -142,6 +137,7 @@ export default {
     async getMenuList() {
       const { data: res } = await this.$http.post("menu/list");
       this.menuList = res.data;
+      console.log(res);
     },
     // 修改弹框
     showEditdialog(val) {
@@ -163,26 +159,13 @@ export default {
           menuType: this.editForm.menuType,
           url: this.editForm.url,
           icon: this.editForm.icon,
-        //   status
+          status: this.editForm.status
         });
         if (res.code != 200) return this.$message.error("操作失败");
         this.editDialogVisible = false;
         this.$message.success("操作成功");
         this.getMenuList();
       });
-    },
-    // 改变状态按钮
-    async userStateChanged(userinfo) {
-      const { data: res } = await this.$http.post("menu/updateSysMenu.do", {
-        menuId: userinfo.menuId,
-        status: userinfo.status
-      });
-      if (res.code != 200) {
-        userinfo.status = !userinfo.status;
-        return this.$message.error("更新用户状态失败");
-      }
-      this.getMenuList();
-      this.$message.success("更新用户状态成功");
     },
     // 增加菜单弹框
     addDialog(val) {
@@ -204,6 +187,7 @@ export default {
           menuType: this.addForm.menuType,
           url: this.addForm.url,
           icon: this.addForm.icon
+          // status: this.editForm.status
         });
         this.addDialogVisible = false;
       });
