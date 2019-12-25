@@ -80,12 +80,11 @@
             class="EditTree"
             :data="hosMenuList"
             :props="defaultProps"
-            node-key="id"
-
+            node-key="menuId"
             show-checkbox
+            :default-checked-keys="defKeys"
             default-expand-all
-            @node-click="handleNodeAddClick"
-            @check="handleNodeAddClick"
+            ref="treeRef"
           ></el-tree>
         </el-form-item>
       </el-form>
@@ -108,13 +107,13 @@ export default {
       dialogTitle: "",
       AddEditForm: {
         roleName: "",
-        status: "",
+        status: ""
       },
       powerChooseForm: {},
       id: "",
       powerId: "",
       powerValue: "",
-      editPowerArr: [1],
+      defKeys: [],
       defaultProps: {
         label: "menuName",
         children: "child",
@@ -195,22 +194,27 @@ export default {
     },
     // 权限修改
     async powerChooseEnter() {
-      let set = new Set(this.editPowerArr);
-      let newArr = Array.from(set);
-      let html = newArr.join(",");
-      console.log(html);
-      this.powerDialogVisible = false;
+      const keys = [
+        ...this.$refs.treeRef.getCheckedKeys(),
+        ...this.$refs.treeRef.getHalfCheckedKeys()
+      ];
+      this.defKeys = keys;
+      console.log(this.defKeys);
+      
+      const idStr = keys.join(",");
+
       const { data: res } = await this.$http.post("role/authSysRoleMenu", {
         roleId: this.powerId,
-        menuIds: html
+        menuIds: idStr
       });
-      console.log(res);
+      this.powerDialogVisible = false;
+      if (res.code != 200) {
+        //更新权限失败
+        return this.$message.error("分配权限失败");
+      }
+      this.$message.success("分配权限成功");
     },
-    powerChooseClosed() {},
-    handleNodeAddClick(val) {
-      this.editPowerArr.push(val.menuId);
-      console.log(val);
-    }
+    powerChooseClosed() {}
   }
 };
 </script>
