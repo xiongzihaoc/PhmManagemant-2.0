@@ -137,14 +137,14 @@ export default {
         let httpUrl = "";
         let parm = {};
         if (this.dialogTitle == "修改") {
-          httpUrl = "sys/dict/update";
+          httpUrl = "dict/update";
           parm = {
             id: this.selfId,
             name: this.addEditForm.name,
             remark: this.addEditForm.remark
           };
         } else {
-          httpUrl = "sys/dict/add";
+          httpUrl = "dict/add";
           parm = {
             parentId: this.parentId,
             name: this.addEditForm.name,

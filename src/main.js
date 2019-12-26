@@ -13,13 +13,6 @@ import './assets/iconfont/iconfont.css'
 // 引入md5加密
 import md5 from 'js-md5';
 Vue.prototype.$md5 = md5;
-// 解决路由跳转两次相同报错问题
-import Router from 'vue-router'
-Vue.use(Router)
-const originalPush = Router.prototype.push
-Router.prototype.push = function push(location) {
-  return originalPush.call(this, location).catch(err => err)
-}
 // 导入axios
 import axios from 'axios'
 // 配置axios
