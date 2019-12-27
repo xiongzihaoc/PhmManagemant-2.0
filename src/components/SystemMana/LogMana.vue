@@ -66,6 +66,8 @@ export default {
       if (res.code != 200) return this.$message.error("数据获取失败");
       this.menuList = res.rows;
       this.total = res.total;
+      console.log(res);
+      
     },
     // 搜索
     dicSearch() {

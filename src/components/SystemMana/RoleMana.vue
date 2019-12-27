@@ -82,7 +82,7 @@
             :props="defaultProps"
             node-key="menuId"
             show-checkbox
-            :default-checked-keys="defKeys"
+            :default-checked-keys="this.defKeys"
             default-expand-all
             ref="treeRef"
           ></el-tree>
@@ -188,9 +188,15 @@ export default {
       this.getRoleList();
     },
     // 分配权限
-    REVOKE(info) {
+    async REVOKE(info) {
       this.powerId = info.roleId;
       this.powerDialogVisible = true;
+      const { data: res } = await this.$http.post("role/getSysRoleMenu", {
+        roleId: info.roleId
+      });
+      // var arr = res.data.split(",");
+      // var num = arr.map(Number);
+      // this.defKeys = num;
     },
     // 权限修改
     async powerChooseEnter() {
@@ -198,21 +204,20 @@ export default {
         ...this.$refs.treeRef.getCheckedKeys(),
         ...this.$refs.treeRef.getHalfCheckedKeys()
       ];
-      this.defKeys = keys;
-      console.log(this.defKeys);
-      
       const idStr = keys.join(",");
-
       const { data: res } = await this.$http.post("role/authSysRoleMenu", {
         roleId: this.powerId,
         menuIds: idStr
       });
+      console.log(res);
+      
       this.powerDialogVisible = false;
       if (res.code != 200) {
         //更新权限失败
         return this.$message.error("分配权限失败");
       }
       this.$message.success("分配权限成功");
+      this.getRoleList();
     },
     powerChooseClosed() {}
   }

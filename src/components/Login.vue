@@ -151,7 +151,7 @@ $cursor: #fff;
 </style>
 
 <style lang="scss" scoped>
-$bg: #393836;
+$bg: #2D3035;
 $dark_gray: #889aa4;
 $light_gray: #eee;
 
@@ -217,7 +217,7 @@ $light_gray: #eee;
   }
 }
 .loginBtn {
-  background-color: orange;
+  background-color: #B4707B;
   border: none;
 }
 </style>

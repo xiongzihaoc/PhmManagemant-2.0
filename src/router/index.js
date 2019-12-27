@@ -55,6 +55,14 @@ const routes = [{
         }
       },
       {
+        path: '/JumpDictionaryNext',
+        name: '新增字典数据',
+        component: () => import('@/components/SystemMana/JumpDictionaryNext.vue'),
+        meta: {
+          title: '新增字典数据'
+        }
+      },
+      {
         path: '/system/role',
         name: '角色管理',
         component: () => import('@/components/SystemMana/RoleMana.vue'),

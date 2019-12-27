@@ -4,13 +4,13 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入内容" v-model="input" @keyup.13.native="dicSearch" clearable>
+          <el-input placeholder="请输入内容" v-model="input" @keyup.enter.native="dicSearch" clearable>
             <el-button slot="append" icon="el-icon-search" @click="dicSearch"></el-button>
           </el-input>
         </el-col>
         <!-- 添加按钮 -->
         <el-col :span="4">
-          <el-button type="primary" @click="addDictionary">新增字典</el-button>
+          <el-button type="primary" @click="addDictionaryInfo">新增字典数据</el-button>
         </el-col>
       </el-row>
       <el-table
@@ -21,12 +21,24 @@
         row-key="id"
         ref="singleTable"
       >
-        <el-table-column align="center" prop="id" label="字典编码" sortable></el-table-column>
-        <el-table-column align="center" prop="name" label="名称" sortable></el-table-column>
+        <el-table-column align="center    " prop="name" label="名称" sortable></el-table-column>
         <el-table-column align="center" prop="dictValue" label="键值" sortable></el-table-column>
         <el-table-column align="center" prop="remark" label="备注" sortable></el-table-column>
         <el-table-column align="center" prop="dictSort" label="排序号"></el-table-column>
-        <el-table-column align="center" prop="operate" label="操作" width="260">
+        <el-table-column align="center" prop="isEnable" label="状态">
+          <!-- 作用域插槽 -->
+          <template slot-scope="scope">
+            <el-switch
+              v-model="scope.row.isEnable"
+              active-color="#409167"
+              inactive-color="#ccc"
+              active-value="0"
+              inactive-value="1"
+              @change="userStateChanged(scope.row)"
+            ></el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" prop="operate" label="操作" width="180">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
             <el-button
@@ -34,26 +46,19 @@
               @click="showEditdialog(scope.row)"
               type="primary"
               icon="el-icon-edit"
-            >编辑</el-button>
-            <!-- 跳转按钮 -->
-            <el-button
-              size="mini"
-              @click="jumpDictionarybtn(scope.row)"
-              type="success"
-              icon="el-icon-s-unfold"
-            >详情</el-button>
+            ></el-button>
             <!-- 删除按钮 -->
             <el-button
               size="mini"
               @click="removeById(scope.row)"
               type="danger"
               icon="el-icon-delete"
-            >删除</el-button>
+            ></el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
-    <!-- 修改添加提示框 -->
+    <!-- 修改提示框 -->
     <el-dialog
       :title="dialogTitle"
       :visible.sync="DialogVisible"
@@ -71,12 +76,6 @@
         <el-form-item label="备注">
           <el-input v-model="addEditForm.remark"></el-input>
         </el-form-item>
-        <el-form-item label="状态" prop="isEnable" v-if="this.dialogTitle=='修改信息'" v-show="true">
-          <el-select v-model="addEditForm.isEnable" placeholder="请选择">
-            <el-option label="启用" :value="'1'"></el-option>
-            <el-option label="禁用" :value="'0'"></el-option>
-          </el-select>
-        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="DialogVisible = false">取 消</el-button>
@@ -90,60 +89,60 @@ export default {
   data() {
     return {
       input: "",
+      dialogTitle: "",
+      DialogVisible: false,
       menuList: [],
+      id: null,
+      disabled: false,
+      selfId: null,
       addEditForm: {
         name: "",
         dictValue: "",
-        remark: "",
-        isEnable: ""
-      },
-      parentId: 1,
-      selfId: null,
-      DialogVisible: false,
-      dialogTitle: "",
-      goBack: "",
-      disabled: false,
-      labelTitle: ""
+        remark: ""
+      }
     };
   },
   created() {
+    this.id = this.$route.query.id;
     this.getDictionaryList();
   },
   methods: {
+    // 获取详情
     async getDictionaryList() {
-      const { data: res } = await this.$http.post("dict/list", {
-        parentId: 1,
-        name: this.input
-      });
+      const { data: res } = await this.$http.post(
+        "dict/list",
+        { parentId: this.id, name: this.input }
+      );
       console.log(res);
-      
       this.menuList = res.data;
     },
-    // 跳转下一级
-    jumpDictionarybtn(info) {
-      this.$router.push({
-        path: "/JumpDictionaryNext",
-        query: { id: info.id }
-      });
+    // 修改
+    showEditdialog(info) {
+      this.selfId = info.id;
+      this.disabled = true;
+      this.dialogTitle = "修改";
+      this.addEditForm = JSON.parse(JSON.stringify(info));
+      this.DialogVisible = true;
     },
-    // 确定修改或添加
-    addEditEnter() {
+    AddEditDialogClosed() {
+      this.$refs.addFormRef.resetFields();
+    },
+    async addEditEnter() {
       this.$refs.addFormRef.validate(async valid => {
-        if (!valid) return this.$message.error("失败");
+        if (!valid) return this.$message.error("登录失败");
         let httpUrl = "";
         let parm = {};
-        if (this.dialogTitle == "修改信息") {
-          httpUrl = "dict/update";
+        if (this.dialogTitle == "修改") {
+          httpUrl = "sys/dict/updateSysDict.do";
           parm = {
             id: this.selfId,
             name: this.addEditForm.name,
-            remark: this.addEditForm.remark,
-            isEnable: this.addEditForm.isEnable
+            remark: this.addEditForm.remark
           };
         } else {
-          httpUrl = "dict/add";
+          httpUrl = "sys/dict/saveSysDict.do";
           parm = {
-            parentId: this.parentId,
+            parentId: this.id,
             name: this.addEditForm.name,
             dictValue: this.addEditForm.dictValue,
             remark: this.addEditForm.remark
@@ -156,21 +155,18 @@ export default {
         this.DialogVisible = false;
       });
     },
-    // 修改
-    showEditdialog(info) {
-      this.selfId = info.id;
-      this.disabled = true;
-      this.dialogTitle = "修改信息";
-      this.addEditForm = JSON.parse(JSON.stringify(info));
-      this.DialogVisible = true;
-    },
-    // 重置
-    AddEditDialogClosed() {
-      this.$refs.addFormRef.resetFields();
-    },
-    // 搜索
-    dicSearch() {
-      this.getDictionaryList();
+    // 改变状态
+    async userStateChanged(userinfo) {
+      const { data: res } = await this.$http.post("sys/dict/updateSysDict.do", {
+        id: userinfo.id,
+        isEnable: userinfo.isEnable
+      });
+      if (res.code != 200) {
+        userinfo.isEnable = !userinfo.isEnable;
+        return this.$message.error("更新用户状态失败");
+      } else {
+        this.$message.success("更新用户状态成功");
+      }
     },
     // 删除
     async removeById(info) {
@@ -197,15 +193,19 @@ export default {
         return;
       }
     },
-    // 添加按钮
-    addDictionary() {
-      this.dialogTitle = "新增字典";
+    // 添加字典数据
+    addDictionaryInfo() {
       this.disabled = false;
+      this.dialogTitle = "新增";
       this.addEditForm = {};
       this.DialogVisible = true;
+    },
+    // 搜索
+    dicSearch() {
+      this.getDictionaryList();
     }
   }
 };
 </script>
 <style lang='less' scoped>
-</style>
+</style>\

@@ -14,10 +14,9 @@
         />
       </div>
       <el-menu
-        background-color="#393836"
-        text-color="#fff"
+        background-color="#2D3035"
+        text-color="#BFCBD9"
         active-text-color="orange"
-        active-background-color="red"
         :unique-opened="true"
         :collapse="isCollapse"
         :collapse-transition="false"
@@ -76,6 +75,7 @@
           type="card"
           closable
           @tab-click="tabClick"
+          @tab-click-right="tabClick"
           v-if="options.length"
           @tab-remove="tabRemove"
         >
@@ -152,6 +152,9 @@ export default {
       let path = this.activeIndex;
       this.$router.replace({ path: path });
     },
+    rightShow() {
+      console.log(1111);
+    },
     tabRemove(targetName) {
       // 首页不可删除
       if (targetName == "/index") {
@@ -167,7 +170,7 @@ export default {
           );
           this.$router.replace({ path: this.activeIndex });
         } else {
-          this.$router.replace({ path: "/" });
+          this.$router.replace({ path: "/index" });
         }
       }
     }
@@ -208,7 +211,7 @@ export default {
   height: 100%;
 }
 .el-aside {
-  background: #393836;
+  background: #2D3035;
 }
 .el-header {
   height: 55px !important;
@@ -271,7 +274,6 @@ export default {
 .aaa {
   display: inline-block;
   cursor: pointer;
-
   color: #2c3e50;
 }
 .logoutImg {
@@ -297,5 +299,4 @@ export default {
   width: 100%;
   background-color: #f5f5f5;
 }
-
 </style>

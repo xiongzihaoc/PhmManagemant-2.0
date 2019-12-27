@@ -88,6 +88,8 @@ export default {
   methods: {
     async getHosMenuList() {
       const { data: res } = await this.$http.post("dept/list", {});
+      console.log(res);
+      
       this.hosMenuList = res.data;
     },
     // 增加

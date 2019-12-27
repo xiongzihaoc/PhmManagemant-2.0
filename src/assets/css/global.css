@@ -2,10 +2,6 @@
     margin-right: 30px;
 }
 
-.el-card {
-    margin-top: 10px;
-}
-
 .el-table {
     margin-top: 10px;
 }
@@ -49,16 +45,4 @@
 .el-dialog__footer {
     padding: 10px 20px 10px !important;
     border-top: 1px solid #f5f5f5;
-}
-
-.el-icon-menu:before {
-    color: #fff;
-}
-
-.el-icon-s-tools:before {
-    color: #fff;
-}
-
-.el-icon-s-home:before {
-    color: #fff;
 }

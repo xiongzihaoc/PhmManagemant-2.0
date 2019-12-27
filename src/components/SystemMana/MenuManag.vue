@@ -16,6 +16,7 @@
         <el-table-column align="center" prop="url" label="路径"></el-table-column>
         <el-table-column align="center" prop="icon" label="样式"></el-table-column>
         <el-table-column align="center" prop="orderNum" label="排序号"></el-table-column>
+        <el-table-column align="center" prop="status" label="状态" :formatter="ifendcase"></el-table-column>
         <el-table-column align="center" prop="operate" label="操作" width="180">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
@@ -191,6 +192,14 @@ export default {
         });
         this.addDialogVisible = false;
       });
+    },
+    // 状态判断
+    ifendcase(val) {
+      if (val.status == "1") {
+        return "启用";
+      } else {
+        return "禁用";
+      }
     }
   }
 };
