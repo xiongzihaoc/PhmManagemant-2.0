@@ -98,9 +98,7 @@ export default {
     hospSearch() {},
     // 操作里面新增
     addDictionarybtn(info) {
-      console.log(info);
-
-      this.addParentId = info.parentId;
+      this.addParentId = info.id;
       this.addParentCode = info.parentCode;
       this.dynamicDialogVisible = true;
       this.dynamicTitle = "新增信息";
@@ -127,8 +125,8 @@ export default {
       const { data: res } = await this.$http.post(httpUrl, parm);
       if (res.code != 200) return this.$message.error(res.msg);
       this.$message.success(res.msg);
-      this.getRoleList();
-      this.editAddDialogVisible = false;
+      this.getHosMenuList();
+      this.dynamicDialogVisible = false;
     },
     dynamicDialogClosed() {},
     handleAvatarSuccess(res, file) {

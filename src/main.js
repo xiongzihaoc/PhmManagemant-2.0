@@ -16,7 +16,7 @@ Vue.prototype.$md5 = md5;
 // 导入axios
 import axios from 'axios'
 // 配置axios
-axios.defaults.baseURL = 'http://192.168.0.105:8085/zhuoya-web/'
+axios.defaults.baseURL = 'http://192.168.0.109:8085/zhuoya-web/'
 // axios请求拦截器
 axios.interceptors.request.use(function (config) {
   Nprogress.start()

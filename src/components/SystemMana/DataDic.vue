@@ -26,19 +26,6 @@
         <el-table-column align="center" prop="dictValue" label="键值" sortable></el-table-column>
         <el-table-column align="center" prop="remark" label="备注" sortable></el-table-column>
         <el-table-column align="center" prop="dictSort" label="排序号"></el-table-column>
-        <el-table-column align="center" prop="isEnable" label="状态">
-          <!-- 作用域插槽 -->
-          <template slot-scope="scope">
-            <el-switch
-              v-model="scope.row.isEnable"
-              active-color="#409167"
-              inactive-color="#ccc"
-              active-value="0"
-              inactive-value="1"
-              @change="userStateChanged(scope.row)"
-            ></el-switch>
-          </template>
-        </el-table-column>
         <el-table-column align="center" prop="operate" label="操作" width="260">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
@@ -84,6 +71,12 @@
         <el-form-item label="备注">
           <el-input v-model="addEditForm.remark"></el-input>
         </el-form-item>
+        <el-form-item label="状态" prop="isEnable">
+          <el-select v-model="addEditForm.isEnable" placeholder="请选择">
+            <el-option label="启用" :value="'1'"></el-option>
+            <el-option label="禁用" :value="'0'"></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="DialogVisible = false">取 消</el-button>
@@ -101,7 +94,8 @@ export default {
       addEditForm: {
         name: "",
         dictValue: "",
-        remark: ""
+        remark: "",
+        isEnable: ""
       },
       parentId: 1,
       selfId: null,
@@ -109,7 +103,7 @@ export default {
       dialogTitle: "",
       goBack: "",
       disabled: false,
-      labelTitle: "",
+      labelTitle: ""
     };
   },
   created() {
@@ -117,10 +111,12 @@ export default {
   },
   methods: {
     async getDictionaryList() {
-      const { data: res } = await this.$http.post(
-        "dict/list",
-        { parentId: 1, name: this.input }
-      );
+      const { data: res } = await this.$http.post("dict/list", {
+        parentId: 1,
+        name: this.input
+      });
+      console.log(res);
+      
       this.menuList = res.data;
     },
     // 跳转下一级
@@ -141,7 +137,8 @@ export default {
           parm = {
             id: this.selfId,
             name: this.addEditForm.name,
-            remark: this.addEditForm.remark
+            remark: this.addEditForm.remark,
+            isEnable: this.addEditForm.isEnable
           };
         } else {
           httpUrl = "dict/add";
@@ -170,20 +167,6 @@ export default {
     // 重置
     AddEditDialogClosed() {
       this.$refs.addFormRef.resetFields();
-    },
-    // 改变状态按钮
-    async userStateChanged(userinfo) {
-      console.log(userinfo);
-      const { data: res } = await this.$http.post("sys/dict/updateSysDict.do", {
-        id: userinfo.id,
-        isEnable: userinfo.isEnable
-      });
-      if (res.code != 200) {
-        userinfo.isEnable = !userinfo.isEnable;
-        return this.$message.error("更新用户状态失败");
-      } else {
-        this.$message.success("更新用户状态成功");
-      }
     },
     // 搜索
     dicSearch() {
@@ -220,7 +203,7 @@ export default {
       this.disabled = false;
       this.addEditForm = {};
       this.DialogVisible = true;
-    },
+    }
   }
 };
 </script>
