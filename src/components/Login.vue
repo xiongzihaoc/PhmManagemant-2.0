@@ -9,7 +9,7 @@
       label-position="left"
     >
       <div class="title-container">
-        <h3 class="title">卓亚科技.V2</h3>
+        <h3 class="title">卓亚科技</h3>
       </div>
 
       <el-form-item prop="loginName">
