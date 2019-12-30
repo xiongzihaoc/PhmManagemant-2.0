@@ -24,6 +24,12 @@
         <el-table-column align="center" prop="deptType" label="组织类型" sortable></el-table-column>
         <el-table-column align="center" prop="address" label="地址" show-overflow-tooltip sortable></el-table-column>
         <el-table-column align="center" prop="orderNum" label="排序号" sortable></el-table-column>
+        <el-table-column align="center" prop="status" label="状态" :formatter="ifendcase">
+          <template slot-scope="scope">
+            <span style="color:#13ce66" v-if="scope.row.status=== '1'">{{ ifendcase(scope.row) }}</span>
+            <span v-else style="color:#ff4949">{{ ifendcase(scope.row) }}</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" prop="operate" label="操作" width="180">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
@@ -77,7 +83,7 @@ export default {
       dynamicTitle: "",
       dynamicDialogVisible: false,
       addParentId: null,
-      addParentCode:"",
+      addParentCode: "",
       goback: "",
       imageUrl: ""
     };
@@ -88,8 +94,6 @@ export default {
   methods: {
     async getHosMenuList() {
       const { data: res } = await this.$http.post("dept/list", {});
-      console.log(res);
-      
       this.hosMenuList = res.data;
     },
     // 增加
@@ -131,6 +135,14 @@ export default {
       this.dynamicDialogVisible = false;
     },
     dynamicDialogClosed() {},
+    // 状态判断
+    ifendcase(val) {
+      if (val.status == "1") {
+        return "启用";
+      } else {
+        return "禁用";
+      }
+    },
     handleAvatarSuccess(res, file) {
       this.imageUrl = res.data;
       this.editForm.fdPhotoPath = res.data;

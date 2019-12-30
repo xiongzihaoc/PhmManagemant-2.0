@@ -26,6 +26,12 @@
         <el-table-column align="center" prop="dictValue" label="键值" sortable></el-table-column>
         <el-table-column align="center" prop="remark" label="备注" sortable></el-table-column>
         <el-table-column align="center" prop="dictSort" label="排序号"></el-table-column>
+        <el-table-column align="center" prop="isEnable" label="状态" :formatter="ifendcase">
+          <template slot-scope="scope">
+            <span style="color:#13ce66" v-if="scope.row.isEnable=== '1'">{{ ifendcase(scope.row) }}</span>
+            <span v-else style="color:#ff4949">{{ ifendcase(scope.row) }}</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" prop="operate" label="操作" width="260">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
@@ -116,7 +122,7 @@ export default {
         name: this.input
       });
       console.log(res);
-      
+
       this.menuList = res.data;
     },
     // 跳转下一级
@@ -203,6 +209,14 @@ export default {
       this.disabled = false;
       this.addEditForm = {};
       this.DialogVisible = true;
+    },
+    // 状态判断
+    ifendcase(val) {
+      if (val.isEnable == "1") {
+        return "启用";
+      } else {
+        return "禁用";
+      }
     }
   }
 };

@@ -17,6 +17,7 @@
       <el-table
         stripe
         ref="singleTable"
+        tooltip-effect="dark"
         :data="userList"
         :header-cell-style="{background:'#f5f5f5'}"
         style="width: 100%"
@@ -27,9 +28,15 @@
         <el-table-column align="center" prop="loginName" label="登录名"></el-table-column>
         <el-table-column align="center" prop="roleName" label="角色"></el-table-column>
         <!-- <el-table-column align="center" prop="deptName" label="部门"></el-table-column> -->
-        <el-table-column align="center" prop="email" label="邮箱"></el-table-column>
+        <el-table-column align="center" prop="email" label="邮箱" show-overflow-tooltip></el-table-column>
         <el-table-column align="center" prop="loginIp" label="IP"></el-table-column>
         <el-table-column align="center" prop="userPhone" label="手机号"></el-table-column>
+        <el-table-column align="center" prop="status" label="状态" :formatter="ifendcase">
+          <template slot-scope="scope">
+            <span style="color:#13ce66" v-if="scope.row.status=== '1'">{{ ifendcase(scope.row) }}</span>
+            <span v-else style="color:#ff4949">{{ ifendcase(scope.row) }}</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" prop="operate" label="操作" width="180">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
@@ -314,7 +321,7 @@ export default {
     },
     // 获取角色列表
     async getRoleList() {
-      const { data: res } = await this.$http.post("role/list", { status: '1' });
+      const { data: res } = await this.$http.post("role/list", { status: "1" });
       if (res.code != 200) return this.$message.error("列表获取失败");
       this.RoleList = res.rows;
     },
@@ -333,6 +340,7 @@ export default {
       this.pageNum = newPage;
       this.getUserList();
     },
+
     // 修改
     showEditdialog(info) {
       this.editId = info.userId;
@@ -436,6 +444,14 @@ export default {
     handleNodeEditClick(val) {
       this.editTransit = val.deptName;
       this.editForm.deptId = val.id;
+    },
+    // 状态码数字转中文
+    ifendcase(val) {
+      if (val.status == "1") {
+        return "启用";
+      } else {
+        return "禁用";
+      }
     }
   }
 };

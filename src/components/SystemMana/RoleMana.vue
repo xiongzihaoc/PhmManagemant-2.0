@@ -24,6 +24,12 @@
         <el-table-column align="center" type="selection" width="60"></el-table-column>
         <el-table-column align="center" prop="roleId" label="序号" width="60"></el-table-column>
         <el-table-column align="center" prop="roleName" label="角色"></el-table-column>
+        <el-table-column align="center" prop="status" label="状态" :formatter="ifendcase">
+          <template slot-scope="scope">
+            <span style="color:#13ce66" v-if="scope.row.status=== '1'">{{ ifendcase(scope.row) }}</span>
+            <span v-else style="color:#ff4949">{{ ifendcase(scope.row) }}</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" prop="operate" label="操作" width="220">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
@@ -43,6 +49,16 @@
           </template>
         </el-table-column>
       </el-table>
+      <!-- 分页区域 -->
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChangev"
+        :current-page="pageNum"
+        :page-sizes="[10, 20,50]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </el-card>
     <!-- 弹框页面 -->
     <el-dialog :title="dialogTitle" :visible.sync="editAddDialogVisible" width="40%" v-dialogDrag>
@@ -68,13 +84,14 @@
       </span>
     </el-dialog>
     <!-- 权限选择页面 -->
-    <el-dialog title="选择权限" :visible.sync="powerDialogVisible" width="40%" v-dialogDrag>
-      <el-form
-        :model="powerChooseForm"
-        ref="powerEditFormRef"
-        label-width="80px"
-        @closed="powerChooseClosed"
-      >
+    <el-dialog
+      title="选择权限"
+      :visible.sync="powerDialogVisible"
+      width="40%"
+      @closed="powerDialogClosed"
+      v-dialogDrag
+    >
+      <el-form :model="powerChooseForm" ref="powerEditFormRef" label-width="80px">
         <el-form-item prop="deptName">
           <el-tree
             class="EditTree"
@@ -82,14 +99,14 @@
             :props="defaultProps"
             node-key="menuId"
             show-checkbox
-            :default-checked-keys="this.defKeys"
+            :default-checked-keys="defKeys"
             default-expand-all
             ref="treeRef"
           ></el-tree>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="powerChooseVisible = false">取 消</el-button>
+        <el-button @click="powerDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="powerChooseEnter">确 定</el-button>
       </span>
     </el-dialog>
@@ -100,6 +117,9 @@ export default {
   data() {
     return {
       input: "",
+      pageSize: 10,
+      pageNum: 1,
+      total: 0,
       RoleList: [],
       hosMenuList: [],
       editAddDialogVisible: false,
@@ -129,18 +149,19 @@ export default {
     // 获取列表
     async getRoleList() {
       const { data: res } = await this.$http.post("role/list", {
-        roleName: this.input
+        roleName: this.input,
+        pageSize: this.pageSize,
+        pageNum: this.pageNum
       });
       if (res.code != 200) return this.$message.error("列表获取失败");
-      console.log(res);
       this.RoleList = res.rows;
+      this.total = res.total
       this.AddEditForm.status = res.rows.status;
     },
     // 获取菜单列表
     async getMenuList() {
       const { data: res } = await this.$http.post("menu/list");
       this.hosMenuList = res.data;
-      console.log(res);
     },
     // 弹框
     showEditdialog(info) {
@@ -151,7 +172,7 @@ export default {
     },
     // 添加
     addFoodType() {
-      this.dialogTitle = "新增";
+      this.dialogTitle = "新增角色";
       this.AddEditForm = {};
       this.editAddDialogVisible = true;
     },
@@ -187,30 +208,31 @@ export default {
     Foodsearch() {
       this.getRoleList();
     },
-    // 分配权限
+    // 分配权限弹框
     async REVOKE(info) {
-      this.powerId = info.roleId;
-      this.powerDialogVisible = true;
       const { data: res } = await this.$http.post("role/getSysRoleMenu", {
         roleId: info.roleId
       });
-      // var arr = res.data.split(",");
-      // var num = arr.map(Number);
-      // this.defKeys = num;
+      let arr = res.data.split(",");
+      this.defKeys = arr.map(Number);
+      console.log(this.defKeys);
+      this.powerId = info.roleId;
+      this.powerDialogVisible = true;
     },
-    // 权限修改
+    // 权限修改确定
     async powerChooseEnter() {
       const keys = [
         ...this.$refs.treeRef.getCheckedKeys(),
         ...this.$refs.treeRef.getHalfCheckedKeys()
       ];
+      console.log(keys);
+
       const idStr = keys.join(",");
       const { data: res } = await this.$http.post("role/authSysRoleMenu", {
         roleId: this.powerId,
         menuIds: idStr
       });
-      console.log(res);
-      
+
       this.powerDialogVisible = false;
       if (res.code != 200) {
         //更新权限失败
@@ -219,7 +241,26 @@ export default {
       this.$message.success("分配权限成功");
       this.getRoleList();
     },
-    powerChooseClosed() {}
+    powerDialogClosed() {
+      this.defKeys = [];
+    },
+    // 状态判断
+    ifendcase(val) {
+      if (val.status == "1") {
+        return "启用";
+      } else {
+        return "禁用";
+      }
+    },
+    // 分页
+    handleSizeChange(newSize) {
+      this.pageSize = newSize;
+    this.getRoleList();
+    },
+    handleCurrentChangev(newPage) {
+      this.pageNum = newPage;
+    this.getRoleList();
+    }
   }
 };
 </script>
