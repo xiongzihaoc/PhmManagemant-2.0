@@ -136,8 +136,8 @@ export default {
       defKeys: [],
       defaultProps: {
         label: "menuName",
-        children: "child",
-        value: "menuId"
+        children: "child"
+        // value: "menuId"
       }
     };
   },
@@ -155,7 +155,7 @@ export default {
       });
       if (res.code != 200) return this.$message.error("列表获取失败");
       this.RoleList = res.rows;
-      this.total = res.total
+      this.total = res.total;
       this.AddEditForm.status = res.rows.status;
     },
     // 获取菜单列表
@@ -213,9 +213,10 @@ export default {
       const { data: res } = await this.$http.post("role/getSysRoleMenu", {
         roleId: info.roleId
       });
-      let arr = res.data.split(",");
+      const arr = res.data.split(",");
+
       this.defKeys = arr.map(Number);
-      console.log(this.defKeys);
+
       this.powerId = info.roleId;
       this.powerDialogVisible = true;
     },
@@ -225,9 +226,8 @@ export default {
         ...this.$refs.treeRef.getCheckedKeys(),
         ...this.$refs.treeRef.getHalfCheckedKeys()
       ];
-      console.log(keys);
-
       const idStr = keys.join(",");
+
       const { data: res } = await this.$http.post("role/authSysRoleMenu", {
         roleId: this.powerId,
         menuIds: idStr
@@ -255,11 +255,11 @@ export default {
     // 分页
     handleSizeChange(newSize) {
       this.pageSize = newSize;
-    this.getRoleList();
+      this.getRoleList();
     },
     handleCurrentChangev(newPage) {
       this.pageNum = newPage;
-    this.getRoleList();
+      this.getRoleList();
     }
   }
 };
