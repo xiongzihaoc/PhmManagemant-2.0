@@ -49,16 +49,6 @@
           </template>
         </el-table-column>
       </el-table>
-      <!-- 分页区域 -->
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChangev"
-        :current-page="pageNum"
-        :page-sizes="[10, 20,50]"
-        :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
     </el-card>
     <!-- 弹框页面 -->
     <el-dialog :title="dialogTitle" :visible.sync="editAddDialogVisible" width="40%" v-dialogDrag>
@@ -136,8 +126,8 @@ export default {
       defKeys: [],
       defaultProps: {
         label: "menuName",
-        children: "child"
-        // value: "menuId"
+        children: "child",
+        value: "menuId"
       }
     };
   },
@@ -150,8 +140,8 @@ export default {
     async getRoleList() {
       const { data: res } = await this.$http.post("role/list", {
         roleName: this.input,
-        pageSize: this.pageSize,
-        pageNum: this.pageNum
+        pageSize: 15000,
+        pageNum: 15000,
       });
       if (res.code != 200) return this.$message.error("列表获取失败");
       this.RoleList = res.rows;
@@ -162,6 +152,7 @@ export default {
     async getMenuList() {
       const { data: res } = await this.$http.post("menu/list");
       this.hosMenuList = res.data;
+      console.log(res);
     },
     // 弹框
     showEditdialog(info) {
@@ -210,15 +201,32 @@ export default {
     },
     // 分配权限弹框
     async REVOKE(info) {
+      console.log(info);
+      
       const { data: res } = await this.$http.post("role/getSysRoleMenu", {
         roleId: info.roleId
       });
-      const arr = res.data.split(",");
-
-      this.defKeys = arr.map(Number);
-
+      console.log(res);
+      
+      // const arr = res.data.split(",");
+      // this.defKeys = arr.map(Number)
+      this.getLeafKeys(info, this.defKeys);
       this.powerId = info.roleId;
       this.powerDialogVisible = true;
+    },
+    //通过递归的形式，获取角色下所有三级权限的id,并保存到defKeys数组中
+    getLeafKeys(node, arr) {
+      //如果当前node节点不包含children属性，则是三级节点
+      console.log(node);
+      // console.log(arr);
+      
+      if (!node.child) {
+        return arr.push(node.menuId);
+      }
+      node.child.forEach(item => this.getLeafKeys(item, arr));
+    },
+    setRightDialogClosed() {
+      this.defKeys = [];
     },
     // 权限修改确定
     async powerChooseEnter() {
@@ -227,7 +235,6 @@ export default {
         ...this.$refs.treeRef.getHalfCheckedKeys()
       ];
       const idStr = keys.join(",");
-
       const { data: res } = await this.$http.post("role/authSysRoleMenu", {
         roleId: this.powerId,
         menuIds: idStr
@@ -252,15 +259,6 @@ export default {
         return "禁用";
       }
     },
-    // 分页
-    handleSizeChange(newSize) {
-      this.pageSize = newSize;
-      this.getRoleList();
-    },
-    handleCurrentChangev(newPage) {
-      this.pageNum = newPage;
-      this.getRoleList();
-    }
   }
 };
 </script>

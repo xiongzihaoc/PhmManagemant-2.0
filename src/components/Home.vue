@@ -75,7 +75,7 @@
           type="card"
           closable
           @tab-click="tabClick"
-          @tab-click-right="tabClick"
+          @contextmenu.prevent.native="rightEvent($event)"
           v-if="options.length"
           @tab-remove="tabRemove"
         >
@@ -117,6 +117,9 @@ export default {
     this.loginName = window.localStorage.getItem("loginName");
   },
   methods: {
+    rightEvent(info) {
+      console.log(info);
+    },
     // 退出
     async logout() {
       const { data: res } = await this.$http.get("user/signOut", {});
@@ -149,6 +152,8 @@ export default {
     // tab切换时，动态的切换路由
     // tab切换时，动态的切换路由
     tabClick(tab) {
+      console.log(tab);
+      
       let path = this.activeIndex;
       this.$router.replace({ path: path });
     },
@@ -211,7 +216,7 @@ export default {
   height: 100%;
 }
 .el-aside {
-  background: #2D3035;
+  background: #2d3035;
 }
 .el-header {
   height: 55px !important;

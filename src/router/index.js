@@ -99,8 +99,6 @@ const routes = [{
 ]
 
 const router = new VueRouter({
-  // baseL: "/history",
-  // mode: 'history',
   routes
 })
 
