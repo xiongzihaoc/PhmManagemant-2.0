@@ -141,7 +141,7 @@ export default {
       const { data: res } = await this.$http.post("role/list", {
         roleName: this.input,
         pageSize: 15000,
-        pageNum: 15000,
+        pageNum: 15000
       });
       if (res.code != 200) return this.$message.error("列表获取失败");
       this.RoleList = res.rows;
@@ -202,31 +202,35 @@ export default {
     // 分配权限弹框
     async REVOKE(info) {
       console.log(info);
-      
-      const { data: res } = await this.$http.post("role/getSysRoleMenu", {
-        roleId: info.roleId
-      });
-      console.log(res);
-      
-      // const arr = res.data.split(",");
-      // this.defKeys = arr.map(Number)
-      this.getLeafKeys(info, this.defKeys);
+      const arr = info.menuIds.split(",").map(Number);
+
+      // const { data: res } = await this.$http.post("role/getSysRoleMenu", {
+      //   roleId: info.roleId
+      // });
+      // this.getLeafKeys(info, this.defKeys);
+      for (var i = 0; i < arr.length; i++) {
+        if (arr[i] == 1 || arr[i] == 14 || arr[i] == 3) {
+          arr.splice(i, 1);
+        }
+        this.defKeys.push(arr[i]);
+      }
+      console.log(this.defKeys);
+
       this.powerId = info.roleId;
       this.powerDialogVisible = true;
     },
     //通过递归的形式，获取角色下所有三级权限的id,并保存到defKeys数组中
-    getLeafKeys(node, arr) {
-      //如果当前node节点不包含children属性，则是三级节点
-      console.log(node);
-      // console.log(arr);
-      
-      if (!node.child) {
-        return arr.push(node.menuId);
-      }
-      node.child.forEach(item => this.getLeafKeys(item, arr));
-    },
-    setRightDialogClosed() {
+    // getLeafKeys(node, arr) {
+    //   //如果当前node节点不包含children属性，则是三级节点
+    //   console.log(node);
+    //   if (!node.children) {
+    //     return arr.push(node.menuId);
+    //   }
+    //   node.children.forEach(item => this.getLeafKeys(item, arr));
+    // },
+    powerDialogClosed() {
       this.defKeys = [];
+      console.log(this.defKeys);
     },
     // 权限修改确定
     async powerChooseEnter() {
@@ -248,9 +252,6 @@ export default {
       this.$message.success("分配权限成功");
       this.getRoleList();
     },
-    powerDialogClosed() {
-      this.defKeys = [];
-    },
     // 状态判断
     ifendcase(val) {
       if (val.status == "1") {
@@ -258,7 +259,7 @@ export default {
       } else {
         return "禁用";
       }
-    },
+    }
   }
 };
 </script>

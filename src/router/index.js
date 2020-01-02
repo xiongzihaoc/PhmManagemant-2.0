@@ -94,6 +94,22 @@ const routes = [{
           title: '加密管理'
         }
       },
+      {
+        path: '/doctor/info',
+        name: '医生信息',
+        component: () => import('@/components/BasicInformation/DoctorInfo.vue'),
+        meta: {
+          title: '医生信息'
+        }
+      },
+      {
+        path: '/patient/info',
+        name: '患者信息',
+        component: () => import('@/components/BasicInformation/PatientInfo.vue'),
+        meta: {
+          title: '患者信息'
+        }
+      },
     ]
   },
 ]
