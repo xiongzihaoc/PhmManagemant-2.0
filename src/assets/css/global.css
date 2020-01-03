@@ -46,3 +46,18 @@
     padding: 10px 20px 10px !important;
     border-top: 1px solid #f5f5f5;
 }
+
+.el-tree .el-tree-node__expand-icon.expanded {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+}
+
+.el-tree .el-icon-circle-plus:before {
+    content: "\E7a0";
+    font-size: 16px;
+}
+
+.el-tree .el-tree-node__expand-icon.expanded.el-icon-circle-plus:before {
+    content: "\E7a2";
+    font-size: 16px;
+}

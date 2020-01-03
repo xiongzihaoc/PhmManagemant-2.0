@@ -110,6 +110,22 @@ const routes = [{
           title: '患者信息'
         }
       },
+      {
+        path: '/hosptial/info',
+        name: '医院信息',
+        component: () => import('@/components/BasicInformation/HospitalInfo.vue'),
+        meta: {
+          title: '医院信息'
+        }
+      },
+      {
+        path: '/medical/info',
+        name: '体检卡信息',
+        component: () => import('@/components/BasicInformation/MedicalCard.vue'),
+        meta: {
+          title: '体检卡信息'
+        }
+      },
     ]
   },
 ]

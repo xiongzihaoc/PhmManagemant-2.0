@@ -15,9 +15,9 @@
       </el-row>
       <!-- 表格 -->
       <el-table
+        tooltip-effect="dark"
         stripe
         ref="singleTable"
-        tooltip-effect="dark"
         :data="userList"
         :header-cell-style="{background:'#f5f5f5'}"
         style="width: 100%"
@@ -27,11 +27,12 @@
         <el-table-column align="center" prop="name" label="姓名"></el-table-column>
         <el-table-column align="center" prop="gender" label="性别"></el-table-column>
         <el-table-column align="center" prop="title" label="职位"></el-table-column>
-        <el-table-column align="center" prop="dcDept" label="部门"></el-table-column>
+        <el-table-column align="center" prop="hospital" label="医院"></el-table-column>
+        <el-table-column align="center" prop="office" label="科室"></el-table-column>
         <el-table-column align="center" prop="phone" label="手机号"></el-table-column>
         <el-table-column align="center" prop="photoUrl" label="照片">
           <template slot-scope="scope">
-            <img id="img" v-if="scope.row.logo != null " :src="scope.row.photoUrl" />
+            <img id="img" v-if="scope.row.photoUrl != null " :src="scope.row.photoUrl" />
           </template>
         </el-table-column>
         <el-table-column align="center" prop="userName" label="登录名"></el-table-column>
@@ -42,7 +43,7 @@
             <span v-else style="color:#ff4949">{{ ifendcase(scope.row) }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="operate" label="操作" width="180">
+        <el-table-column align="center" prop="operate" label="操作" width="100">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
             <el-button
@@ -51,13 +52,6 @@
               type="primary"
               icon="el-icon-edit"
             >编辑</el-button>
-            <!-- 删除按钮 -->
-            <el-button
-              size="mini"
-              @click="removeUserById(scope.row.acId)"
-              type="danger"
-              icon="el-icon-delete"
-            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -74,7 +68,13 @@
     </el-card>
     <!-- 增改页面 -->
     <el-dialog :title="infoTitle" :visible.sync="editDialogVisible" width="40%" v-dialogDrag>
-      <el-form ref="editFormRef" :model="editAddForm" label-width="80px" @closed="editDialogClosed">
+      <el-form
+        ref="loginFormRef"
+        :rules="loginRules"
+        :model="editAddForm"
+        label-width="80px"
+        @closed="editDialogClosed"
+      >
         <el-form-item label="姓名" prop="name">
           <el-input v-model="editAddForm.name"></el-input>
         </el-form-item>
@@ -87,19 +87,44 @@
         <el-form-item label="职位" prop="title">
           <el-input v-model="editAddForm.title"></el-input>
         </el-form-item>
-        <el-form-item label="部门" prop="dcDept">
-          <el-input v-model="editAddForm.dcDept"></el-input>
+        <el-form-item label="医院科室" prop="office">
+          <el-input v-model="addEditValue" @click.native="deptAdd"></el-input>
         </el-form-item>
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="editAddForm.phone"></el-input>
         </el-form-item>
         <el-form-item label="登录名" prop="userName">
-          <el-input v-model="editAddForm.userName" :disabled="isdisabled"></el-input>
+          <el-input v-model="editAddForm.userName"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password" v-if="infoTitle == '新增医生信息'" v-show="true">
+          <el-input v-model="editAddForm.password"></el-input>
         </el-form-item>
         <el-form-item label="简介" prop="introduction">
-          <el-input v-model="editAddForm.introduction"></el-input>
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 5, maxRows: 10}"
+            v-model="editAddForm.introduction"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="状态" prop="status" v-if="infoTitle == '新增医生信息'" v-show="false">
+        <el-form-item label="照片" prop="photoUrl">
+          <el-upload
+            class="avatar-uploader"
+            :action="this.UPLOAD_IMG"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :on-progress="uploadVideoProcess"
+            :before-upload="beforeAvatarUpload"
+          >
+            <img v-if="editAddForm.photoUrl" :src="editAddForm.photoUrl" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+          <el-progress
+            v-if="videoFlag == true"
+            :percentage="percentageFile"
+            style="margin-top:20px;"
+          ></el-progress>
+        </el-form-item>
+        <el-form-item label="状态" prop="status" v-if="infoTitle == '修改信息'" v-show="true">
           <el-select v-model="editAddForm.status" placeholder="请选择">
             <el-option label="启用" :value="'1'"></el-option>
             <el-option label="禁用" :value="'0'"></el-option>
@@ -111,11 +136,48 @@
         <el-button type="primary" @click="editPageEnter">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 部门新增页面 -->
+    <el-dialog title="选择医院科室" :visible.sync="addDeptDialogVisible" width="40%" v-dialogDrag>
+      <el-form
+        ref="deptAddFormRef"
+        :model="addDeptForm"
+        label-width="80px"
+        @closed="addDeptDialogClosed"
+      >
+        <el-form-item prop="deptName">
+          <div class="mytree">
+            <el-tree
+              class="tree"
+              accordion
+              highlight-current
+              :data="hosMenuList"
+              :props="defaultProps"
+              node-key="id"
+              :indent="0"
+              icon-class="el-icon-circle-plus"
+              :default-expanded-keys="idArr"
+              @node-click="handleNodeAddClick"
+            ></el-tree>
+          </div>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addDeptDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addDeptEnter">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
 export default {
   data() {
+    var checkMobile = (rule, value, cb) => {
+      const regMoblie = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+      if (regMoblie.test(value)) {
+        return cb();
+      }
+      return cb(new Error("请输入合法的手机号"));
+    };
     return {
       input: "",
       userList: [],
@@ -125,7 +187,6 @@ export default {
       total: 0,
       currentRow: null,
       editDialogVisible: false,
-      isdisabled: false,
       infoTitle: "",
       editId: null,
       // 修改
@@ -136,17 +197,46 @@ export default {
         dcDept: "",
         phone: null,
         userName: "",
+        password: "",
         introduction: "",
-        status: ""
+        status: "",
+        photoUrl: ""
       },
+      addDeptForm: {},
+      imageUrl: "",
+      tranMidName: "",
+      tranMidCode: "",
+      videoFlag: false,
+      percentageFile: 0,
       addDialogVisible: false,
+      addDeptDialogVisible: false,
+      idArr: [],
+      defaultProps: {
+        label: "deptName",
+        children: "child"
+      },
+      addEditValue: "",
       RoleList: [],
-      hosMenuList: []
+      hosMenuList: [],
+      loginRules: {
+        userName: [
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          { min: 3, max: 10, message: "长度在 3 到 10 个字符", trigger: "blur" }
+        ],
+        password: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+          { min: 5, max: 16, message: "长度在 6 到 16 个字符", trigger: "blur" }
+        ],
+        phone: [
+          { required: true, message: "手机号不能为空", trigger: "blur" },
+          { validator: checkMobile, trigger: "blur" }
+        ]
+      }
     };
   },
   created() {
     this.getUserList();
-    // this.getHosMenuList();
+    this.getHosMenuList();
   },
 
   methods: {
@@ -154,25 +244,27 @@ export default {
     async getUserList() {
       const { data: res } = await this.$http.post("doctor/getDoctorList", {
         pageSize: this.pageSize,
-        pageNum: this.pageNum,
-        userName: this.input
+        pageNum: this.pageNum
       });
       if (res.code != 200) return this.$message.error("数获取失败");
-      console.log(res);
       this.userList = res.rows;
+      console.log(res);
+
       this.total = res.total;
     },
     // // 获取部门列表
-    // async getHosMenuList() {
-    //   const { data: res } = await this.$http.post("dept/getDeptList.do", {});
-    //   this.hosMenuList = res.data;
-    //   this.idArr.push(res.data[0].id);
-    // },
+    async getHosMenuList() {
+      const { data: res } = await this.$http.post("dept/list", {});
+      this.hosMenuList = res.data;
+      this.idArr.push(res.data[0].id);
+      console.log(res);
+    },
     // 修改
     showEditdialog(info) {
       console.log(info);
+      
+      this.addEditValue = info.office;
       this.infoTitle = "修改信息";
-      this.isdisabled = true;
       this.editDialogVisible = true;
       this.editAddForm = JSON.parse(JSON.stringify(info));
       this.editId = info.id;
@@ -180,7 +272,14 @@ export default {
     editDialogClosed() {
       this.$refs.editFormRef.resetFields();
     },
-    async editPageEnter() {
+    // 添加用户
+    addUsers() {
+      this.infoTitle = "新增医生信息";
+      this.editDialogVisible = true;
+      this.editAddForm = {};
+      this.tranMidCode = "";
+    },
+    editPageEnter() {
       let httpUrl = "";
       let parm = {};
       if (this.infoTitle == "修改信息") {
@@ -188,33 +287,41 @@ export default {
         parm = {
           id: this.editId,
           name: this.editAddForm.name,
+          userName: this.editAddForm.userName,
           gender: this.editAddForm.gender,
           title: this.editAddForm.title,
           phone: this.editAddForm.phone,
           dcDept: this.editAddForm.dcDept,
           introduction: this.editAddForm.introduction,
-          status: this.editAddForm.status
+          status: this.editAddForm.status,
+          photoUrl: this.editAddForm.photoUrl
         };
       } else {
         httpUrl = "doctor/saveDoctor";
         parm = {
           name: this.editAddForm.name,
+          userName: this.editAddForm.userName,
+          password: this.$md5(this.editAddForm.password),
           gender: this.editAddForm.gender,
           title: this.editAddForm.title,
           phone: this.editAddForm.phone,
           dcDept: this.editAddForm.dcDept,
           introduction: this.editAddForm.introduction,
-          status: this.editAddForm.status
+          status: this.editAddForm.status,
+          photoUrl: this.editAddForm.photoUrl
         };
       }
-      const { data: res } = await this.$http.post(httpUrl, parm);
-      if (res.code != 200) return this.$message.error(res.msg);
-      this.$message.success(res.msg);
-      this.getUserList();
-      this.editDialogVisible = false;
+      this.$refs.loginFormRef.validate(async valid => {
+        if (!valid) return;
+        const { data: res } = await this.$http.post(httpUrl, parm);
+        if (res.code != 200) return this.$message.error(res.msg);
+        this.$message.success(res.msg);
+        this.getUserList();
+        this.editDialogVisible = false;
+      });
     },
     // 删除
-    async removeUserById(id) {
+    async removeUserById(info) {
       const confirmResult = await this.$confirm(
         "你确定要执行此操作, 是否继续?",
         "提示",
@@ -227,22 +334,56 @@ export default {
       if (confirmResult != "confirm") {
         return this.$message.info("取消删除");
       }
-      const { data: res } = await this.$http.get(
-        "user/delSysUser.do?acId=" + id
-      );
+      const { data: res } = await this.$http.post("doctor/delDoctor", {
+        id: info.id
+      });
       if (res.code != 200) return this.$message.error("删除失败");
       this.$message.success("删除成功");
       this.getUserList();
     },
+    // 部门新增
+    deptAdd() {
+      this.addDeptDialogVisible = true;
+    },
+    addDeptEnter() {
+      this.addEditValue = this.tranMidName;
+      this.addDeptDialogVisible = false;
+    },
+    handleNodeAddClick(val) {
+      this.editAddForm.dcDept = val.code;
+      this.tranMidName = val.deptName;
+    },
+    addDeptDialogClosed() {},
     // 搜索
     systemSearch() {
       this.getUserList();
     },
-    // 添加用户
-    addUsers() {
-      this.infoTitle = "新增医生信息";
-      this.editDialogVisible = true;
-      this.editAddForm = {};
+    // 上传照片
+    handleAvatarSuccess(res, file) {
+      if (res.code != 200) return this.$message.error("上传失败");
+      this.percentageFile = 0;
+      this.videoFlag = false;
+      this.imageUrl = res.data;
+      this.editAddForm.photoUrl = res.data;
+    },
+    uploadVideoProcess(event, file, fileList) {
+      this.videoFlag = true;
+      this.percentageFile = parseInt(file.percentage);
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === "image/jpeg";
+      const isGIF = file.type === "image/gif";
+      const isPNG = file.type === "image/png";
+      const isBMP = file.type === "image/bmp";
+      const isLt10M = file.size / 1024 / 1024 < 10;
+
+      if (!isJPG && !isGIF && !isPNG && !isBMP) {
+        this.$message.error("上传图片必须是JPG/GIF/PNG/BMP 格式!");
+      }
+      if (!isLt10M) {
+        this.$message.error("上传图片大小不能超过 10MB!");
+      }
+      return (isJPG || isBMP || isGIF || isPNG) && isLt10M;
     },
     // 状态码数字转中文
     ifendcase(val) {
@@ -328,5 +469,29 @@ export default {
 
 .mytree {
   overflow: hidden;
+}
+
+.avatar-uploader .el-upload {
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader-icon {
+  display: block;
+  font-size: 28px;
+  color: #8c939d;
+  width: 100px;
+  height: 100px;
+  line-height: 100px;
+  text-align: center;
+  border: 1px dashed #ccc;
+}
+.avatar-uploader-icon:hover {
+  border-color: #409eff;
+}
+.avatar {
+  width: 100px;
+  height: 100px;
+  display: block;
 }
 </style>
