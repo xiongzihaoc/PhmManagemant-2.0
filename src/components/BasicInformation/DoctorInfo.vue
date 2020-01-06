@@ -23,10 +23,10 @@
         style="width: 100%"
       >
         <el-table-column align="center" type="selection" width="60"></el-table-column>
-        <!-- <el-table-column align="center" prop="userId" label="序号" width="60"></el-table-column> -->
+        <el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
         <el-table-column align="center" prop="name" label="姓名"></el-table-column>
         <el-table-column align="center" prop="gender" label="性别"></el-table-column>
-        <el-table-column align="center" prop="title" label="职位"></el-table-column>
+        <el-table-column align="center" prop="title" label="职称" show-overflow-tooltip></el-table-column>
         <el-table-column align="center" prop="hospital" label="医院"></el-table-column>
         <el-table-column align="center" prop="office" label="科室"></el-table-column>
         <el-table-column align="center" prop="phone" label="手机号"></el-table-column>
@@ -37,12 +37,24 @@
         </el-table-column>
         <el-table-column align="center" prop="userName" label="登录名"></el-table-column>
         <el-table-column align="center" prop="introduction" label="简介" show-overflow-tooltip></el-table-column>
+
+        <el-table-column align="center" prop="appStatus" label="激活app" :formatter="ifendcaseApp">
+          <template slot-scope="scope">
+            <span
+              style="color:#13ce66"
+              v-if="scope.row.appStatus=== '1'"
+            >{{ ifendcaseApp(scope.row) }}</span>
+            <span v-else style="color:#ff4949">{{ ifendcaseApp(scope.row) }}</span>
+          </template>
+        </el-table-column>
+
         <el-table-column align="center" prop="status" label="状态" :formatter="ifendcase">
           <template slot-scope="scope">
             <span style="color:#13ce66" v-if="scope.row.status=== '1'">{{ ifendcase(scope.row) }}</span>
             <span v-else style="color:#ff4949">{{ ifendcase(scope.row) }}</span>
           </template>
         </el-table-column>
+
         <el-table-column align="center" prop="operate" label="操作" width="100">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
@@ -84,8 +96,15 @@
             <el-option label="女" value="女"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="职位" prop="title">
-          <el-input v-model="editAddForm.title"></el-input>
+        <el-form-item label="职称" prop="title">
+          <el-select v-model="editAddForm.title" multiple clearable placeholder="请选择">
+            <el-option
+              v-for="item in eleNameList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.name"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="医院科室" prop="office">
           <el-input v-model="addEditValue" @click.native="deptAdd"></el-input>
@@ -202,6 +221,7 @@ export default {
         status: "",
         photoUrl: ""
       },
+      eleNameList: [],
       addDeptForm: {},
       imageUrl: "",
       tranMidName: "",
@@ -237,6 +257,7 @@ export default {
   created() {
     this.getUserList();
     this.getHosMenuList();
+    this.getDictionaryEleList();
   },
 
   methods: {
@@ -248,26 +269,30 @@ export default {
       });
       if (res.code != 200) return this.$message.error("数获取失败");
       this.userList = res.rows;
-      console.log(res);
 
       this.total = res.total;
+    },
+    // 数据字典职称列表
+    async getDictionaryEleList() {
+      const { data: res } = await this.$http.post("dict/getPreviewData", {
+        dictValue: "YSZC"
+      });
+      this.eleNameList = res.data;
     },
     // // 获取部门列表
     async getHosMenuList() {
       const { data: res } = await this.$http.post("dept/list", {});
       this.hosMenuList = res.data;
       this.idArr.push(res.data[0].id);
-      console.log(res);
     },
     // 修改
     showEditdialog(info) {
-      console.log(info);
-      
       this.addEditValue = info.office;
       this.infoTitle = "修改信息";
       this.editDialogVisible = true;
       this.editAddForm = JSON.parse(JSON.stringify(info));
       this.editId = info.id;
+      this.editAddForm.title = info.title.split(",");
     },
     editDialogClosed() {
       this.$refs.editFormRef.resetFields();
@@ -289,7 +314,7 @@ export default {
           name: this.editAddForm.name,
           userName: this.editAddForm.userName,
           gender: this.editAddForm.gender,
-          title: this.editAddForm.title,
+          title: this.editAddForm.title.join(","),
           phone: this.editAddForm.phone,
           dcDept: this.editAddForm.dcDept,
           introduction: this.editAddForm.introduction,
@@ -391,6 +416,15 @@ export default {
         return "启用";
       } else {
         return "禁用";
+      }
+    },
+    ifendcaseApp(val) {
+      console.log(val);
+
+      if (val.appStatus == "1") {
+        return "是";
+      } else {
+        return "否";
       }
     },
     // 分页

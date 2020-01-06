@@ -58,9 +58,9 @@ const routes = [{
         path: '/JumpDictionaryNext',
         name: '新增字典数据',
         component: () => import('@/components/SystemMana/JumpDictionaryNext.vue'),
-        meta: {
+        // meta: {
           title: '新增字典数据'
-        }
+        // }
       },
       {
         path: '/system/role',
@@ -124,6 +124,14 @@ const routes = [{
         component: () => import('@/components/BasicInformation/MedicalCard.vue'),
         meta: {
           title: '体检卡信息'
+        }
+      },
+      {
+        path: '/sheet/list',
+        name: '量表列表',
+        component: () => import('@/components/InventoryMana/InventoryList.vue'),
+        meta: {
+          title: '量表列表'
         }
       },
     ]

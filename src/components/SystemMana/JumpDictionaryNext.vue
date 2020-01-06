@@ -14,6 +14,7 @@
         </el-col>
       </el-row>
       <el-table
+        tooltip-effect="dark"
         :data="menuList"
         :lazy="true"
         style="width: 100%;margin-bottom: 20px;"
@@ -23,21 +24,8 @@
       >
         <el-table-column align="center    " prop="name" label="名称" sortable></el-table-column>
         <el-table-column align="center" prop="dictValue" label="键值" sortable></el-table-column>
-        <el-table-column align="center" prop="remark" label="备注" sortable></el-table-column>
+        <el-table-column align="center" prop="remark" label="备注" sortable show-overflow-tooltip></el-table-column>
         <el-table-column align="center" prop="dictSort" label="排序号"></el-table-column>
-        <el-table-column align="center" prop="isEnable" label="状态">
-          <!-- 作用域插槽 -->
-          <template slot-scope="scope">
-            <el-switch
-              v-model="scope.row.isEnable"
-              active-color="#409167"
-              inactive-color="#ccc"
-              active-value="0"
-              inactive-value="1"
-              @change="userStateChanged(scope.row)"
-            ></el-switch>
-          </template>
-        </el-table-column>
         <el-table-column align="center" prop="operate" label="操作" width="180">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
@@ -46,14 +34,14 @@
               @click="showEditdialog(scope.row)"
               type="primary"
               icon="el-icon-edit"
-            ></el-button>
+            >编辑</el-button>
             <!-- 删除按钮 -->
             <el-button
               size="mini"
               @click="removeById(scope.row)"
               type="danger"
               icon="el-icon-delete"
-            ></el-button>
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -109,10 +97,10 @@ export default {
   methods: {
     // 获取详情
     async getDictionaryList() {
-      const { data: res } = await this.$http.post(
-        "dict/list",
-        { parentId: this.id, name: this.input }
-      );
+      const { data: res } = await this.$http.post("dict/list", {
+        parentId: this.id,
+        name: this.input
+      });
       console.log(res);
       this.menuList = res.data;
     },
@@ -129,18 +117,19 @@ export default {
     },
     async addEditEnter() {
       this.$refs.addFormRef.validate(async valid => {
-        if (!valid) return this.$message.error("登录失败");
+        if (!valid) return this.$message.error("失败");
         let httpUrl = "";
         let parm = {};
         if (this.dialogTitle == "修改") {
-          httpUrl = "sys/dict/updateSysDict.do";
+          httpUrl = "dict/update";
           parm = {
             id: this.selfId,
             name: this.addEditForm.name,
-            remark: this.addEditForm.remark
+            remark: this.addEditForm.remark,
+            isEnable: this.addEditForm.isEnable
           };
         } else {
-          httpUrl = "sys/dict/saveSysDict.do";
+          httpUrl = "dict/add";
           parm = {
             parentId: this.id,
             name: this.addEditForm.name,

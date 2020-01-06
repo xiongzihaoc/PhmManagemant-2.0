@@ -147,6 +147,8 @@ export default {
     },
     // 修改弹框
     showEditdialog(val) {
+      console.log(val);
+      
       this.editId = val.menuId;
       this.editForm = JSON.parse(JSON.stringify(val));
       this.editDialogVisible = true;

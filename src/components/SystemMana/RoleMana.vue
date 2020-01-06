@@ -87,9 +87,9 @@
             class="EditTree"
             :data="hosMenuList"
             :props="defaultProps"
+            :default-checked-keys="defKeys"
             node-key="menuId"
             show-checkbox
-            :default-checked-keys="defKeys"
             default-expand-all
             ref="treeRef"
           ></el-tree>
@@ -133,7 +133,7 @@ export default {
   },
   created() {
     this.getRoleList();
-    this.getMenuList();
+    // this.getMenuList();
   },
   methods: {
     // 获取列表
@@ -147,12 +147,6 @@ export default {
       this.RoleList = res.rows;
       this.total = res.total;
       this.AddEditForm.status = res.rows.status;
-    },
-    // 获取菜单列表
-    async getMenuList() {
-      const { data: res } = await this.$http.post("menu/list");
-      this.hosMenuList = res.data;
-      console.log(res);
     },
     // 弹框
     showEditdialog(info) {
@@ -201,36 +195,29 @@ export default {
     },
     // 分配权限弹框
     async REVOKE(info) {
-      console.log(info);
-      const arr = info.menuIds.split(",").map(Number);
-
-      // const { data: res } = await this.$http.post("role/getSysRoleMenu", {
-      //   roleId: info.roleId
-      // });
-      // this.getLeafKeys(info, this.defKeys);
+      this.powerId = info.roleId;
+      // 获取菜单数据
+      const { data: res } = await this.$http.post("menu/list");
+      this.hosMenuList = res.data;
+      // this.getLeafKeys(info.menuIds, this.defKeys);
+      var str = info.menuIds;
+      var arr = str.split(",");
       for (var i = 0; i < arr.length; i++) {
-        if (arr[i] == 1 || arr[i] == 14 || arr[i] == 3) {
+        if (
+          arr[i] == "1" ||
+          arr[i] == "14" ||
+          arr[i] == "2" ||
+          arr[i] == "19" ||
+          arr[i] == "24"
+        ) {
           arr.splice(i, 1);
         }
-        this.defKeys.push(arr[i]);
       }
-      console.log(this.defKeys);
-
-      this.powerId = info.roleId;
+      this.defKeys = arr
       this.powerDialogVisible = true;
     },
-    //通过递归的形式，获取角色下所有三级权限的id,并保存到defKeys数组中
-    // getLeafKeys(node, arr) {
-    //   //如果当前node节点不包含children属性，则是三级节点
-    //   console.log(node);
-    //   if (!node.children) {
-    //     return arr.push(node.menuId);
-    //   }
-    //   node.children.forEach(item => this.getLeafKeys(item, arr));
-    // },
     powerDialogClosed() {
       this.defKeys = [];
-      console.log(this.defKeys);
     },
     // 权限修改确定
     async powerChooseEnter() {

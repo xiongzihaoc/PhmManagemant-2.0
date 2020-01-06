@@ -24,7 +24,7 @@
         <el-table-column align="center" prop="id" label="字典编码" sortable></el-table-column>
         <el-table-column align="center" prop="name" label="名称" sortable></el-table-column>
         <el-table-column align="center" prop="dictValue" label="键值" sortable></el-table-column>
-        <el-table-column align="center" prop="remark" label="备注" sortable></el-table-column>
+        <el-table-column align="center" prop="remark" label="备注" sortable show-overflow-tooltip></el-table-column>
         <el-table-column align="center" prop="dictSort" label="排序号"></el-table-column>
         <el-table-column align="center" prop="isEnable" label="状态" :formatter="ifendcase">
           <template slot-scope="scope">
@@ -121,8 +121,7 @@ export default {
         parentId: 1,
         name: this.input
       });
-      console.log(res);
-
+      
       this.menuList = res.data;
     },
     // 跳转下一级

@@ -13,12 +13,12 @@
         :expand-row-keys="['1']"
         :tree-props="{children: 'child', hasChildren: 'hasChildren'}"
       >
-        <el-table-column align="center" prop="deptName" label="名称" sortable></el-table-column>
+        <el-table-column align="left" prop="deptName" label="### 名称" sortable width="150"></el-table-column>
         <el-table-column align="center" prop="deptManager" label="负责人" sortable></el-table-column>
         <el-table-column align="center" prop="phone" label="联系方式" sortable></el-table-column>
         <el-table-column align="center" prop="logo" label="图标" sortable>
           <template slot-scope="scope">
-            <img id="img" v-if="scope.row.logo != '#'" :src="scope.row.logo" />
+            <img id="img" v-if="scope.row.logo != null && scope.row.logo != '#'" :src="scope.row.logo" />
           </template>
         </el-table-column>
         <el-table-column align="center" prop="deptType" label="组织类型" sortable></el-table-column>
@@ -95,6 +95,8 @@ export default {
     async getHosMenuList() {
       const { data: res } = await this.$http.post("dept/list", {});
       this.hosMenuList = res.data;
+      console.log(res);
+      
     },
     // 增加
     addDictionary() {},

@@ -29,7 +29,7 @@
         <el-table-column align="center" prop="address" label="地址"></el-table-column>
         <el-table-column align="center" prop="detailedAddress" label="详细地址"></el-table-column>
         <el-table-column align="center" prop="customer" label="对接人"></el-table-column>
-        <el-table-column align="center" prop="customerTel" label="对接人账号"></el-table-column>
+        <el-table-column align="center" prop="customerTel" label="对接人账号" width="120"></el-table-column>
         <el-table-column align="center" prop="salesmanUuid" label="销售人员"></el-table-column>
         <el-table-column align="center" prop="description" label="医院介绍" show-overflow-tooltip></el-table-column>
         <el-table-column align="center" prop="collectMode" label="收费模式"></el-table-column>
@@ -37,8 +37,7 @@
         <el-table-column align="center" prop="detectionType" label="检测卡类型"></el-table-column>
         <el-table-column align="center" prop="dataSharing" label="数据是否共享"></el-table-column>
         <el-table-column align="center" prop="patientView" label="检测报告是否可见"></el-table-column>
-        <el-table-column align="center" prop="inputPatientVersion" label="web用户录入版本"></el-table-column>
-        <el-table-column align="center" prop="webPackageVersion" label="web选择套餐版本"></el-table-column>
+        <!-- <el-table-column align="center" prop="inputPatientVersion" label="web用户录入版本"></el-table-column> -->
         <el-table-column align="center" prop="patientAnswerWay" label="用户答题方式"></el-table-column>
         <el-table-column align="center" prop="operate" label="操作" width="180">
           <template slot-scope="scope">
@@ -52,7 +51,7 @@
             <!-- 删除按钮 -->
             <el-button
               size="mini"
-              @click="removeUserById(scope.row.acId)"
+              @click="removeUserById(scope.row)"
               type="danger"
               icon="el-icon-delete"
             >删除</el-button>
@@ -78,32 +77,63 @@
         label-width="80px"
         @closed="editDialogClosed"
       >
-        <el-form-item label="用户名" prop="userName">
-          <el-input v-model="editAddForm.userName"></el-input>
+        <el-form-item label="医院账号" prop="account">
+          <el-input v-model="editAddForm.account"></el-input>
         </el-form-item>
-        <el-form-item label="登录名" prop="loginName">
-          <el-input v-model="editAddForm.loginName" disabled></el-input>
+        <el-form-item label="医院logo" prop="hospitalLogo">
+          <el-input v-model="editAddForm.hospitalLogo"></el-input>
         </el-form-item>
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="editAddForm.email"></el-input>
+        <el-form-item label="地址" prop="address">
+          <el-cascader v-model="hosAddress" :options="hosOptions" @change="handleChange"></el-cascader>
         </el-form-item>
-        <el-form-item label="手机号" prop="userPhone">
-          <el-input v-model="editAddForm.userPhone"></el-input>
+        <el-form-item label="详细地址" prop="detailedAddress">
+          <el-input v-model="editAddForm.detailedAddress"></el-input>
         </el-form-item>
-        <el-form-item label="角色" prop="roleName">
-          <el-select v-model="editAddForm.roleId" placeholder="请选择">
+        <el-form-item label="对接人" prop="customer">
+          <el-input v-model="editAddForm.customer"></el-input>
+        </el-form-item>
+        <el-form-item label="对接人账号" prop="customerTel">
+          <el-input v-model="editAddForm.customerTel"></el-input>
+        </el-form-item>
+        <el-form-item label="销售人员" prop="salesmanUuid">
+          <el-input v-model="editAddForm.salesmanUuid"></el-input>
+        </el-form-item>
+        <el-form-item label="医院介绍" prop="description">
+          <el-input v-model="editAddForm.description"></el-input>
+        </el-form-item>
+        <el-form-item label="收费模式" prop="collectMode">
+          <el-input v-model="editAddForm.collectMode"></el-input>
+        </el-form-item>
+        <el-form-item label="检测报告是否审核" prop="checked">
+          <el-input v-model="editAddForm.checked"></el-input>
+        </el-form-item>
+        <el-form-item label="检测卡类型" prop="detectionType">
+          <el-select v-model="editAddForm.detectionType" placeholder="请选择">
             <el-option
-              v-for="item in RoleList"
-              :key="item.roleId"
-              :label="item.roleName"
-              :value="item.roleId"
+              v-for="item in TJKNameList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.dictValue"
             ></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="数据是否共享" prop="dataSharing">
+          <el-select v-model="editAddForm.dataSharing" placeholder="请选择">
+            <el-option label="是" :value="'1'"></el-option>
+            <el-option label="否" :value="'0'"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="检测报告是否可见" prop="patientView">
+          <el-input v-model="editAddForm.patientView"></el-input>
+        </el-form-item>
+        <el-form-item label="用户答题方式" prop="patientAnswerWay">
+          <el-input v-model="editAddForm.patientAnswerWay"></el-input>
+        </el-form-item>
+
         <el-form-item label="状态" prop="status">
           <el-select v-model="editAddForm.status" placeholder="请选择">
-            <el-option label="启用" :value="'1'"></el-option>
-            <el-option label="禁用" :value="'0'"></el-option>
+            <el-option label="启用" :value="1"></el-option>
+            <el-option label="禁用" :value="0"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -115,6 +145,7 @@
   </div>
 </template>
 <script>
+import { regionData } from "element-china-area-data";
 export default {
   data() {
     return {
@@ -129,13 +160,30 @@ export default {
       editDialogVisible: false,
       // 修改
       editAddForm: {
-        userName: "",
-        email: "",
-        userPhone: "",
+        account: "",
+        hospitalLogo: "",
+        address: "",
+        detailedAddress: "",
+        customer: "",
+        customerTel: "",
+        salesmanUuid: "",
+        customerTel: null,
+        salesmanUuid: "",
+        description: "",
+        collectMode: "",
+        checked: "",
+        detectionType: "",
+        dataSharing: "",
+        patientView: "",
+        patientAnswerWay: "",
+
         roleId: null,
         deptId: null,
         status: 0
       },
+      TJKNameList: [],
+      hosAddress: "",
+      hosOptions: regionData,
       addDialogVisible: false,
       RoleList: [],
       hosMenuList: []
@@ -143,8 +191,8 @@ export default {
   },
   created() {
     this.getUserList();
+    this.getDictionaryEleList();
   },
-
   methods: {
     // 获取用户列表
     async getUserList() {
@@ -152,15 +200,19 @@ export default {
         "hospital/getHospitalDetailList",
         {
           pageSize: this.pageSize,
-          pageNum: this.pageNum,
-          userName: this.input
+          pageNum: this.pageNum
         }
       );
       if (res.code != 200) return this.$message.error("数获取失败");
       this.userList = res.rows;
       this.total = res.total;
     },
-
+    async getDictionaryEleList() {
+      const { data: res } = await this.$http.post("dict/getPreviewData", {
+        dictValue: "TJKLX"
+      });
+      this.TJKNameList = res.data;
+    },
     // 修改
     showEditdialog(info) {
       this.infoTitle = "修改信息";
@@ -173,7 +225,7 @@ export default {
       let httpUrl = "";
       let parm = {};
       if (this.infoTitle == "修改信息") {
-        httpUrl = "doctor/updateDoctor";
+        httpUrl = "hospital/updateHospitalDetail";
         parm = {
           id: this.editId,
           name: this.editAddForm.name,
@@ -181,7 +233,7 @@ export default {
           gender: this.editAddForm.gender
         };
       } else {
-        httpUrl = "doctor/saveDoctor";
+        httpUrl = "hospital/saveHospitalDetail";
         parm = {
           name: this.editAddForm.name,
           userName: this.editAddForm.userName,
@@ -203,8 +255,10 @@ export default {
       this.editDialogVisible = true;
       this.editAddForm = {};
     },
+    // 级联选择地址
+    handleChange() {},
     // 删除
-    async removeUserById(id) {
+    async removeUserById(info) {
       const confirmResult = await this.$confirm(
         "你确定要执行此操作, 是否继续?",
         "提示",
@@ -218,7 +272,8 @@ export default {
         return this.$message.info("取消删除");
       }
       const { data: res } = await this.$http.get(
-        "user/delSysUser.do?acId=" + id
+        "/hospital/delHospitalDetail",
+        { id: info.id }
       );
       if (res.code != 200) return this.$message.error("删除失败");
       this.$message.success("删除成功");
