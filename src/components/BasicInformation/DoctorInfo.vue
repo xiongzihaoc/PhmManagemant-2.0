@@ -155,7 +155,7 @@
         <el-button type="primary" @click="editPageEnter">确 定</el-button>
       </span>
     </el-dialog>
-    <!-- 部门新增页面 -->
+    <!-- 部门选择页面 -->
     <el-dialog title="选择医院科室" :visible.sync="addDeptDialogVisible" width="40%" v-dialogDrag>
       <el-form
         ref="deptAddFormRef"
@@ -225,7 +225,6 @@ export default {
       addDeptForm: {},
       imageUrl: "",
       tranMidName: "",
-      tranMidCode: "",
       videoFlag: false,
       percentageFile: 0,
       addDialogVisible: false,
@@ -269,7 +268,6 @@ export default {
       });
       if (res.code != 200) return this.$message.error("数获取失败");
       this.userList = res.rows;
-
       this.total = res.total;
     },
     // 数据字典职称列表
@@ -287,12 +285,13 @@ export default {
     },
     // 修改
     showEditdialog(info) {
-      this.addEditValue = info.office;
+      this.addEditValue = `${info.hospital}--${info.office}`;
       this.infoTitle = "修改信息";
       this.editDialogVisible = true;
       this.editAddForm = JSON.parse(JSON.stringify(info));
       this.editId = info.id;
       this.editAddForm.title = info.title.split(",");
+      console.log(this.editAddForm.dcDept);
     },
     editDialogClosed() {
       this.$refs.editFormRef.resetFields();
@@ -302,7 +301,7 @@ export default {
       this.infoTitle = "新增医生信息";
       this.editDialogVisible = true;
       this.editAddForm = {};
-      this.tranMidCode = "";
+      this.addEditValue = "";
     },
     editPageEnter() {
       let httpUrl = "";
@@ -388,7 +387,6 @@ export default {
       if (res.code != 200) return this.$message.error("上传失败");
       this.percentageFile = 0;
       this.videoFlag = false;
-      this.imageUrl = res.data;
       this.editAddForm.photoUrl = res.data;
     },
     uploadVideoProcess(event, file, fileList) {
@@ -419,12 +417,10 @@ export default {
       }
     },
     ifendcaseApp(val) {
-      console.log(val);
-
       if (val.appStatus == "1") {
-        return "是";
+        return "已激活";
       } else {
-        return "否";
+        return "未激活";
       }
     },
     // 分页

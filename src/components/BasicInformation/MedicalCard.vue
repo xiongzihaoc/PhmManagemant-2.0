@@ -24,39 +24,31 @@
       >
         <el-table-column align="center" type="selection" width="60"></el-table-column>
         <el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
+        <el-table-column align="center" prop="batchName" label="批次名称"></el-table-column>
+        <el-table-column align="center" prop="cardNum" label="检测卡号"></el-table-column>
+        <el-table-column align="center" prop="cardTypeValue" label="检测卡类型"></el-table-column>
         <el-table-column align="center" prop="name" label="患者姓名"></el-table-column>
         <el-table-column align="center" prop="phone" label="手机号"></el-table-column>
-        <el-table-column align="center" prop="batchName" label="批次名称"></el-table-column>
-        <el-table-column align="center" prop="officeCode" label="科室code"></el-table-column>
-        <el-table-column align="center" prop="cardNum" label="检测卡号"></el-table-column>
-        <el-table-column align="center" prop="cardType" label="检测卡类型"></el-table-column>
-        <el-table-column align="center" prop="medicalStatus" label="是否检测" :formatter="ifendcase">
-          <template slot-scope="scope">
-            <span
-              style="color:#13ce66"
-              v-if="scope.row.medicalStatus=== '1'"
-            >{{ ifendcase(scope.row) }}</span>
-            <span v-else style="color:#ff4949">{{ ifendcase(scope.row) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" prop="operate" label="操作" width="180">
-          <template slot-scope="scope">
+        <el-table-column align="center" prop="hospital" label="医院"></el-table-column>
+        <el-table-column align="center" prop="office" label="科室"></el-table-column>
+        <!-- <el-table-column align="center" prop="operate" label="操作" width="180">
+          <template slot-scope="scope"> -->
             <!-- 修改按钮 -->
-            <el-button
+            <!-- <el-button
               size="mini"
               @click="showEditdialog(scope.row)"
               type="primary"
               icon="el-icon-edit"
-            >编辑</el-button>
+            >编辑</el-button> -->
             <!-- 删除按钮 -->
-            <el-button
+            <!-- <el-button
               size="mini"
               @click="removeUserById(scope.row.acId)"
               type="danger"
               icon="el-icon-delete"
             >删除</el-button>
-          </template>
-        </el-table-column>
+          </template> -->
+        <!-- </el-table-column> -->
       </el-table>
       <!-- 分页区域 -->
       <el-pagination
@@ -69,34 +61,63 @@
         :total="total"
       ></el-pagination>
     </el-card>
-    <!-- 修改页面 -->
+    <!-- 增改页面 -->
     <el-dialog :title="infoTitle" :visible.sync="editDialogVisible" width="40%" v-dialogDrag>
-      <el-form ref="editFormRef" :model="editAddForm" label-width="80px" @closed="editDialogClosed">
-        <el-form-item label="患者姓名" prop="name" v-if="this.infoTitle != '新增体检卡信息'" v-show="true">
-          <el-input v-model="editAddForm.name"></el-input>
-        </el-form-item>
-        <el-form-item label="手机号" prop="phone" v-if="this.infoTitle != '新增体检卡信息'" v-show="true">
-          <el-input v-model="editAddForm.phone"></el-input>
+      <el-form ref="loginFormRef" :model="editAddForm" label-width="80px" @closed="editDialogClosed">
+        <el-form-item label="医院科室" prop="office">
+          <el-input v-model="addEditValue" @click.native="deptAdd"></el-input>
         </el-form-item>
         <el-form-item label="批次名称" prop="batchName">
           <el-input v-model="editAddForm.batchName"></el-input>
         </el-form-item>
-        <el-form-item label="科室code" prop="officeCode">
-          <el-input v-model="editAddForm.officeCode"></el-input>
-        </el-form-item>
-        <el-form-item label="检测卡号" prop="cardNum">
+        <el-form-item label="检测卡数量" prop="cardNum">
           <el-input v-model="editAddForm.cardNum"></el-input>
         </el-form-item>
-        <el-form-item label="检测卡类型" prop="cardType">
-          <el-input v-model="editAddForm.cardType"></el-input>
-        </el-form-item>
-        <el-form-item label="是否检测" prop="medicalStatus">
-          <el-input v-model="editAddForm.medicalStatus"></el-input>
+        <el-form-item label="检测卡类型" prop="cardTypeValue">
+          <!-- <el-input v-model="editAddForm.cardTypeValue"></el-input> -->
+          <el-select v-model="editAddForm.cardType" placeholder="请选择">
+            <el-option
+              v-for="item in TJKNameList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.dictValue"
+            ></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="editPageEnter">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 部门选择页面 -->
+    <el-dialog title="选择医院科室" :visible.sync="addDeptDialogVisible" width="40%" v-dialogDrag>
+      <el-form
+        ref="deptAddFormRef"
+        :model="addDeptForm"
+        label-width="80px"
+        @closed="addDeptDialogClosed"
+      >
+        <el-form-item prop="deptName">
+          <div class="mytree">
+            <el-tree
+              class="tree"
+              accordion
+              highlight-current
+              :data="hosMenuList"
+              :props="defaultProps"
+              node-key="id"
+              :indent="0"
+              icon-class="el-icon-circle-plus"
+              :default-expanded-keys="idArr"
+              @node-click="handleNodeAddClick"
+            ></el-tree>
+          </div>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addDeptDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addDeptEnter">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -107,32 +128,40 @@ export default {
     return {
       input: "",
       userList: [],
+
       // 获取用户列表的参数对象
       pageSize: 10,
       pageNum: 1,
       total: 0,
-      currentRow: null,
       editDialogVisible: false,
       // 修改
       editAddForm: {
-        userName: "",
-        email: "",
-        userPhone: "",
-        roleId: null,
-        deptId: null,
-        status: 0
+        batchName: "",
+        cardNum: "",
+        cardType: "",
+        officeCode: ""
       },
+      addDeptDialogVisible: false,
+      addDeptForm: {},
+      defaultProps: {
+        label: "deptName",
+        children: "child"
+      },
+      addEditValue: "",
       infoTitle: "",
       editId: 0,
       addTransit: "",
       addValue: "",
       RoleList: [],
-      hosMenuList: []
+      idArr: [],
+      hosMenuList: [],
+      TJKNameList:[],
     };
   },
   created() {
     this.getUserList();
-    // this.getHosMenuList();
+    this.getHosMenuList();
+    this.getDictionaryEleListOne();
   },
 
   methods: {
@@ -143,12 +172,24 @@ export default {
         pageNum: this.pageNum
       });
       if (res.code != 200) return this.$message.error("数获取失败");
-      console.log(res);
-
       this.userList = res.rows;
       this.total = res.total;
+      console.log(res);
     },
+    // 获取部门列表
+    async getHosMenuList() {
+      const { data: res } = await this.$http.post("dept/list", {});
+      this.hosMenuList = res.data;
+      this.idArr.push(res.data[0].id);
+    },
+    // 獲取字典數據
+    async getDictionaryEleListOne() {
+      const { data: res } = await this.$http.post("dict/getPreviewData", {
+        dictValue: "TJKLX"
+      });
 
+      this.TJKNameList = res.data;
+    },
     // 修改
     showEditdialog(info) {
       this.infoTitle = "修改信息";
@@ -158,22 +199,52 @@ export default {
       this.$refs.editFormRef.resetFields();
     },
     async editPageEnter() {
-      const { data: res } = await this.$http.post("user/update", {
-        userId: this.editId,
-        roleId: this.editForm.roleId,
-        deptId: this.editForm.deptId,
-        userName: this.editForm.userName,
-        email: this.editForm.email,
-        userPhone: this.editForm.userPhone,
-        status: this.editForm.status
-      });
-      if (res.code != 200) {
-        return this.$message.error("修改用户信息失败");
+      let httpUrl = "";
+      let parm = {};
+      if (this.infoTitle == "修改信息") {
+        httpUrl = "hospital/updateHospitalDetail";
+        parm = {
+          id: this.editId,
+          batchName: "",
+          cardNum: "",
+          cardType: "",
+          dcDept: ""
+        };
       } else {
-        this.$message.success("修改用户成功");
-        this.editDialogVisible = false;
-        this.getUserList();
+        httpUrl = "medical/saveMedical";
+        parm = {
+          batchName: this.editAddForm.batchName,
+          cardSum: this.editAddForm.cardNum,
+          cardType: this.editAddForm.cardType,
+          officeCode: this.editAddForm.dcDept
+        };
       }
+      this.$refs.loginFormRef.validate(async valid => {
+        if (!valid) return;
+        const { data: res } = await this.$http.post(httpUrl, parm);
+        if (res.code != 200) return this.$message.error(res.msg);
+        this.$message.success(res.msg);
+        this.getUserList();
+        this.editDialogVisible = false;
+      });
+    },
+    // 添加用户
+    addUsers() {
+      this.infoTitle = "新增体检卡信息";
+      this.editDialogVisible = true;
+    },
+    // 部门新增
+    deptAdd() {
+      this.addDeptDialogVisible = true;
+    },
+    addDeptEnter() {
+      this.addEditValue = this.tranMidName;
+      this.addDeptDialogVisible = false;
+    },
+    addDeptDialogClosed() {},
+    handleNodeAddClick(val) {
+      this.editAddForm.dcDept = val.code;
+      this.tranMidName = val.deptName;
     },
     // 删除
     async removeUserById(id) {
@@ -199,19 +270,6 @@ export default {
     // 搜索
     systemSearch() {
       this.getUserList();
-    },
-    // 添加用户
-    addUsers() {
-      this.infoTitle = "新增体检卡信息";
-      this.editDialogVisible = true;
-    },
-    // 状态码数字转中文
-    ifendcase(val) {
-      if (val.medicalStatus == "1") {
-        return "是";
-      } else {
-        return "否";
-      }
     },
     // 分页
     handleSizeChange(newSize) {

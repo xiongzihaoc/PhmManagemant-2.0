@@ -23,22 +23,62 @@
         style="width: 100%"
       >
         <el-table-column align="center" type="selection" width="60"></el-table-column>
-        <!-- <el-table-column align="center" type="index" label="序号" width="60"></el-table-column> -->
+        <el-table-column align="center" prop="hospital" label="医院名称"></el-table-column>
         <el-table-column align="center" prop="account" label="医院账号"></el-table-column>
-        <el-table-column align="center" prop="hospitalLogo" label="医院logo"></el-table-column>
-        <el-table-column align="center" prop="address" label="地址"></el-table-column>
-        <el-table-column align="center" prop="detailedAddress" label="详细地址"></el-table-column>
+        <el-table-column align="center" prop="hospitalLogo" label="医院logo">
+          <template slot-scope="scope">
+            <img id="img" v-if="scope.row.hospitalLogo != null " :src="scope.row.hospitalLogo" />
+          </template>
+        </el-table-column>
+        <el-table-column align="center" prop="address" label="地址" show-overflow-tooltip></el-table-column>
+        <el-table-column align="center" prop="detailedAddress" label="详细地址" show-overflow-tooltip></el-table-column>
         <el-table-column align="center" prop="customer" label="对接人"></el-table-column>
         <el-table-column align="center" prop="customerTel" label="对接人账号" width="120"></el-table-column>
         <el-table-column align="center" prop="salesmanUuid" label="销售人员"></el-table-column>
         <el-table-column align="center" prop="description" label="医院介绍" show-overflow-tooltip></el-table-column>
         <el-table-column align="center" prop="collectMode" label="收费模式"></el-table-column>
-        <el-table-column align="center" prop="checked" label="检测报告是否审核"></el-table-column>
         <el-table-column align="center" prop="detectionType" label="检测卡类型"></el-table-column>
-        <el-table-column align="center" prop="dataSharing" label="数据是否共享"></el-table-column>
-        <el-table-column align="center" prop="patientView" label="检测报告是否可见"></el-table-column>
-        <!-- <el-table-column align="center" prop="inputPatientVersion" label="web用户录入版本"></el-table-column> -->
         <el-table-column align="center" prop="patientAnswerWay" label="用户答题方式"></el-table-column>
+        <el-table-column align="center" prop="checked" label="检测报告是否审核" :formatter="ifendcaseAudit">
+          <template slot-scope="scope">
+            <span
+              style="color:#13ce66"
+              v-if="scope.row.checked=== '1'"
+            >{{ ifendcaseAudit(scope.row) }}</span>
+            <span v-else style="color:#ff4949">{{ ifendcaseAudit(scope.row) }}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          align="center"
+          prop="dataSharing"
+          label="数据是否共享"
+          :formatter="ifendcaseData"
+        >
+          <template slot-scope="scope">
+            <span
+              style="color:#13ce66"
+              v-if="scope.row.dataSharing=== '1'"
+            >{{ ifendcaseData(scope.row) }}</span>
+            <span v-else style="color:#ff4949">{{ ifendcaseData(scope.row) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="patientView"
+          label="检测报告是否可见"
+          :formatter="ifendcaseReport"
+        >
+          <template slot-scope="scope">
+            <span
+              style="color:#13ce66"
+              v-if="scope.row.patientView=== '1'"
+            >{{ ifendcaseReport(scope.row) }}</span>
+            <span v-else style="color:#ff4949">{{ ifendcaseReport(scope.row) }}</span>
+          </template>
+        </el-table-column>
+        <!-- <el-table-column align="center" prop="inputPatientVersion" label="web用户录入版本"></el-table-column> -->
+
         <el-table-column align="center" prop="operate" label="操作" width="180">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
@@ -70,21 +110,40 @@
       ></el-pagination>
     </el-card>
     <!-- 增改页面 -->
-    <el-dialog :title="infoTitle" :visible.sync="editDialogVisible" width="40%" v-dialogDrag>
-      <el-form
-        ref="loginFormRef"
-        :model="editAddForm"
-        label-width="80px"
-        @closed="editDialogClosed"
-      >
+    <el-dialog
+      :title="infoTitle"
+      :visible.sync="editDialogVisible"
+      width="40%"
+      v-dialogDrag
+      @close="editDialogClosed"
+    >
+      <el-form ref="loginFormRef" :model="editAddForm" label-width="80px">
+        <el-form-item label="医院名称" prop="hospital">
+          <el-input v-model="addEditValue" @click.native="deptAdd"></el-input>
+        </el-form-item>
         <el-form-item label="医院账号" prop="account">
           <el-input v-model="editAddForm.account"></el-input>
         </el-form-item>
         <el-form-item label="医院logo" prop="hospitalLogo">
-          <el-input v-model="editAddForm.hospitalLogo"></el-input>
+          <el-upload
+            class="avatar-uploader"
+            :action="this.UPLOAD_IMG"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :on-progress="uploadVideoProcess"
+            :before-upload="beforeAvatarUpload"
+          >
+            <img v-if="editAddForm.hospitalLogo" :src="editAddForm.hospitalLogo" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+          <el-progress
+            v-if="videoFlag == true"
+            :percentage="percentageFile"
+            style="margin-top:20px;"
+          ></el-progress>
         </el-form-item>
         <el-form-item label="地址" prop="address">
-          <el-cascader v-model="hosAddress" :options="hosOptions" @change="handleChange"></el-cascader>
+          <el-cascader v-model="editAddForm.address" :options="hosOptions" @change="handleChange"></el-cascader>
         </el-form-item>
         <el-form-item label="详细地址" prop="detailedAddress">
           <el-input v-model="editAddForm.detailedAddress"></el-input>
@@ -99,13 +158,17 @@
           <el-input v-model="editAddForm.salesmanUuid"></el-input>
         </el-form-item>
         <el-form-item label="医院介绍" prop="description">
-          <el-input v-model="editAddForm.description"></el-input>
+          <el-input type="textarea" v-model="editAddForm.description"></el-input>
         </el-form-item>
         <el-form-item label="收费模式" prop="collectMode">
-          <el-input v-model="editAddForm.collectMode"></el-input>
-        </el-form-item>
-        <el-form-item label="检测报告是否审核" prop="checked">
-          <el-input v-model="editAddForm.checked"></el-input>
+          <el-select v-model="editAddForm.collectMode" placeholder="请选择">
+            <el-option
+              v-for="item in SfmsNameList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.dictValue"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="检测卡类型" prop="detectionType">
           <el-select v-model="editAddForm.detectionType" placeholder="请选择">
@@ -117,6 +180,23 @@
             ></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="用户答题方式" prop="patientAnswerWay">
+          <el-select v-model="editAddForm.patientAnswerWay" placeholder="请选择">
+            <el-option
+              v-for="item in DtfsNameList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.dictValue"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="检测报告是否审核" prop="checked">
+          <el-select v-model="editAddForm.checked" placeholder="请选择">
+            <el-option label="是" :value="'1'"></el-option>
+            <el-option label="否" :value="'0'"></el-option>
+          </el-select>
+        </el-form-item>
+
         <el-form-item label="数据是否共享" prop="dataSharing">
           <el-select v-model="editAddForm.dataSharing" placeholder="请选择">
             <el-option label="是" :value="'1'"></el-option>
@@ -124,16 +204,9 @@
           </el-select>
         </el-form-item>
         <el-form-item label="检测报告是否可见" prop="patientView">
-          <el-input v-model="editAddForm.patientView"></el-input>
-        </el-form-item>
-        <el-form-item label="用户答题方式" prop="patientAnswerWay">
-          <el-input v-model="editAddForm.patientAnswerWay"></el-input>
-        </el-form-item>
-
-        <el-form-item label="状态" prop="status">
-          <el-select v-model="editAddForm.status" placeholder="请选择">
-            <el-option label="启用" :value="1"></el-option>
-            <el-option label="禁用" :value="0"></el-option>
+          <el-select v-model="editAddForm.patientView" placeholder="请选择">
+            <el-option label="是" :value="'1'"></el-option>
+            <el-option label="否" :value="'0'"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -142,10 +215,40 @@
         <el-button type="primary" @click="editPageEnter">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 部门新增页面 -->
+    <el-dialog title="选择医院科室" :visible.sync="addDeptDialogVisible" width="40%" v-dialogDrag>
+      <el-form
+        ref="deptAddFormRef"
+        :model="addDeptForm"
+        label-width="80px"
+        @closed="addDeptDialogClosed"
+      >
+        <el-form-item prop="deptName">
+          <div class="mytree">
+            <el-tree
+              class="tree"
+              accordion
+              highlight-current
+              :data="hosMenuList"
+              :props="defaultProps"
+              node-key="id"
+              :indent="0"
+              icon-class="el-icon-circle-plus"
+              :default-expanded-keys="idArr"
+              @node-click="handleNodeAddClick"
+            ></el-tree>
+          </div>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addDeptDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addDeptEnter">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
-import { regionData } from "element-china-area-data";
+import { regionData, CodeToText, TextToCode } from "element-china-area-data";
 export default {
   data() {
     return {
@@ -160,9 +263,11 @@ export default {
       editDialogVisible: false,
       // 修改
       editAddForm: {
+        hospital: "",
         account: "",
-        hospitalLogo: "",
         address: "",
+        hospitalLogo: "",
+        deptUuid: "",
         detailedAddress: "",
         customer: "",
         customerTel: "",
@@ -181,8 +286,21 @@ export default {
         deptId: null,
         status: 0
       },
+      newStr: "",
+      addDeptDialogVisible: false,
+      addDeptForm: {},
+      defaultProps: {
+        label: "deptName",
+        children: "child"
+      },
+      idArr: [],
+      tranMidName: "",
+      addEditValue: "",
+      videoFlag: false,
+      percentageFile: 0,
       TJKNameList: [],
-      hosAddress: "",
+      SfmsNameList: [],
+      DtfsNameList: [],
       hosOptions: regionData,
       addDialogVisible: false,
       RoleList: [],
@@ -191,10 +309,13 @@ export default {
   },
   created() {
     this.getUserList();
-    this.getDictionaryEleList();
+    this.getHosMenuList();
+    this.getDictionaryEleListOne();
+    this.getDictionaryEleListTwo();
+    this.getDictionaryEleListThree();
   },
   methods: {
-    // 获取用户列表
+    // 获取医院列表
     async getUserList() {
       const { data: res } = await this.$http.post(
         "hospital/getHospitalDetailList",
@@ -207,18 +328,40 @@ export default {
       this.userList = res.rows;
       this.total = res.total;
     },
-    async getDictionaryEleList() {
+    async getDictionaryEleListOne() {
       const { data: res } = await this.$http.post("dict/getPreviewData", {
         dictValue: "TJKLX"
       });
       this.TJKNameList = res.data;
     },
+    async getDictionaryEleListTwo() {
+      const { data: res } = await this.$http.post("dict/getPreviewData", {
+        dictValue: "sfms"
+      });
+      this.SfmsNameList = res.data;
+    },
+    async getDictionaryEleListThree() {
+      const { data: res } = await this.$http.post("dict/getPreviewData", {
+        dictValue: "input_patient_version"
+      });
+      this.DtfsNameList = res.data;
+    },
+    // 获取部门列表
+    async getHosMenuList() {
+      const { data: res } = await this.$http.post("dept/list", {});
+      this.hosMenuList = res.data;
+      this.idArr.push(res.data[0].id);
+    },
     // 修改
     showEditdialog(info) {
+      this.addEditValue = info.hospital;
       this.infoTitle = "修改信息";
       this.editDialogVisible = true;
+      this.editAddForm = JSON.parse(JSON.stringify(info));
+      this.editId = info.id;
     },
     editDialogClosed() {
+      this.newStr = "";
       this.$refs.loginFormRef.resetFields();
     },
     async editPageEnter() {
@@ -228,16 +371,40 @@ export default {
         httpUrl = "hospital/updateHospitalDetail";
         parm = {
           id: this.editId,
-          name: this.editAddForm.name,
-          userName: this.editAddForm.userName,
-          gender: this.editAddForm.gender
+          account: this.editAddForm.account,
+          hospitalLogo: this.editAddForm.hospitalLogo,
+          address: this.newStr,
+          deptUuid: this.editAddForm.deptUuid,
+          detailedAddress: this.editAddForm.detailedAddress,
+          customer: this.editAddForm.customer,
+          customerTel: this.editAddForm.customerTel,
+          salesmanUuid: this.editAddForm.salesmanUuid,
+          description: this.editAddForm.description,
+          collectMode: this.editAddForm.collectMode,
+          checked: this.editAddForm.checked,
+          detectionType: this.editAddForm.detectionType,
+          dataSharing: this.editAddForm.dataSharing,
+          patientView: this.editAddForm.patientView,
+          patientAnswerWay: this.editAddForm.patientAnswerWay
         };
       } else {
         httpUrl = "hospital/saveHospitalDetail";
         parm = {
-          name: this.editAddForm.name,
-          userName: this.editAddForm.userName,
-          password: this.$md5(this.editAddForm.password)
+          account: this.editAddForm.account,
+          hospitalLogo: this.editAddForm.hospitalLogo,
+          address: this.newStr,
+          deptUuid: this.editAddForm.deptUuid,
+          detailedAddress: this.editAddForm.detailedAddress,
+          customer: this.editAddForm.customer,
+          customerTel: this.editAddForm.customerTel,
+          salesmanUuid: this.editAddForm.salesmanUuid,
+          description: this.editAddForm.description,
+          collectMode: this.editAddForm.collectMode,
+          checked: this.editAddForm.checked,
+          detectionType: this.editAddForm.detectionType,
+          dataSharing: this.editAddForm.dataSharing,
+          patientView: this.editAddForm.patientView,
+          patientAnswerWay: this.editAddForm.patientAnswerWay
         };
       }
       this.$refs.loginFormRef.validate(async valid => {
@@ -254,9 +421,32 @@ export default {
       this.infoTitle = "新增医院信息";
       this.editDialogVisible = true;
       this.editAddForm = {};
+      this.addEditValue = "";
     },
     // 级联选择地址
-    handleChange() {},
+    handleChange(val) {
+      if (this.infoTitle == "新增医院信息") {
+        var addOne = CodeToText[this.editAddForm.address[0]];
+        var addTwo = CodeToText[this.editAddForm.address[1]];
+        var addThree = CodeToText[this.editAddForm.address[2]];
+        var newArr = [];
+        newArr.push(addOne, addTwo, addThree);
+        this.newStr = newArr.join(",");
+      }
+    },
+    // 部门新增
+    deptAdd() {
+      this.addDeptDialogVisible = true;
+    },
+    addDeptDialogClosed() {},
+    addDeptEnter() {
+      this.addEditValue = this.tranMidName;
+      this.addDeptDialogVisible = false;
+    },
+    handleNodeAddClick(val) {
+      this.editAddForm.deptUuid = val.code;
+      this.tranMidName = val.deptName;
+    },
     // 删除
     async removeUserById(info) {
       const confirmResult = await this.$confirm(
@@ -292,24 +482,39 @@ export default {
       this.pageNum = newPage;
       this.getUserList();
     },
-    // 状态码数字转中文
-    ifendcase(val) {
-      if (val.appStatus == "1") {
-        return "已激活";
+    // 检测报告是否审核状态码数字转中文
+    ifendcaseAudit(val) {
+      if (val.checked == "1") {
+        return "是";
       } else {
-        return "未激活";
+        return "否";
       }
     },
-    timesChangeDate(times) {
-      var da = new Date(times);
-      var year = da.getFullYear();
-      var month = da.getMonth() + 1;
-      var date = da.getDate();
-      return [year, month, date].join("-");
+    // 数据是否共享状态码数字转中文
+    ifendcaseData(val) {
+      if (val.dataSharing == "1") {
+        return "是";
+      } else {
+        return "否";
+      }
+    },
+    // 检测报告是否可见状态码数字转中文
+    ifendcaseReport(val) {
+      if (val.patientView == "1") {
+        return "是";
+      } else {
+        return "否";
+      }
     },
     handleAvatarSuccess(res, file) {
-      this.imageUrl = res.data;
-      this.editAddForm.fdPhotoPath = res.data;
+      if (res.code != 200) return this.$message.error("上传失败");
+      this.percentageFile = 0;
+      this.videoFlag = false;
+      this.editAddForm.hospitalLogo = res.data;
+    },
+    uploadVideoProcess(event, file, fileList) {
+      this.videoFlag = true;
+      this.percentageFile = parseInt(file.percentage);
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg";
@@ -398,5 +603,29 @@ export default {
   height: 30px !important;
   background-color: #4991e3;
   padding: 15px 20px 10px !important;
+}
+
+.avatar-uploader .el-upload {
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader-icon {
+  display: block;
+  font-size: 28px;
+  color: #8c939d;
+  width: 100px;
+  height: 100px;
+  line-height: 100px;
+  text-align: center;
+  border: 1px dashed #ccc;
+}
+.avatar-uploader-icon:hover {
+  border-color: #409eff;
+}
+.avatar {
+  width: 100px;
+  height: 100px;
+  display: block;
 }
 </style>

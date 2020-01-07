@@ -217,6 +217,8 @@ export default {
       this.powerDialogVisible = true;
     },
     powerDialogClosed() {
+      console.log(111);
+      
       this.defKeys = [];
     },
     // 权限修改确定
