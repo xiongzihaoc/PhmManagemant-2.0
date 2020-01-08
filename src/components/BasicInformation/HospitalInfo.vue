@@ -318,6 +318,8 @@ export default {
     };
   },
   created() {
+    // console.log(TextToCode);
+
     this.getUserList();
     this.getHosMenuList();
     this.getDictionaryEleListOne();
@@ -365,6 +367,13 @@ export default {
     },
     // 修改
     showEditdialog(info) {
+      console.log(info.address);
+      var arr = info.address.split(",");
+      for (var i = 0; i < arr.length; i++) {
+        TextToCode[arr[i]];
+        console.log(arr[i]);
+      }
+
       this.addEditValue = info.hospital;
       this.infoTitle = "修改信息";
       this.editDialogVisible = true;
