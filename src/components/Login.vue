@@ -81,7 +81,7 @@ export default {
       this.isDisable = true;
       setTimeout(() => {
         this.isDisable = false; //点击一次时隔两秒后才能再次点击
-      }, 2000);
+      }, 3000);
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return;
         const { data: res } = await this.$http.post("user/login", {
@@ -89,10 +89,9 @@ export default {
           password: this.$md5(this.loginForm.userPassword)
         });
         if (res.code != 200) return this.$message.error("用户名或者密码错误");
-        // this.$message.success("登录成功");
         // token 存入 sessionstorage
         console.log(res);
-        
+
         window.sessionStorage.setItem("token", res.data.token);
         // 跳转
         window.localStorage.setItem("loginName", this.loginForm.loginName);
@@ -151,7 +150,7 @@ $cursor: #fff;
 </style>
 
 <style lang="scss" scoped>
-$bg: #2D3035;
+$bg: #2d3035;
 $dark_gray: #889aa4;
 $light_gray: #eee;
 

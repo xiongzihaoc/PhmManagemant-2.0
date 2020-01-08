@@ -26,7 +26,7 @@
         <!-- <el-table-column align="center" prop="userId" label="序号" width="60"></el-table-column> -->
         <el-table-column align="center" prop="name" label="姓名"></el-table-column>
         <el-table-column align="center" prop="gender" label="性别"></el-table-column>
-        <el-table-column align="center" prop="phone" label="手机号"></el-table-column>
+        <el-table-column align="center" prop="phone" label="手机号" width="110"></el-table-column>
         <el-table-column align="center" prop="birthday" label="出生日期">
           <template slot-scope="scope">
             <div>{{timesChangeDate(scope.row.birthday)}}</div>

@@ -13,17 +13,22 @@
         :expand-row-keys="['1']"
         :tree-props="{children: 'child', hasChildren: 'hasChildren'}"
       >
-        <el-table-column align="left" prop="deptName" label="### 名称" sortable width="150"></el-table-column>
-        <el-table-column align="center" prop="deptManager" label="负责人" sortable></el-table-column>
-        <el-table-column align="center" prop="phone" label="联系方式" sortable></el-table-column>
-        <el-table-column align="center" prop="logo" label="图标" sortable>
+        <el-table-column align="left" prop="deptName" label="### 名称" width="150"></el-table-column>
+        <el-table-column align="center" prop="deptManager" label="负责人"></el-table-column>
+        <el-table-column align="center" prop="phone" label="联系方式" width="110"></el-table-column>
+        <el-table-column align="center" prop="deptTypeValue" label="组织类型"></el-table-column>
+        <el-table-column align="center" prop="officeLabelValue" label="科室标签"></el-table-column>
+        <el-table-column align="center" prop="logo" label="图标">
           <template slot-scope="scope">
-            <img id="img" v-if="scope.row.logo != null && scope.row.logo != '#'" :src="scope.row.logo" />
+            <img
+              id="img"
+              v-if="scope.row.logo != null && scope.row.logo != '#'"
+              :src="scope.row.logo"
+            />
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="deptType" label="组织类型" sortable></el-table-column>
-        <el-table-column align="center" prop="address" label="地址" show-overflow-tooltip sortable></el-table-column>
-        <el-table-column align="center" prop="orderNum" label="排序号" sortable></el-table-column>
+        <el-table-column align="center" prop="address" label="地址" show-overflow-tooltip></el-table-column>
+        <el-table-column align="center" prop="orderNum" label="排序号" width="50"></el-table-column>
         <el-table-column align="center" prop="status" label="状态" :formatter="ifendcase">
           <template slot-scope="scope">
             <span style="color:#13ce66" v-if="scope.row.status=== '1'">{{ ifendcase(scope.row) }}</span>
@@ -63,6 +68,26 @@
         <el-form-item label="名称" prop="deptName">
           <el-input v-model="dynamicForm.deptName"></el-input>
         </el-form-item>
+        <el-form-item label="组织类型" prop="deptTypeValue">
+          <el-select v-model="dynamicForm.deptTypeValue" clearable placeholder="请选择">
+            <el-option
+              v-for="item in DEPNameList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.dictValue"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="科室标签" prop="officeLabelValue">
+          <el-select v-model="dynamicForm.officeLabelValue" clearable placeholder="请选择">
+            <el-option
+              v-for="item in TJKNameList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.dictValue"
+            ></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dynamicDialogVisible = false">取 消</el-button>
@@ -77,8 +102,12 @@ export default {
     return {
       input: "",
       hosMenuList: [],
+      TJKNameList: [],
+      DEPNameList: [],
       dynamicForm: {
-        deptName: ""
+        deptName: "",
+        officeLabelValue: "",
+        deptTypeValue: ""
       },
       dynamicTitle: "",
       dynamicDialogVisible: false,
@@ -90,13 +119,27 @@ export default {
   },
   created() {
     this.getHosMenuList();
+    this.getDictionaryEleListOne();
+    this.getDictionaryEleListTwo();
   },
   methods: {
     async getHosMenuList() {
       const { data: res } = await this.$http.post("dept/list", {});
       this.hosMenuList = res.data;
       console.log(res);
-      
+    },
+    async getDictionaryEleListOne() {
+      const { data: res } = await this.$http.post("dict/getPreviewData", {
+        dictValue: "officeType"
+      });
+      this.TJKNameList = res.data;
+    },
+    async getDictionaryEleListTwo() {
+      const { data: res } = await this.$http.post("dict/getPreviewData", {
+        dictValue: "deptType"
+      });
+      this.DEPNameList = res.data;
+      console.log(res);
     },
     // 增加
     addDictionary() {},
@@ -106,8 +149,11 @@ export default {
     hospSearch() {},
     // 操作里面新增
     addDictionarybtn(info) {
+      console.log(info);
+      
+      this.dynamicForm = {};
       this.addParentId = info.id;
-      this.addParentCode = info.parentCode;
+      this.addParentCode = info.code;
       this.dynamicDialogVisible = true;
       this.dynamicTitle = "新增信息";
       this.goback = info.deptName;
@@ -127,6 +173,8 @@ export default {
         parm = {
           parentId: this.addParentId,
           deptName: this.dynamicForm.deptName,
+          deptType: this.dynamicForm.deptTypeValue,
+          officeLabel: this.dynamicForm.officeLabelValue,
           parentCode: this.addParentCode
         };
       }

@@ -10,7 +10,7 @@
         </el-col>
         <!-- 添加用户按钮 -->
         <el-col :span="4">
-          <el-button type="primary" @click="addUsers">新增医生信息</el-button>
+          <el-button type="primary" @click="addUsers">新增量表信息</el-button>
         </el-col>
       </el-row>
       <!-- 表格 -->
@@ -24,34 +24,20 @@
       >
         <el-table-column align="center" type="selection" width="60"></el-table-column>
         <el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
-        <el-table-column align="center" prop="name" label="姓名"></el-table-column>
-        <el-table-column align="center" prop="gender" label="性别"></el-table-column>
-        <el-table-column align="center" prop="title" label="职称" show-overflow-tooltip></el-table-column>
-        <el-table-column align="center" prop="hospital" label="医院"></el-table-column>
-        <el-table-column align="center" prop="office" label="科室"></el-table-column>
-        <el-table-column align="center" prop="phone" label="手机号"></el-table-column>
-        <el-table-column align="center" prop="photoUrl" label="照片">
+        <el-table-column align="center" prop="name" label="量表名称"></el-table-column>
+        <el-table-column align="center" prop="type" label="量表类型"></el-table-column>
+        <el-table-column align="center" prop="price" label="量表价格(元)" show-overflow-tooltip></el-table-column>
+        <el-table-column align="center" prop="state" label="状态" :formatter="ifendcase">
           <template slot-scope="scope">
-            <img id="img" v-if="scope.row.photoUrl != null " :src="scope.row.photoUrl" />
+            <span style="color:#13ce66" v-if="scope.row.state=== '1'">{{ ifendcase(scope.row) }}</span>
+            <span v-else style="color:#E6A23C">{{ ifendcase(scope.row) }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="userName" label="登录名"></el-table-column>
-        <el-table-column align="center" prop="introduction" label="简介" show-overflow-tooltip></el-table-column>
-
-        <el-table-column align="center" prop="appStatus" label="激活app" :formatter="ifendcaseApp">
+        <el-table-column align="center" prop="createBy" label="创建人"></el-table-column>
+        <el-table-column align="center" prop="updateBy" label="修改人"></el-table-column>
+        <el-table-column align="center" prop="createTime" label="创建时间" width="160">
           <template slot-scope="scope">
-            <span
-              style="color:#13ce66"
-              v-if="scope.row.appStatus=== '1'"
-            >{{ ifendcaseApp(scope.row) }}</span>
-            <span v-else style="color:#ff4949">{{ ifendcaseApp(scope.row) }}</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column align="center" prop="status" label="状态" :formatter="ifendcase">
-          <template slot-scope="scope">
-            <span style="color:#13ce66" v-if="scope.row.status=== '1'">{{ ifendcase(scope.row) }}</span>
-            <span v-else style="color:#ff4949">{{ ifendcase(scope.row) }}</span>
+            <div>{{timesChangeDate(scope.row.createTime)}}</div>
           </template>
         </el-table-column>
 
@@ -82,107 +68,23 @@
     <el-dialog :title="infoTitle" :visible.sync="editDialogVisible" width="40%" v-dialogDrag>
       <el-form
         ref="loginFormRef"
-        :rules="loginRules"
         :model="editAddForm"
         label-width="80px"
         @closed="editDialogClosed"
       >
-        <el-form-item label="姓名" prop="name">
+        <el-form-item label="量表名称" prop="name">
           <el-input v-model="editAddForm.name"></el-input>
         </el-form-item>
-        <el-form-item label="性别" prop="gender">
-          <el-select v-model="editAddForm.gender" placeholder="请选择">
-            <el-option label="男" value="男"></el-option>
-            <el-option label="女" value="女"></el-option>
-          </el-select>
+        <el-form-item label="量表类型" prop="type">
+          <el-input v-model="editAddForm.type"></el-input>
         </el-form-item>
-        <el-form-item label="职称" prop="title">
-          <el-select v-model="editAddForm.title" multiple clearable placeholder="请选择">
-            <el-option
-              v-for="item in eleNameList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.name"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="医院科室" prop="office">
-          <el-input v-model="addEditValue" @click.native="deptAdd"></el-input>
-        </el-form-item>
-        <el-form-item label="手机号" prop="phone">
-          <el-input v-model="editAddForm.phone"></el-input>
-        </el-form-item>
-        <el-form-item label="登录名" prop="userName">
-          <el-input v-model="editAddForm.userName"></el-input>
-        </el-form-item>
-        <el-form-item label="密码" prop="password" v-if="infoTitle == '新增医生信息'" v-show="true">
-          <el-input v-model="editAddForm.password"></el-input>
-        </el-form-item>
-        <el-form-item label="简介" prop="introduction">
-          <el-input
-            type="textarea"
-            :autosize="{ minRows: 5, maxRows: 10}"
-            v-model="editAddForm.introduction"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="照片" prop="photoUrl">
-          <el-upload
-            class="avatar-uploader"
-            :action="this.UPLOAD_IMG"
-            :show-file-list="false"
-            :on-success="handleAvatarSuccess"
-            :on-progress="uploadVideoProcess"
-            :before-upload="beforeAvatarUpload"
-          >
-            <img v-if="editAddForm.photoUrl" :src="editAddForm.photoUrl" class="avatar" />
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
-          <el-progress
-            v-if="videoFlag == true"
-            :percentage="percentageFile"
-            style="margin-top:20px;"
-          ></el-progress>
-        </el-form-item>
-        <el-form-item label="状态" prop="status" v-if="infoTitle == '修改信息'" v-show="true">
-          <el-select v-model="editAddForm.status" placeholder="请选择">
-            <el-option label="启用" :value="'1'"></el-option>
-            <el-option label="禁用" :value="'0'"></el-option>
-          </el-select>
+        <el-form-item label="量表价格" prop="price">
+          <el-input v-model="editAddForm.price"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="editPageEnter">确 定</el-button>
-      </span>
-    </el-dialog>
-    <!-- 部门选择页面 -->
-    <el-dialog title="选择医院科室" :visible.sync="addDeptDialogVisible" width="40%" v-dialogDrag>
-      <el-form
-        ref="deptAddFormRef"
-        :model="addDeptForm"
-        label-width="80px"
-        @closed="addDeptDialogClosed"
-      >
-        <el-form-item prop="deptName">
-          <div class="mytree">
-            <el-tree
-              class="tree"
-              accordion
-              highlight-current
-              :data="hosMenuList"
-              :props="defaultProps"
-              node-key="id"
-              :indent="0"
-              icon-class="el-icon-circle-plus"
-              :default-expanded-keys="idArr"
-              @node-click="handleNodeAddClick"
-            ></el-tree>
-          </div>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="addDeptDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addDeptEnter">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -211,58 +113,28 @@ export default {
       // 修改
       editAddForm: {
         name: "",
-        gender: "",
-        title: "",
-        dcDept: "",
-        phone: null,
-        userName: "",
-        password: "",
-        introduction: "",
-        status: "",
-        photoUrl: ""
+        type: "",
+        price: ""
       },
       eleNameList: [],
-      addDeptForm: {},
-      imageUrl: "",
-      tranMidName: "",
-      videoFlag: false,
-      percentageFile: 0,
       addDialogVisible: false,
-      addDeptDialogVisible: false,
-      idArr: [],
       defaultProps: {
         label: "deptName",
         children: "child"
       },
       addEditValue: "",
       RoleList: [],
-      hosMenuList: [],
-      loginRules: {
-        userName: [
-          { required: true, message: "请输入用户名", trigger: "blur" },
-          { min: 3, max: 10, message: "长度在 3 到 10 个字符", trigger: "blur" }
-        ],
-        password: [
-          { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 5, max: 16, message: "长度在 6 到 16 个字符", trigger: "blur" }
-        ],
-        phone: [
-          { required: true, message: "手机号不能为空", trigger: "blur" },
-          { validator: checkMobile, trigger: "blur" }
-        ]
-      }
+      hosMenuList: []
     };
   },
   created() {
-    this.getUserList();
-    this.getHosMenuList();
-    this.getDictionaryEleList();
+    this.getScaleList();
   },
 
   methods: {
-    // 获取用户列表
-    async getUserList() {
-      const { data: res } = await this.$http.post("doctor/getDoctorList", {
+    // 获取量表列表
+    async getScaleList() {
+      const { data: res } = await this.$http.post(this.$ajax + "sheet/list", {
         pageSize: this.pageSize,
         pageNum: this.pageNum
       });
@@ -270,28 +142,10 @@ export default {
       this.userList = res.rows;
       this.total = res.total;
     },
-    // 数据字典职称列表
-    async getDictionaryEleList() {
-      const { data: res } = await this.$http.post("dict/getPreviewData", {
-        dictValue: "YSZC"
-      });
-      this.eleNameList = res.data;
-    },
-    // // 获取部门列表
-    async getHosMenuList() {
-      const { data: res } = await this.$http.post("dept/list", {});
-      this.hosMenuList = res.data;
-      this.idArr.push(res.data[0].id);
-    },
     // 修改
     showEditdialog(info) {
-      this.addEditValue = `${info.hospital}--${info.office}`;
       this.infoTitle = "修改信息";
       this.editDialogVisible = true;
-      this.editAddForm = JSON.parse(JSON.stringify(info));
-      this.editId = info.id;
-      this.editAddForm.title = info.title.split(",");
-      console.log(this.editAddForm.dcDept);
     },
     editDialogClosed() {
       this.$refs.editFormRef.resetFields();
@@ -309,38 +163,22 @@ export default {
       if (this.infoTitle == "修改信息") {
         httpUrl = "doctor/updateDoctor";
         parm = {
-          id: this.editId,
-          name: this.editAddForm.name,
-          userName: this.editAddForm.userName,
-          gender: this.editAddForm.gender,
-          title: this.editAddForm.title.join(","),
-          phone: this.editAddForm.phone,
-          dcDept: this.editAddForm.dcDept,
-          introduction: this.editAddForm.introduction,
-          status: this.editAddForm.status,
-          photoUrl: this.editAddForm.photoUrl
+          id: this.editId
         };
       } else {
-        httpUrl = "doctor/saveDoctor";
+        httpUrl = "sheet/add";
         parm = {
           name: this.editAddForm.name,
-          userName: this.editAddForm.userName,
-          password: this.$md5(this.editAddForm.password),
-          gender: this.editAddForm.gender,
-          title: this.editAddForm.title,
-          phone: this.editAddForm.phone,
-          dcDept: this.editAddForm.dcDept,
-          introduction: this.editAddForm.introduction,
-          status: this.editAddForm.status,
-          photoUrl: this.editAddForm.photoUrl
+          type: this.editAddForm.type,
+          price: this.editAddForm.price
         };
       }
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return;
-        const { data: res } = await this.$http.post(httpUrl, parm);
+        const { data: res } = await this.$http.post(this.$ajax + httpUrl, parm);
         if (res.code != 200) return this.$message.error(res.msg);
         this.$message.success(res.msg);
-        this.getUserList();
+        this.getScaleList();
         this.editDialogVisible = false;
       });
     },
@@ -363,74 +201,54 @@ export default {
       });
       if (res.code != 200) return this.$message.error("删除失败");
       this.$message.success("删除成功");
-      this.getUserList();
+      this.getScaleList();
     },
-    // 部门新增
-    deptAdd() {
-      this.addDeptDialogVisible = true;
-    },
-    addDeptEnter() {
-      this.addEditValue = this.tranMidName;
-      this.addDeptDialogVisible = false;
-    },
-    handleNodeAddClick(val) {
-      this.editAddForm.dcDept = val.code;
-      this.tranMidName = val.deptName;
-    },
-    addDeptDialogClosed() {},
     // 搜索
     systemSearch() {
-      this.getUserList();
-    },
-    // 上传照片
-    handleAvatarSuccess(res, file) {
-      if (res.code != 200) return this.$message.error("上传失败");
-      this.percentageFile = 0;
-      this.videoFlag = false;
-      this.editAddForm.photoUrl = res.data;
-    },
-    uploadVideoProcess(event, file, fileList) {
-      this.videoFlag = true;
-      this.percentageFile = parseInt(file.percentage);
-    },
-    beforeAvatarUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isGIF = file.type === "image/gif";
-      const isPNG = file.type === "image/png";
-      const isBMP = file.type === "image/bmp";
-      const isLt10M = file.size / 1024 / 1024 < 10;
-
-      if (!isJPG && !isGIF && !isPNG && !isBMP) {
-        this.$message.error("上传图片必须是JPG/GIF/PNG/BMP 格式!");
-      }
-      if (!isLt10M) {
-        this.$message.error("上传图片大小不能超过 10MB!");
-      }
-      return (isJPG || isBMP || isGIF || isPNG) && isLt10M;
+      this.getScaleList();
     },
     // 状态码数字转中文
     ifendcase(val) {
-      if (val.status == "1") {
-        return "启用";
+      if (val.state == "1") {
+        return "有效";
       } else {
-        return "禁用";
-      }
-    },
-    ifendcaseApp(val) {
-      if (val.appStatus == "1") {
-        return "已激活";
-      } else {
-        return "未激活";
+        return "无效";
       }
     },
     // 分页
     handleSizeChange(newSize) {
       this.pageSize = newSize;
-      this.getUserList();
+      this.getScaleList();
     },
     handleCurrentChangev(newPage) {
       this.pageNum = newPage;
-      this.getUserList();
+      this.getScaleList();
+    },
+    // 转换时间格式
+    timesChangeDate(times) {
+      var date = new Date(times);
+      var y = date.getFullYear();
+      var mon = date.getMonth() + 1;
+      var d = date.getDate();
+      var h = date.getHours();
+      var m = date.getMinutes();
+      var s = date.getSeconds();
+      if (mon < 10) {
+        mon = "0" + mon;
+      }
+      if (d < 10) {
+        d = "0" + d;
+      }
+      if (h < 10) {
+        h = "0" + h;
+      }
+      if (m < 10) {
+        m = "0" + m;
+      }
+      if (s < 10) {
+        s = "0" + s;
+      }
+      return `${y}-${mon}-${d} ${h}:${m}:${s}`;
     }
   }
 };

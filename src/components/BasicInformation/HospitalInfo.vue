@@ -36,9 +36,19 @@
         <el-table-column align="center" prop="customerTel" label="对接人账号" width="120"></el-table-column>
         <el-table-column align="center" prop="salesmanUuid" label="销售人员"></el-table-column>
         <el-table-column align="center" prop="description" label="医院介绍" show-overflow-tooltip></el-table-column>
-        <el-table-column align="center" prop="collectMode" label="收费模式"></el-table-column>
-        <el-table-column align="center" prop="detectionType" label="检测卡类型"></el-table-column>
-        <el-table-column align="center" prop="patientAnswerWay" label="用户答题方式"></el-table-column>
+        <el-table-column align="center" prop="collectMode" label="收费模式" :formatter="ifendcaseSfms"></el-table-column>
+        <el-table-column
+          align="center"
+          prop="detectionType"
+          label="检测卡类型"
+          :formatter="ifendcaseJck"
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="patientAnswerWay"
+          label="用户答题方式"
+          :formatter="ifendcaseDtfs"
+        ></el-table-column>
         <el-table-column align="center" prop="checked" label="检测报告是否审核" :formatter="ifendcaseAudit">
           <template slot-scope="scope">
             <span
@@ -327,6 +337,7 @@ export default {
       if (res.code != 200) return this.$message.error("数获取失败");
       this.userList = res.rows;
       this.total = res.total;
+      console.log(res);
     },
     async getDictionaryEleListOne() {
       const { data: res } = await this.$http.post("dict/getPreviewData", {
@@ -504,6 +515,32 @@ export default {
         return "是";
       } else {
         return "否";
+      }
+    },
+    // 收费模式状态码数字转中文
+    ifendcaseSfms(val) {
+      if (val.collectMode == "zcs") {
+        return "总次数";
+      } else {
+        return "量表价格";
+      }
+    },
+    // 检测卡类型状态码数字转中文
+    ifendcaseJck(val) {
+      if (val.detectionType == "1") {
+        return "虚拟卡";
+      } else if (val.detectionType == "2") {
+        return "实体卡";
+      } else if (val.detectionType == "3") {
+        return "虚拟卡 + 实体卡";
+      }
+    },
+    // 用户答题方式状态码数字转中文
+    ifendcaseDtfs(val) {
+      if (val.patientAnswerWay == "smtz") {
+        return "扫码跳转";
+      } else {
+        return "直接跳转";
       }
     },
     handleAvatarSuccess(res, file) {

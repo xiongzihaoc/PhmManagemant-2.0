@@ -285,13 +285,12 @@ export default {
     },
     // 修改
     showEditdialog(info) {
-      this.addEditValue = `${info.hospital}--${info.office}`;
+      this.addEditValue = `${info.hospital} / ${info.office}`;
       this.infoTitle = "修改信息";
       this.editDialogVisible = true;
       this.editAddForm = JSON.parse(JSON.stringify(info));
       this.editId = info.id;
       this.editAddForm.title = info.title.split(",");
-      console.log(this.editAddForm.dcDept);
     },
     editDialogClosed() {
       this.$refs.editFormRef.resetFields();
@@ -327,7 +326,7 @@ export default {
           userName: this.editAddForm.userName,
           password: this.$md5(this.editAddForm.password),
           gender: this.editAddForm.gender,
-          title: this.editAddForm.title,
+          title: this.editAddForm.title.join(","),
           phone: this.editAddForm.phone,
           dcDept: this.editAddForm.dcDept,
           introduction: this.editAddForm.introduction,

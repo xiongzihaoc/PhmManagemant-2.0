@@ -15,8 +15,10 @@ import md5 from 'js-md5';
 Vue.prototype.$md5 = md5;
 // 导入axios
 import axios from 'axios'
-// 配置axios
+
+// // 配置axios
 axios.defaults.baseURL = 'http://192.168.0.116:8085/zhuoya-web/'
+
 // axios请求拦截器
 axios.interceptors.request.use(function (config) {
   Nprogress.start()
@@ -35,8 +37,11 @@ axios.interceptors.response.use(function (config) {
 })
 // 全局挂载axios this.$http调用即可
 Vue.prototype.$http = axios
+
+Vue.prototype.$ajax = 'http://192.168.0.109:8086/zhuoya-sheet/'
 // 文件上传地址
 Vue.prototype.UPLOAD_IMG = 'http://test.phmzykj.com/zhuoya_manager/oss/fileUpload.do'
+
 Vue.config.productionTip = false
 
 // 弹框拖拽功能

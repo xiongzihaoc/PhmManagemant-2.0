@@ -160,7 +160,7 @@ export default {
     // 确定修改
     editEnter() {
       this.$refs.editFormRef.validate(async valid => {
-        if (!valid) return this.$message.error("登录失败");
+        if (!valid) return this.$message.error("修改失败");
         const { data: res } = await this.$http.post("menu/update", {
           menuId: this.editId,
           menuName: this.editForm.menuName,

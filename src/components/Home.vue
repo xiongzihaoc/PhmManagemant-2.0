@@ -152,8 +152,6 @@ export default {
     // tab切换时，动态的切换路由
     // tab切换时，动态的切换路由
     tabClick(tab) {
-      console.log(tab);
-      
       let path = this.activeIndex;
       this.$router.replace({ path: path });
     },
