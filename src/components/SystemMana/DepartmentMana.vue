@@ -13,7 +13,7 @@
         :expand-row-keys="['1']"
         :tree-props="{children: 'child', hasChildren: 'hasChildren'}"
       >
-        <el-table-column align="left" prop="deptName" label="### 名称" width="150"></el-table-column>
+        <el-table-column align="left" prop="deptName" label="###     名称" width="180"></el-table-column>
         <el-table-column align="center" prop="deptManager" label="负责人"></el-table-column>
         <el-table-column align="center" prop="phone" label="联系方式" width="110"></el-table-column>
         <el-table-column align="center" prop="deptTypeValue" label="组织类型"></el-table-column>
@@ -28,8 +28,8 @@
           </template>
         </el-table-column>
         <el-table-column align="center" prop="address" label="地址" show-overflow-tooltip></el-table-column>
-        <el-table-column align="center" prop="orderNum" label="排序号" width="50"></el-table-column>
-        <el-table-column align="center" prop="status" label="状态" :formatter="ifendcase">
+        <el-table-column align="center" prop="orderNum" label="排序号" width="70"></el-table-column>
+        <el-table-column align="center" prop="status" label="状态" :formatter="ifendcase" width="80">
           <template slot-scope="scope">
             <span style="color:#13ce66" v-if="scope.row.status=== '1'">{{ ifendcase(scope.row) }}</span>
             <span v-else style="color:#ff4949">{{ ifendcase(scope.row) }}</span>

@@ -23,14 +23,14 @@
         style="width: 100%"
       >
         <el-table-column align="center" type="selection" width="60"></el-table-column>
-        <el-table-column align="center" prop="hospital" label="医院名称"></el-table-column>
-        <el-table-column align="center" prop="account" label="医院账号"></el-table-column>
-        <el-table-column align="center" prop="hospitalLogo" label="医院logo">
+        <el-table-column align="center" prop="hospital" label="医院名称" ></el-table-column>
+        <el-table-column align="center" prop="account" label="医院账号" width="100"></el-table-column>
+        <el-table-column align="center" prop="hospitalLogo" label="医院图片">
           <template slot-scope="scope">
             <img id="img" v-if="scope.row.hospitalLogo != null " :src="scope.row.hospitalLogo" />
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="address" label="地址" show-overflow-tooltip></el-table-column>
+        <el-table-column align="center" prop="address" label="省市区" show-overflow-tooltip></el-table-column>
         <el-table-column align="center" prop="detailedAddress" label="详细地址" show-overflow-tooltip></el-table-column>
         <el-table-column align="center" prop="customer" label="对接人"></el-table-column>
         <el-table-column align="center" prop="customerTel" label="对接人账号" width="120"></el-table-column>
@@ -153,7 +153,12 @@
           ></el-progress>
         </el-form-item>
         <el-form-item label="地址" prop="address">
-          <el-cascader v-model="editAddForm.address" :options="hosOptions" @change="handleChange"></el-cascader>
+          <el-cascader
+            ref="addressRef"
+            v-model="newStr"
+            :options="regionData"
+            @change="handleChange"
+          ></el-cascader>
         </el-form-item>
         <el-form-item label="详细地址" prop="detailedAddress">
           <el-input v-model="editAddForm.detailedAddress"></el-input>
@@ -258,7 +263,16 @@
   </div>
 </template>
 <script>
-import { regionData, CodeToText, TextToCode } from "element-china-area-data";
+// import regionData from "../../assets/js/address";
+import {
+  provinceAndCityData,
+  regionData,
+  provinceAndCityDataPlus,
+  regionDataPlus,
+  CodeToText,
+  TextToCode
+} from "element-china-area-data";
+import { watch } from "fs";
 export default {
   data() {
     return {
@@ -268,14 +282,13 @@ export default {
       pageSize: 10,
       pageNum: 1,
       total: 0,
-      currentRow: null,
       infoTitle: "",
       editDialogVisible: false,
       // 修改
       editAddForm: {
         hospital: "",
         account: "",
-        address: "",
+        address: [],
         hospitalLogo: "",
         deptUuid: "",
         detailedAddress: "",
@@ -291,12 +304,10 @@ export default {
         dataSharing: "",
         patientView: "",
         patientAnswerWay: "",
-
         roleId: null,
         deptId: null,
         status: 0
       },
-      newStr: "",
       addDeptDialogVisible: false,
       addDeptForm: {},
       defaultProps: {
@@ -311,15 +322,14 @@ export default {
       TJKNameList: [],
       SfmsNameList: [],
       DtfsNameList: [],
-      hosOptions: regionData,
+      regionData,
+      newStr: [],
       addDialogVisible: false,
       RoleList: [],
       hosMenuList: []
     };
   },
   created() {
-    // console.log(TextToCode);
-
     this.getUserList();
     this.getHosMenuList();
     this.getDictionaryEleListOne();
@@ -339,7 +349,6 @@ export default {
       if (res.code != 200) return this.$message.error("数获取失败");
       this.userList = res.rows;
       this.total = res.total;
-      console.log(res);
     },
     async getDictionaryEleListOne() {
       const { data: res } = await this.$http.post("dict/getPreviewData", {
@@ -367,13 +376,7 @@ export default {
     },
     // 修改
     showEditdialog(info) {
-      console.log(info.address);
-      var arr = info.address.split(",");
-      for (var i = 0; i < arr.length; i++) {
-        TextToCode[arr[i]];
-        console.log(arr[i]);
-      }
-
+      this.newStr = info.addressCodes.split(",");
       this.addEditValue = info.hospital;
       this.infoTitle = "修改信息";
       this.editDialogVisible = true;
@@ -381,10 +384,14 @@ export default {
       this.editId = info.id;
     },
     editDialogClosed() {
-      this.newStr = "";
       this.$refs.loginFormRef.resetFields();
     },
     async editPageEnter() {
+      // 区域码转中文
+      const ele = this.$refs.addressRef
+        .getCheckedNodes()[0]
+        .pathLabels.join(",");
+
       let httpUrl = "";
       let parm = {};
       if (this.infoTitle == "修改信息") {
@@ -393,7 +400,8 @@ export default {
           id: this.editId,
           account: this.editAddForm.account,
           hospitalLogo: this.editAddForm.hospitalLogo,
-          address: this.newStr,
+          address: ele.replace(/,/g, ""),
+          addressCodes: this.newStr.join(","),
           deptUuid: this.editAddForm.deptUuid,
           detailedAddress: this.editAddForm.detailedAddress,
           customer: this.editAddForm.customer,
@@ -412,7 +420,8 @@ export default {
         parm = {
           account: this.editAddForm.account,
           hospitalLogo: this.editAddForm.hospitalLogo,
-          address: this.newStr,
+          address: ele.replace(/,/g, ""),
+          addressCodes: this.newStr.join(","),
           deptUuid: this.editAddForm.deptUuid,
           detailedAddress: this.editAddForm.detailedAddress,
           customer: this.editAddForm.customer,
@@ -445,14 +454,7 @@ export default {
     },
     // 级联选择地址
     handleChange(val) {
-      if (this.infoTitle == "新增医院信息") {
-        var addOne = CodeToText[this.editAddForm.address[0]];
-        var addTwo = CodeToText[this.editAddForm.address[1]];
-        var addThree = CodeToText[this.editAddForm.address[2]];
-        var newArr = [];
-        newArr.push(addOne, addTwo, addThree);
-        this.newStr = newArr.join(",");
-      }
+      this.newStr = val;
     },
     // 部门新增
     deptAdd() {

@@ -64,10 +64,10 @@ const routes = [{
       },
       {
         path: '/system/role',
-        name: '角色管理',
+        name: '权限管理',
         component: () => import('@/components/SystemMana/RoleMana.vue'),
         meta: {
-          title: '角色管理'
+          title: '权限管理'
         }
       },
       {
@@ -143,6 +143,8 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
+
+  
   //如果用户访问的路由是/login直接放行
   if (to.path == '/login') return next();
   const tokenStr = window.sessionStorage.getItem('token');
