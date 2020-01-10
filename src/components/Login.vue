@@ -216,7 +216,16 @@ $light_gray: #eee;
   }
 }
 .loginBtn {
-  background-color: orange;
+  background-color: #afdd22;
   border: none;
+}
+.v-enter,
+.v-leave-to {
+  opacity: 0;
+  transform: translateX(80px);
+}
+进入和离开的动画时间段 .v-enter-active,
+.v-leave-active {
+  transition: all 0.5s ease;
 }
 </style>

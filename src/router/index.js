@@ -127,6 +127,14 @@ const routes = [{
         }
       },
       {
+        path: '/packageTemplate/info',
+        name: '套餐模板信息',
+        component: () => import('@/components/BasicInformation/PackageTemplate.vue'),
+        meta: {
+          title: '套餐模板信息'
+        }
+      },
+      {
         path: '/sheet/list',
         name: '量表列表',
         component: () => import('@/components/InventoryMana/InventoryList.vue'),

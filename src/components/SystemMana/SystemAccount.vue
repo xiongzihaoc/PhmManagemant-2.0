@@ -33,8 +33,8 @@
         <el-table-column align="center" prop="userPhone" label="手机号"></el-table-column>
         <el-table-column align="center" prop="status" label="状态" :formatter="ifendcase">
           <template slot-scope="scope">
-            <span style="color:#13ce66" v-if="scope.row.status=== '1'">{{ ifendcase(scope.row) }}</span>
-            <span v-else style="color:#ff4949">{{ ifendcase(scope.row) }}</span>
+            <span style="color:#13ce66;font-weight:700;" v-if="scope.row.status=== '1'">{{ ifendcase(scope.row) }}</span>
+            <span v-else style="color:#ff4949;font-weight:700;">{{ ifendcase(scope.row) }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" prop="operate" label="操作" width="180">

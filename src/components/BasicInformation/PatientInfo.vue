@@ -22,8 +22,8 @@
         :header-cell-style="{background:'#f5f5f5'}"
         style="width: 100%"
       >
-        <el-table-column align="center" type="selection" width="60"></el-table-column>
-        <!-- <el-table-column align="center" prop="userId" label="序号" width="60"></el-table-column> -->
+        <!-- <el-table-column align="center" type="selection" width="60"></el-table-column> -->
+        <el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
         <el-table-column align="center" prop="name" label="姓名"></el-table-column>
         <el-table-column align="center" prop="gender" label="性别"></el-table-column>
         <el-table-column align="center" prop="phone" label="手机号" width="110"></el-table-column>
@@ -40,8 +40,8 @@
         <el-table-column align="center" prop="address" label="家庭住址" show-overflow-tooltip></el-table-column>
         <el-table-column align="center" prop="appStatus" label="激活app" :formatter="ifendcase">
           <template slot-scope="scope">
-            <span style="color:#13ce66" v-if="scope.row.appStatus == '1'">{{ ifendcase(scope.row) }}</span>
-            <span v-else style="color:#ff4949">{{ ifendcase(scope.row) }}</span>
+            <span style="color:#13ce66;font-weight:700;" v-if="scope.row.appStatus == '1'">{{ ifendcase(scope.row) }}</span>
+            <span v-else style="color:#ff4949;font-weight:700;">{{ ifendcase(scope.row) }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" prop="operate" label="操作" width="180">

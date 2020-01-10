@@ -29,8 +29,11 @@
         <el-table-column align="center" prop="price" label="量表价格(元)" show-overflow-tooltip></el-table-column>
         <el-table-column align="center" prop="state" label="状态" :formatter="ifendcase">
           <template slot-scope="scope">
-            <span style="color:#13ce66" v-if="scope.row.state=== '1'">{{ ifendcase(scope.row) }}</span>
-            <span v-else style="color:#E6A23C">{{ ifendcase(scope.row) }}</span>
+            <span
+              style="color:#13ce66;font-weight:700;"
+              v-if="scope.row.state=== '1'"
+            >{{ ifendcase(scope.row) }}</span>
+            <span v-else style="color:#E6A23C;font-weight:700;">{{ ifendcase(scope.row) }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" prop="createBy" label="创建人"></el-table-column>
@@ -76,7 +79,14 @@
           <el-input v-model="editAddForm.name"></el-input>
         </el-form-item>
         <el-form-item label="量表类型" prop="type">
-          <el-input v-model="editAddForm.type"></el-input>
+          <el-select v-model="editAddForm.type" clearable placeholder="请选择">
+            <el-option
+              v-for="item in eleNameList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.name"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="量表价格" prop="price">
           <el-input v-model="editAddForm.price"></el-input>
@@ -129,6 +139,7 @@ export default {
   },
   created() {
     this.getScaleList();
+    this.getDictionaryEleList();
   },
 
   methods: {
@@ -141,6 +152,13 @@ export default {
       if (res.code != 200) return this.$message.error("数获取失败");
       this.userList = res.rows;
       this.total = res.total;
+    },
+    // 数据字典科室列表
+    async getDictionaryEleList() {
+      const { data: res } = await this.$http.post("dict/getPreviewData", {
+        dictValue: "officeType"
+      });
+      this.eleNameList = res.data;
     },
     // 修改
     showEditdialog(info) {

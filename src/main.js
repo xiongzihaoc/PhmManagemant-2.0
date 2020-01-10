@@ -13,6 +13,8 @@ import './assets/iconfont/iconfont.css'
 // 引入md5加密
 import md5 from 'js-md5';
 Vue.prototype.$md5 = md5;
+import animated from 'animate.css'
+Vue.use(animated)
 // 导入axios
 import axios from 'axios'
 

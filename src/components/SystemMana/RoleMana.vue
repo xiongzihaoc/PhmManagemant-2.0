@@ -26,8 +26,11 @@
         <el-table-column align="center" prop="roleName" label="角色"></el-table-column>
         <el-table-column align="center" prop="status" label="状态" :formatter="ifendcase">
           <template slot-scope="scope">
-            <span style="color:#13ce66" v-if="scope.row.status=== '1'">{{ ifendcase(scope.row) }}</span>
-            <span v-else style="color:#ff4949">{{ ifendcase(scope.row) }}</span>
+            <span
+              style="color:#13ce66;font-weight:700;"
+              v-if="scope.row.status=== '1'"
+            >{{ ifendcase(scope.row) }}</span>
+            <span v-else style="color:#ff4949;font-weight:700;">{{ ifendcase(scope.row) }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" prop="operate" label="操作" width="220">
@@ -199,7 +202,6 @@ export default {
       // 获取菜单数据
       const { data: res } = await this.$http.post("menu/list");
       this.hosMenuList = res.data;
-      // this.getLeafKeys(info.menuIds, this.defKeys);
       var str = info.menuIds;
       var arr = str.split(",");
       for (var i = 0; i < arr.length; i++) {
@@ -213,12 +215,10 @@ export default {
           arr.splice(i, 1);
         }
       }
-      this.defKeys = arr
+      this.defKeys = arr;
       this.powerDialogVisible = true;
     },
     powerDialogClosed() {
-      console.log(111);
-      
       this.defKeys = [];
     },
     // 权限修改确定

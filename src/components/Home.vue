@@ -16,7 +16,7 @@
       <el-menu
         background-color="#2D3035"
         text-color="#BFCBD9"
-        active-text-color="orange"
+        active-text-color="#afdd22"
         :unique-opened="true"
         :collapse="isCollapse"
         :collapse-transition="false"
@@ -295,7 +295,7 @@ export default {
   padding-top: 20px;
 }
 .el-menu-item {
-  border-left: 2px solid orange;
+  border-left: 2px solid #afdd22;
 }
 .topTags {
   height: 41px !important;

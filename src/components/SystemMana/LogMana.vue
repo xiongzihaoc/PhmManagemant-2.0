@@ -52,7 +52,7 @@ export default {
       menuList: [],
       pageSize: 10,
       pageNum: 1,
-      total: 0,
+      total: 0
     };
   },
   created() {
@@ -60,14 +60,15 @@ export default {
   },
   methods: {
     async getLogList() {
-      const { data: res } = await this.$http.post("log/list",
-        { pageSize: this.pageSize, pageNum: this.pageNum, operName: this.input }
-      );
+      const { data: res } = await this.$http.post("log/list", {
+        pageSize: this.pageSize,
+        pageNum: this.pageNum,
+        operName: this.input
+      });
       if (res.code != 200) return this.$message.error("数据获取失败");
       this.menuList = res.rows;
       this.total = res.total;
       console.log(res);
-      
     },
     // 搜索
     dicSearch() {
@@ -107,7 +108,7 @@ export default {
         s = "0" + s;
       }
       return `${y}-${mon}-${d} ${h}:${m}:${s}`;
-    },
+    }
   }
 };
 </script>

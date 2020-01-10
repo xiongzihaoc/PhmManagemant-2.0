@@ -22,7 +22,7 @@
 
 .el-tabs__item.is-active {
     color: #fff !important;
-    background-color: orange;
+    background-color: #afdd22;
 }
 
 .el-tooltip__popper {
@@ -30,7 +30,7 @@
 }
 
 .el-dialog__header {
-    background-color: #4991E3;
+    background-color: #afdd22;
     padding: 15px 20px 10px !important;
 }
 
@@ -45,6 +45,53 @@
 .el-dialog__footer {
     padding: 10px 20px 10px !important;
     border-top: 1px solid #f5f5f5;
+}
+
+.el-dialog__footer .el-button--primary {
+    background-color: #afdd22;
+    border-color: #afdd22;
+}
+
+.el-dialog__footer .el-button--primary:hover {
+    background-color: #afdd22;
+    border-color: #afdd22;
+}
+
+.el-button–primary {
+    color: #fff;
+    background-color: #afdd22;
+    border-color: #afdd22;
+}
+
+.el-button–primary:hover {
+    background-color: #afdd22 !important;
+    border-color: #afdd22 !important;
+}
+
+.el-button–primary:focus {
+    background-color: #afdd22 !important;
+    border-color: #afdd22 !important;
+}
+
+.el-row .el-button--primary {
+    background-color: #afdd22;
+    border-color: #afdd22;
+}
+
+.el-row .el-button--primary:hover {
+    background-color: #afdd22 !important;
+    border-color: #afdd22 !important;
+}
+
+.el-row .el-button--primary:focus {
+    background-color: #afdd22 !important;
+    border-color: #afdd22 !important;
+}
+
+.el-checkbox__input.is-checked .el-checkbox__inner,
+.el-checkbox__input.is-indeterminate .el-checkbox__inner {
+    background-color: #afdd22 !important;
+    border-color: #afdd22 !important;
 }
 
 .el-tree .el-tree-node__expand-icon.expanded {

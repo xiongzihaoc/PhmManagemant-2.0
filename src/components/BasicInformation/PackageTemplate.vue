@@ -10,7 +10,7 @@
         </el-col>
         <!-- 添加按钮 -->
         <el-col :span="4">
-          <el-button type="primary" @click="addDictionary">新增字典</el-button>
+          <el-button type="primary" @click="addDictionary">新增套餐模板</el-button>
         </el-col>
       </el-row>
       <el-table
@@ -21,16 +21,16 @@
         row-key="id"
         ref="singleTable"
       >
-        <el-table-column align="center" prop="id" label="字典编码" sortable></el-table-column>
-        <el-table-column align="center" prop="name" label="名称" sortable></el-table-column>
-        <el-table-column align="center" prop="dictValue" label="键值" sortable></el-table-column>
-        <el-table-column align="center" prop="remark" label="备注" sortable show-overflow-tooltip></el-table-column>
-        <el-table-column align="center" prop="dictSort" label="排序号"></el-table-column>
-        <el-table-column align="center" prop="isEnable" label="状态" :formatter="ifendcase">
+        <el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
+        <el-table-column align="center" prop="name" label="套餐名称"></el-table-column>
+        <el-table-column align="center" prop="officeType" label="科室标签"></el-table-column>
+        <el-table-column align="center" prop="price" label="价格"></el-table-column>
+        <el-table-column align="center" prop="describes" label="套餐描述" show-overflow-tooltip></el-table-column>
+        <el-table-column align="center" prop="status" label="状态" :formatter="ifendcase">
           <template slot-scope="scope">
             <span
               style="color:#13ce66;font-weight:700;"
-              v-if="scope.row.isEnable=== '1'"
+              v-if="scope.row.status=== '1'"
             >{{ ifendcase(scope.row) }}</span>
             <span v-else style="color:#ff4949;font-weight:700;">{{ ifendcase(scope.row) }}</span>
           </template>
@@ -71,17 +71,27 @@
       v-dialogDrag
     >
       <el-form ref="addFormRef" :model="addEditForm" label-width="80px">
-        <el-form-item label="名称">
+        <el-form-item label="套餐名称">
           <el-input v-model="addEditForm.name"></el-input>
         </el-form-item>
-        <el-form-item label="键值">
-          <el-input :disabled="disabled" v-model="addEditForm.dictValue"></el-input>
+        <el-form-item label="科室标签">
+          <el-select v-model="addEditForm.officeType" clearable placeholder="请选择">
+            <el-option
+              v-for="item in eleNameList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.name"
+            ></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="备注">
-          <el-input v-model="addEditForm.remark"></el-input>
+        <el-form-item label="价格">
+          <el-input v-model="addEditForm.price"></el-input>
         </el-form-item>
-        <el-form-item label="状态" prop="isEnable" v-if="this.dialogTitle=='修改信息'" v-show="true">
-          <el-select v-model="addEditForm.isEnable" placeholder="请选择">
+        <el-form-item label="套餐描述">
+          <el-input v-model="addEditForm.describes"></el-input>
+        </el-form-item>
+        <el-form-item label="状态" prop="status" v-if="this.dialogTitle=='修改信息'" v-show="true">
+          <el-select v-model="addEditForm.status" placeholder="请选择">
             <el-option label="启用" :value="'1'"></el-option>
             <el-option label="禁用" :value="'0'"></el-option>
           </el-select>
@@ -100,13 +110,14 @@ export default {
     return {
       input: "",
       menuList: [],
+      eleNameList:[],
       addEditForm: {
         name: "",
-        dictValue: "",
-        remark: "",
-        isEnable: ""
+        officeType: "",
+        price: "",
+        describes: "",
+        status: ""
       },
-      parentId: 1,
       selfId: null,
       DialogVisible: false,
       dialogTitle: "",
@@ -117,15 +128,27 @@ export default {
   },
   created() {
     this.getDictionaryList();
+    this.getDictionaryEleList();
   },
   methods: {
     async getDictionaryList() {
-      const { data: res } = await this.$http.post("dict/list", {
-        parentId: 1,
-        name: this.input
+      const { data: res } = await this.$http.post(
+        this.$ajax + "packageTemplate/getPackageTemplateList",
+        {
+          name: this.input
+        }
+      );
+      console.log(res);
+      this.menuList = res.rows;
+    },
+    // 数据字典科室列表
+    async getDictionaryEleList() {
+      const { data: res } = await this.$http.post("dict/getPreviewData", {
+        dictValue: "officeType"
       });
-
-      this.menuList = res.data;
+      console.log(res);
+      
+      this.eleNameList = res.data;
     },
     // 确定修改或添加
     addEditEnter() {
@@ -138,19 +161,22 @@ export default {
           parm = {
             id: this.selfId,
             name: this.addEditForm.name,
-            remark: this.addEditForm.remark,
-            isEnable: this.addEditForm.isEnable
+            officeType: this.addEditForm.officeType,
+            price: this.addEditForm.price,
+            describes: this.addEditForm.describes,
+            status: this.addEditForm.status
           };
         } else {
-          httpUrl = "dict/add";
+          httpUrl = "packageTemplate/savePackageTemplate";
           parm = {
-            parentId: this.parentId,
             name: this.addEditForm.name,
-            dictValue: this.addEditForm.dictValue,
-            remark: this.addEditForm.remark
+            officeType: this.addEditForm.officeType,
+            price: this.addEditForm.price,
+            describes: this.addEditForm.describes,
+            status: this.addEditForm.status
           };
         }
-        const { data: res } = await this.$http.post(httpUrl, parm);
+        const { data: res } = await this.$http.post(this.$ajax + httpUrl, parm);
         if (res.code != 200) return this.$message.error(res.msg);
         this.$message.success(res.msg);
         this.getDictionaryList();
@@ -159,6 +185,8 @@ export default {
     },
     // 修改
     showEditdialog(info) {
+      console.log(info);
+      
       this.selfId = info.id;
       this.disabled = true;
       this.dialogTitle = "修改信息";
@@ -214,7 +242,7 @@ export default {
     },
     // 状态判断
     ifendcase(val) {
-      if (val.isEnable == "1") {
+      if (val.status == "1") {
         return "启用";
       } else {
         return "禁用";

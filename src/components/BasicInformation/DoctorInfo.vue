@@ -22,7 +22,7 @@
         :header-cell-style="{background:'#f5f5f5'}"
         style="width: 100%"
       >
-        <el-table-column align="center" type="selection" width="60"></el-table-column>
+        <!-- <el-table-column align="center" type="selection" width="60"></el-table-column> -->
         <el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
         <el-table-column align="center" prop="name" label="姓名"></el-table-column>
         <el-table-column align="center" prop="gender" label="性别"></el-table-column>
@@ -41,17 +41,20 @@
         <el-table-column align="center" prop="appStatus" label="激活app" :formatter="ifendcaseApp">
           <template slot-scope="scope">
             <span
-              style="color:#13ce66"
+              style="color:#13ce66;font-weight:700;"
               v-if="scope.row.appStatus=== '1'"
             >{{ ifendcaseApp(scope.row) }}</span>
-            <span v-else style="color:#ff4949">{{ ifendcaseApp(scope.row) }}</span>
+            <span v-else style="color:#ff4949;font-weight:700;">{{ ifendcaseApp(scope.row) }}</span>
           </template>
         </el-table-column>
 
         <el-table-column align="center" prop="status" label="状态" :formatter="ifendcase">
           <template slot-scope="scope">
-            <span style="color:#13ce66" v-if="scope.row.status=== '1'">{{ ifendcase(scope.row) }}</span>
-            <span v-else style="color:#ff4949">{{ ifendcase(scope.row) }}</span>
+            <span
+              style="color:#13ce66;font-weight:700;"
+              v-if="scope.row.status=== '1'"
+            >{{ ifendcase(scope.row) }}</span>
+            <span v-else style="color:#ff4949;font-weight:700;">{{ ifendcase(scope.row) }}</span>
           </template>
         </el-table-column>
 
@@ -281,12 +284,15 @@ export default {
     async getHosMenuList() {
       const { data: res } = await this.$http.post("dept/list", {});
       this.hosMenuList = res.data;
+      console.log(res);
+      
       this.idArr.push(res.data[0].id);
     },
     // 修改
     showEditdialog(info) {
       console.log(info);
       
+      this.idArr.push(info.id);
       this.addEditValue = `${info.hospital} / ${info.office}`;
       this.infoTitle = "修改信息";
       this.editDialogVisible = true;
@@ -367,7 +373,7 @@ export default {
       this.getUserList();
     },
     // 部门新增
-    deptAdd() {
+    deptAdd(info) {
       this.addDeptDialogVisible = true;
     },
     addDeptEnter() {

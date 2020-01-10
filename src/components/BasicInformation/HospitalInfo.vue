@@ -22,8 +22,9 @@
         :header-cell-style="{background:'#f5f5f5'}"
         style="width: 100%"
       >
-        <el-table-column align="center" type="selection" width="60"></el-table-column>
-        <el-table-column align="center" prop="hospital" label="医院名称" ></el-table-column>
+        <!-- <el-table-column align="center" type="selection" width="60"></el-table-column> -->
+        <el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
+        <el-table-column align="center" prop="hospital" label="医院名称"></el-table-column>
         <el-table-column align="center" prop="account" label="医院账号" width="100"></el-table-column>
         <el-table-column align="center" prop="hospitalLogo" label="医院图片">
           <template slot-scope="scope">
@@ -52,10 +53,10 @@
         <el-table-column align="center" prop="checked" label="检测报告是否审核" :formatter="ifendcaseAudit">
           <template slot-scope="scope">
             <span
-              style="color:#13ce66"
+              style="color:#13ce66;font-weight:700;"
               v-if="scope.row.checked=== '1'"
             >{{ ifendcaseAudit(scope.row) }}</span>
-            <span v-else style="color:#ff4949">{{ ifendcaseAudit(scope.row) }}</span>
+            <span v-else style="color:#ff4949;font-weight:700;">{{ ifendcaseAudit(scope.row) }}</span>
           </template>
         </el-table-column>
 
@@ -67,10 +68,10 @@
         >
           <template slot-scope="scope">
             <span
-              style="color:#13ce66"
+              style="color:#13ce66;font-weight:700;"
               v-if="scope.row.dataSharing=== '1'"
             >{{ ifendcaseData(scope.row) }}</span>
-            <span v-else style="color:#ff4949">{{ ifendcaseData(scope.row) }}</span>
+            <span v-else style="color:#ff4949;font-weight:700;">{{ ifendcaseData(scope.row) }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -81,14 +82,12 @@
         >
           <template slot-scope="scope">
             <span
-              style="color:#13ce66"
+              style="color:#13ce66;font-weight:700;"
               v-if="scope.row.patientView=== '1'"
             >{{ ifendcaseReport(scope.row) }}</span>
-            <span v-else style="color:#ff4949">{{ ifendcaseReport(scope.row) }}</span>
+            <span v-else style="color:#ff4949;font-weight:700;">{{ ifendcaseReport(scope.row) }}</span>
           </template>
         </el-table-column>
-        <!-- <el-table-column align="center" prop="inputPatientVersion" label="web用户录入版本"></el-table-column> -->
-
         <el-table-column align="center" prop="operate" label="操作" width="180">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
@@ -134,7 +133,7 @@
         <el-form-item label="医院账号" prop="account">
           <el-input v-model="editAddForm.account"></el-input>
         </el-form-item>
-        <el-form-item label="医院logo" prop="hospitalLogo">
+        <el-form-item label="医院图片" prop="hospitalLogo">
           <el-upload
             class="avatar-uploader"
             :action="this.UPLOAD_IMG"
