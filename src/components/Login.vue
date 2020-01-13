@@ -67,7 +67,7 @@ export default {
         ],
         userPassword: [
           { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 5, max: 16, message: "长度在 6 到 16 个字符", trigger: "blur" }
+          { min: 5, max: 16, message: "长度在 5 到 16 个字符", trigger: "blur" }
         ]
       },
       loading: false,
@@ -90,8 +90,6 @@ export default {
         });
         if (res.code != 200) return this.$message.error("用户名或者密码错误");
         // token 存入 sessionstorage
-        console.log(res);
-
         window.sessionStorage.setItem("token", res.data.token);
         // 跳转
         window.localStorage.setItem("loginName", this.loginForm.loginName);

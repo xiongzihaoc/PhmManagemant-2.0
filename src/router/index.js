@@ -59,7 +59,7 @@ const routes = [{
         name: '新增字典数据',
         component: () => import('@/components/SystemMana/JumpDictionaryNext.vue'),
         // meta: {
-          title: '新增字典数据'
+        title: '新增字典数据'
         // }
       },
       {
@@ -81,9 +81,17 @@ const routes = [{
       {
         path: '/system/server',
         name: '服务监控',
-        component: () => import('@/components/SystemMana/ServeMonitoring.vue'),
+        component: () => import('@/components/SysMonitoring/ServeMonitoring.vue'),
         meta: {
           title: '服务监控'
+        }
+      },
+      {
+        path: '/control/data',
+        name: '数据监控',
+        component: () => import('@/components/SysMonitoring/DataMonitoring.vue'),
+        meta: {
+          title: '数据监控'
         }
       },
       {
@@ -147,12 +155,14 @@ const routes = [{
 ]
 
 const router = new VueRouter({
+  // mode: 'history',
+  // base: '/dist',
   routes
 })
 
 router.beforeEach((to, from, next) => {
 
-  
+
   //如果用户访问的路由是/login直接放行
   if (to.path == '/login') return next();
   const tokenStr = window.sessionStorage.getItem('token');

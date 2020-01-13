@@ -102,13 +102,6 @@
 <script>
 export default {
   data() {
-    var checkMobile = (rule, value, cb) => {
-      const regMoblie = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
-      if (regMoblie.test(value)) {
-        return cb();
-      }
-      return cb(new Error("请输入合法的手机号"));
-    };
     return {
       input: "",
       userList: [],
@@ -124,7 +117,8 @@ export default {
       editAddForm: {
         name: "",
         type: "",
-        price: ""
+        price: "",
+        state: ""
       },
       eleNameList: [],
       addDialogVisible: false,
@@ -147,7 +141,8 @@ export default {
     async getScaleList() {
       const { data: res } = await this.$http.post(this.$ajax + "sheet/list", {
         pageSize: this.pageSize,
-        pageNum: this.pageNum
+        pageNum: this.pageNum,
+        name: this.input
       });
       if (res.code != 200) return this.$message.error("数获取失败");
       this.userList = res.rows;
@@ -188,7 +183,8 @@ export default {
         parm = {
           name: this.editAddForm.name,
           type: this.editAddForm.type,
-          price: this.editAddForm.price
+          price: this.editAddForm.price,
+          state: this.editAddForm.state
         };
       }
       this.$refs.loginFormRef.validate(async valid => {

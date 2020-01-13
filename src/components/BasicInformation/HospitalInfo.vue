@@ -383,7 +383,7 @@ export default {
       this.editId = info.id;
     },
     editDialogClosed() {
-      this.$refs.loginFormRef.resetFields();
+      this.newStr = [];
     },
     async editPageEnter() {
       // 区域码转中文

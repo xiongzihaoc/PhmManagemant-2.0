@@ -210,7 +210,8 @@ export default {
           arr[i] == "14" ||
           arr[i] == "2" ||
           arr[i] == "19" ||
-          arr[i] == "24"
+          arr[i] == "24" ||
+          arr[i] == "27"
         ) {
           arr.splice(i, 1);
         }

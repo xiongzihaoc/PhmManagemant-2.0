@@ -75,7 +75,7 @@
           <el-input v-model="addEditForm.name"></el-input>
         </el-form-item>
         <el-form-item label="科室标签">
-          <el-select v-model="addEditForm.officeType" clearable placeholder="请选择">
+          <el-select v-model="addEditForm.officeType" placeholder="请选择">
             <el-option
               v-for="item in eleNameList"
               :key="item.id"
@@ -110,7 +110,7 @@ export default {
     return {
       input: "",
       menuList: [],
-      eleNameList:[],
+      eleNameList: [],
       addEditForm: {
         name: "",
         officeType: "",
@@ -138,7 +138,6 @@ export default {
           name: this.input
         }
       );
-      console.log(res);
       this.menuList = res.rows;
     },
     // 数据字典科室列表
@@ -146,8 +145,6 @@ export default {
       const { data: res } = await this.$http.post("dict/getPreviewData", {
         dictValue: "officeType"
       });
-      console.log(res);
-      
       this.eleNameList = res.data;
     },
     // 确定修改或添加
@@ -185,8 +182,6 @@ export default {
     },
     // 修改
     showEditdialog(info) {
-      console.log(info);
-      
       this.selfId = info.id;
       this.disabled = true;
       this.dialogTitle = "修改信息";
