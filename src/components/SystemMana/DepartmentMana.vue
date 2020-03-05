@@ -150,7 +150,6 @@ export default {
     // 操作里面新增
     addDictionarybtn(info) {
       console.log(info);
-      
       this.dynamicForm = {};
       this.addParentId = info.id;
       this.addParentCode = info.code;

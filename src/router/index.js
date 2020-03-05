@@ -150,6 +150,14 @@ const routes = [{
           title: '量表列表'
         }
       },
+      {
+        path: '/addsheet',
+        name: '题目列表',
+        component: () => import('@/components/InventoryMana/demo.vue'),
+        meta: {
+          title: '题目列表'
+        }
+      },
     ]
   },
 ]
