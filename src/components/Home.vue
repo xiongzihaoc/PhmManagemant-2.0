@@ -75,7 +75,6 @@
           type="card"
           closable
           @tab-click="tabClick"
-          @contextmenu.prevent.native="rightEvent($event)"
           v-if="options.length"
           @tab-remove="tabRemove"
         >

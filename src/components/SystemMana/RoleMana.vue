@@ -21,7 +21,6 @@
         :header-cell-style="{background:'#f5f5f5'}"
         style="width: 100%"
       >
-        <el-table-column align="center" type="selection" width="60"></el-table-column>
         <el-table-column align="center" prop="roleId" label="序号" width="60"></el-table-column>
         <el-table-column align="center" prop="roleName" label="角色"></el-table-column>
         <el-table-column align="center" prop="status" label="状态" :formatter="ifendcase">

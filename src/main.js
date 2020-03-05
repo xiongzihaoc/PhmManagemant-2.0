@@ -13,8 +13,6 @@ import './assets/iconfont/iconfont.css'
 // 引入md5加密
 import md5 from 'js-md5';
 Vue.prototype.$md5 = md5;
-import animated from 'animate.css'
-Vue.use(animated)
 // 导入axios
 import axios from 'axios'
 
@@ -39,7 +37,6 @@ axios.interceptors.response.use(function (config) {
 })
 // 全局挂载axios this.$http调用即可
 Vue.prototype.$http = axios
-
 Vue.prototype.$ajax = 'http://192.168.0.109:8086/zhuoya-sheet/'
 // 文件上传地址
 Vue.prototype.UPLOAD_IMG = 'http://test.phmzykj.com/zhuoya_manager/oss/fileUpload.do'
