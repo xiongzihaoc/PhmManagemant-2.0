@@ -44,7 +44,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column align="center" prop="operate" label="操作" width="100">
+        <el-table-column align="center" prop="operate" label="操作" width="200">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
             <el-button
@@ -53,6 +53,13 @@
               type="primary"
               icon="el-icon-edit"
             >编辑</el-button>
+            <!-- 新增题目按钮 -->
+            <el-button
+              size="mini"
+              @click="addDictionarybtn(scope.row)"
+              type="success"
+              icon="el-icon-circle-plus"
+            >题目列表</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -154,6 +161,9 @@ export default {
         dictValue: "officeType"
       });
       this.eleNameList = res.data;
+    },
+    addDictionarybtn(info) {
+      this.$router.push("/addsheet");
     },
     // 修改
     showEditdialog(info) {
