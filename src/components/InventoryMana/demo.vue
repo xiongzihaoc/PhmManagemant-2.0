@@ -43,9 +43,11 @@
                 <div v-if="item.type==1">
                   <el-radio :label="1">{{list.value}}</el-radio>
                 </div>
+
                 <div class="listlabel" v-else-if="item.type==2">
                   <el-checkbox>{{list.value}}</el-checkbox>
                 </div>
+
                 <div v-else-if="item.type==3">
                   <el-input
                     type="textarea"
@@ -56,8 +58,7 @@
                   ></el-input>
                 </div>
               </div>
-              <div class="bgDv">
-                <!-- <el-input b-></el-input> -->
+              <div class="bgDv" v-if="item.openOrCls==false" v-show="true">
                 <el-button @click="HandleClickAddList(item.changelist)">添加选项</el-button>
               </div>
             </div>
@@ -121,6 +122,7 @@ export default {
         { inid: "2", value: "选项2", check: false }
       ];
       this.single.push({
+        openOrCls: false,
         id: this.singleid++,
         title: this.singletitle + (this.singleid - 1),
         type: this.listtype,
@@ -133,6 +135,7 @@ export default {
         { textareavalue: "", necessary: this.checked, textprompt: false }
       ];
       this.single.push({
+        openOrCls: false,
         id: this.singleid++,
         title: this.singletitle + (this.singleid - 1),
         type: this.listtype,
@@ -153,8 +156,8 @@ export default {
         this.$message.error("最多只能创建30个选项哦");
       }
     },
-    getOneInfo(e) {
-      console.log(e);
+    getOneInfo() {
+      this.openOrCls = true;
     }
   }
 };
