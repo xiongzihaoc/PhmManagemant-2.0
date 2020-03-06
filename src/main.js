@@ -18,7 +18,6 @@ import axios from 'axios'
 
 // // 配置axios
 axios.defaults.baseURL = 'http://test.phmzykj.com/zhuoya-web/'
-
 // axios请求拦截器
 axios.interceptors.request.use(function (config) {
   Nprogress.start()
