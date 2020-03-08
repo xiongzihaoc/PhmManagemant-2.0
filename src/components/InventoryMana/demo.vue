@@ -36,8 +36,8 @@
       <!-- <draggable> -->
       <div class="list_box">
         <ul v-for="(item,index) of single" :key="index">
-          <li @click="getOneInfo">
-            <p style="margin-bottom:10px">{{item.title}}</p>
+          <li @click="getOneInfo(index)">
+            <p style="margin:25px 0 10px 40px">{{item.title}}</p>
             <div class="info-change-list">
               <div class="listiconshow" v-for="(list,index) of item.changelist" :key="index">
                 <div v-if="item.type==1">
@@ -58,9 +58,15 @@
                   ></el-input>
                 </div>
               </div>
-              <div class="bgDv" v-if="item.openOrCls==false" v-show="true">
-                <el-button @click="HandleClickAddList(item.changelist)">添加选项</el-button>
-              </div>
+            </div>
+            <div class="bgDv" v-show="item.openOrCls">
+              <el-input class="conTitle" v-model="editObj.title" style="width:200px;"></el-input>
+              <el-input class="conContent"
+                v-for="(item,index) of editObj.changelist"
+                :key="index"
+                style="width:200px;"
+              ></el-input>
+              <el-button @click="HandleClickAddList(item.changelist)" size="mini">添加选项</el-button>
             </div>
           </li>
         </ul>
@@ -87,7 +93,11 @@ export default {
       timer: null,
       infolistid: 2,
       infolistval: "选项",
-      checked: ""
+      checked: "",
+      editObj: {
+        title: "",
+        changelist: []
+      }
     };
   },
   methods: {
@@ -156,8 +166,15 @@ export default {
         this.$message.error("最多只能创建30个选项哦");
       }
     },
-    getOneInfo() {
-      this.openOrCls = true;
+    getOneInfo(index) {
+      console.log(this.single[index]);
+      this.editObj = this.single[index];
+      // this.single[index].openOrCls = true;
+      if (this.single[index].openOrCls == false) {
+        this.single[index].openOrCls = true;
+      } else {
+        this.single[index].openOrCls = false;
+      }
     }
   }
 };
@@ -215,7 +232,6 @@ ul {
   box-sizing: border-box;
   width: 100%;
   border-top: 1px solid #e0e0e0;
-  padding: 20px 0 20px 50px;
 }
 .list_box li:hover {
   background-color: #fafafa;
@@ -225,26 +241,28 @@ ul {
   top: 5px;
   right: 5px;
 }
-.liInfo {
-  width: 100%;
-  height: 50px;
-  background-color: pink;
+.listiconshow {
+  padding-bottom: 10px;
 }
 .info-change-list {
-  margin-left: 25px;
+  margin-left: 60px;
 }
-.listiconshow {
-  margin-bottom: 10px;
-}
-
 .el-checkbox__input.is-checked .el-checkbox__inner,
 .el-checkbox__input.is-indeterminate .el-checkbox__inner {
   background-color: #afdd22 !important;
   border-color: #afdd22 !important;
 }
 .bgDv {
+  padding: 20px;
   width: 100%;
-  height: 50px;
-  background: pink;
+  background-color: #FAFAFA;
+}
+.conTitle {
+  display: block;
+  margin-bottom: 10px;
+}
+.conContent {
+  display: block;
+    margin-bottom: 10px;
 }
 </style>
