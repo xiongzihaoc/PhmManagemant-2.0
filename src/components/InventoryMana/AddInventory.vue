@@ -9,7 +9,7 @@
         plain
         style="border:none"
         icon="el-icon-s-opportunity"
-        @click="changetype"
+        @click.prevent.stop="changetype"
       >单选</el-button>
       <el-button
         class="chooseType"
@@ -18,7 +18,7 @@
         plain
         style="border:none;"
         icon="el-icon-finished"
-        @click="changetype"
+        @click.prevent.stop="changetype"
       >多选</el-button>
       <el-button
         class="chooseType"
@@ -27,100 +27,109 @@
         plain
         style="border:none;"
         icon="el-icon-tickets"
-        @click="changetype"
+        @click.prevent.stop="changetype"
       >文本</el-button>
     </el-card>
     <el-card class="main_right">
       <h3 style="text-align: center;margin-bottom:40px;">量表标题</h3>
-      <!-- <div> -->
-      <!-- <draggable> -->
+
       <div class="list_box">
-        <ul v-for="(item,index) of single" :key="index">
-          <li @click.stop="getOneInfo(index)">
-            <p style="margin:25px 0 0 40px;font-weight:700;font-size:16px;">{{item.title}}</p>
-            <div class="info-change-list">
-              <div class="listiconshow" v-for="(list,index) of item.changelist" :key="index">
-                <div v-if="item.type==1">
-                  <el-radio :label="1">{{list.value}}</el-radio>
+        <vuedraggable v-model="single">
+          <transition-group tag="p">
+            <ul v-for="(item,index) in single" :key="index">
+              <li @click.prevent.stop="getOneInfo(index)">
+                <p style="margin:25px 0 0 40px;font-weight:700;font-size:16px;">{{item.title}}</p>
+                <div class="info-change-list">
+                  <div class="listiconshow" v-for="(list,index) in item.changelist" :key="index">
+                    <div v-if="item.type==1">
+                      <el-radio :label="1">{{list.value}}</el-radio>
+                    </div>
+                    <div class="listlabel" v-else-if="item.type==2">
+                      <el-checkbox>{{list.value}}</el-checkbox>
+                    </div>
+                    <div v-else-if="item.type==3">
+                      <el-input
+                        type="textarea"
+                        :rows="2"
+                        placeholder="请输入内容"
+                        style="width:400px;"
+                        v-model="item.title"
+                      ></el-input>
+                    </div>
+                  </div>
                 </div>
-                <div class="listlabel" v-else-if="item.type==2">
-                  <el-checkbox>{{list.value}}</el-checkbox>
-                </div>
-                <div v-else-if="item.type==3">
+                <div class="bgDv" v-show="item.openOrCls">
+                  <div class="posImg"></div>
                   <el-input
                     type="textarea"
                     :rows="2"
-                    placeholder="请输入内容"
-                    style="width:400px;"
-                    v-model="list.textareavalue"
+                    class="conTitle"
+                    v-model="item.title"
+                    style="width: 95%;"
                   ></el-input>
+                  <div style="margin-bottom:10px;width:95%;">
+                    <el-select
+                      size="mini"
+                      v-model="item.value"
+                      placeholder="请选择"
+                      style="width:20%;"
+                    >
+                      <el-option
+                        v-for="asItem in options"
+                        :key="asItem.value"
+                        :label="asItem.label"
+                        :value="asItem.value"
+                      ></el-option>
+                    </el-select>
+                    <span style="font-size:14px;color:#ccc;margin-left:80px;">必答</span>
+                    <span style="font-size:14px;color:#ccc;margin-left:80px;">填写提示</span>
+                  </div>
+                  <div
+                    style="margin-bottom:10px;width:95%;background:#e8e8e8;font-size:14px;line-height:28px;"
+                  >
+                    <span style="margin-left:20px;">选项文字</span>
+                    <span style="margin-left:320px;">图片</span>
+                    <span style="margin-left:40px;">说明</span>
+                    <span style="margin-left:40px;">上移下移</span>
+                  </div>
+                  <div v-for="(subItem,index) of item.changelist" :key="index">
+                    <el-input
+                      size="mini"
+                      class="conContent"
+                      v-model="subItem.value"
+                      style="width:300px;display:inline-block;"
+                    ></el-input>
+                    <span style="margin-left:100px;" class="quesImg"></span>
+                    <span style="margin-left:51px;" class="quesInstr"></span>
+                    <span style="margin-left:50px;" class="quesPosTop"></span>
+                    <span style="margin-left:7px;" class="quesPosBottom"></span>
+                  </div>
+
+                  <el-button
+                    @click.prevent.stop="HandleClickAddList(item.changelist)"
+                    size="mini"
+                    style="border:none;background:#f5f5f5;color:#0095ff!important;"
+                    icon="el-icon-circle-plus-outline"
+                  >添加选项</el-button>
+                  <el-button
+                    @click.prevent.stop="HandleClickOver(index)"
+                    type="warning"
+                    style="display:block;margin-top:10px;width:95%"
+                    size="small"
+                  >完成编辑</el-button>
                 </div>
-              </div>
-            </div>
-            <div class="bgDv" v-show="item.openOrCls">
-              <div class="posImg"></div>
-              <el-input
-                type="textarea"
-                :rows="2"
-                class="conTitle"
-                v-model="item.title"
-                style="width: 95%;"
-              ></el-input>
-              <div style="margin-bottom:10px;width:95%;">
-                <el-select size="mini" v-model="item.value" placeholder="请选择" style="width:20%;">
-                  <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
-                </el-select>
-                <span style="font-size:14px;color:#ccc;margin-left:80px;">必答</span>
-                <span style="font-size:14px;color:#ccc;margin-left:80px;">填写提示</span>
-              </div>
-              <div
-                style="margin-bottom:10px;width:95%;background:#e8e8e8;font-size:14px;line-height:28px;"
-              >
-                <span style="margin-left:20px;">选项文字</span>
-                <span style="margin-left:320px;">图片</span>
-                <span style="margin-left:40px;">说明</span>
-                <span style="margin-left:40px;">允许填空</span>
-                <span style="margin-left:40px;">默认</span>
-                <span style="margin-left:40px;">上移下移</span>
-              </div>
-              <el-input
-                size="mini"
-                class="conContent"
-                v-for="(subItem,index) of item.changelist"
-                :key="index"
-                v-model="subItem.value"
-                style="width:300px;"
-              ></el-input>
-              <el-button
-                @click="HandleClickAddList(item.changelist)"
-                size="mini"
-                style="border:none;background:#f5f5f5;color:#0095ff!important;"
-                icon="el-icon-circle-plus-outline"
-              >添加选项</el-button>
-              <el-button
-                @click="HandleClickOver()"
-                type="warning"
-                style="display:block;margin-top:10px;width:95%"
-                size="small"
-              >完成编辑</el-button>
-            </div>
-          </li>
-        </ul>
+              </li>
+            </ul>
+          </transition-group>
+        </vuedraggable>
       </div>
-      <!-- </draggable> -->
-      <!-- </div> -->
     </el-card>
   </div>
 </template>
 <script>
-import draggable from "vuedraggable";
+import vuedraggable from "vuedraggable";
 export default {
-  components: { draggable },
+  components: { vuedraggable },
   data() {
     return {
       radio: "1",
@@ -155,7 +164,6 @@ export default {
   methods: {
     HandleRadio(e) {
       window.console.log(e);
-      console.log(111);
     },
     sorted() {
       if (this.single.length <= 0) {
@@ -220,7 +228,6 @@ export default {
     },
     getOneInfo(index) {
       console.log(this.single[index]);
-      this.editObj = this.single[index];
       this.single[index].openOrCls = true;
       // if (this.single[index].openOrCls == true) {
       //   this.single[index].openOrCls = false;
@@ -228,7 +235,9 @@ export default {
 
       // }
     },
-    HandleClickOver() {}
+    HandleClickOver(index) {
+      this.single[index].openOrCls = false;
+    }
   }
 };
 </script>
@@ -332,5 +341,45 @@ ul {
   height: 12px;
   background-image: url("../../assets/images/icoall.png");
   background-position: 0px -60px;
+}
+.quesImg {
+  background-position: -52px -221px;
+  height: 18px;
+  width: 20px;
+  vertical-align: middle;
+  background-image: url("../../assets/images/icoall.png");
+  background-repeat: no-repeat;
+  display: inline-block;
+  overflow: hidden;
+}
+.quesInstr {
+  background-position: -91px -220px;
+  height: 20px;
+  width: 18px;
+  vertical-align: middle;
+  background-image: url("../../assets/images/icoall.png");
+  background-repeat: no-repeat;
+  display: inline-block;
+  overflow: hidden;
+}
+.quesPosTop {
+  background-position: -120px -113px;
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  background-image: url("../../assets/images/icoall.png");
+  background-repeat: no-repeat;
+  display: inline-block;
+  overflow: hidden;
+}
+.quesPosBottom {
+  background-position: -96px -113px;
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  background-image: url("../../assets/images/icoall.png");
+  background-repeat: no-repeat;
+  display: inline-block;
+  overflow: hidden;
 }
 </style>
