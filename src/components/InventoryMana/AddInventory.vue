@@ -37,9 +37,12 @@
         <vuedraggable v-model="single">
           <transition-group tag="p">
             <ul v-for="(item,index) in single" :key="index">
-              <li @click.prevent.stop="getOneInfo(index)">
-                <p style="margin:25px 0 0 40px;font-weight:700;font-size:16px;">{{item.title}}</p>
-                <div class="info-change-list">
+              <li>
+                <p
+                  style="margin:25px 0 0 40px;font-weight:700;font-size:16px;"
+                  @click.prevent.stop="getOneInfo(index)"
+                >{{item.title}}</p>
+                <div class="info-change-list" @click.prevent.stop="getOneInfo(index)">
                   <div class="listiconshow" v-for="(list,index) in item.changelist" :key="index">
                     <div v-if="item.type==1">
                       <el-radio :label="1">{{list.value}}</el-radio>
@@ -53,7 +56,7 @@
                         :rows="2"
                         placeholder="请输入内容"
                         style="width:400px;"
-                        v-model="item.title"
+                        v-model="list.value"
                       ></el-input>
                     </div>
                   </div>
@@ -81,11 +84,11 @@
                         :value="asItem.value"
                       ></el-option>
                     </el-select>
-                    <span style="font-size:14px;color:#ccc;margin-left:80px;">必答</span>
-                    <span style="font-size:14px;color:#ccc;margin-left:80px;">填写提示</span>
+                    <span style="font-size:14px;color:#6A6A6A;margin-left:80px;">必答</span>
+                    <span style="font-size:14px;color:#6A6A6A;margin-left:80px;">填写提示</span>
                   </div>
                   <div
-                    style="margin-bottom:10px;width:95%;background:#e8e8e8;font-size:14px;line-height:28px;"
+                    style="margin-bottom:10px;width:95%;height:30px;background:#e8e8e8;font-size:14px;line-height:30px;"
                   >
                     <span style="margin-left:20px;">选项文字</span>
                     <span style="margin-left:320px;">图片</span>
@@ -108,9 +111,23 @@
                   <el-button
                     @click.prevent.stop="HandleClickAddList(item.changelist)"
                     size="mini"
-                    style="border:none;background:#f5f5f5;color:#0095ff!important;"
+                    style="border:none;background:#f5f5f5;color:#0095ff!important;margin-bottom:5px;"
                     icon="el-icon-circle-plus-outline"
                   >添加选项</el-button>
+                  <div
+                    style="border:1px dashed #ccc;margin-bottom:10px;width:95%;background:#e8e8e8;font-size:16px;height:40px;line-height:42px;"
+                  >
+                    <span style="margin-left:20px;">逻辑设置：</span>
+                    <span style="margin-left:40px;">
+                      <a href="###" style="color: #666666;text-decoration: underline;">题目关联</a>
+                    </span>
+                    <span style="margin-left:40px;">
+                      <a href="###" style="color: #666666;text-decoration: underline;">跳题逻辑</a>
+                    </span>
+                    <span style="margin-left:40px;">
+                      <a href="###" style="color: #666666;text-decoration: underline;">选项关联</a>
+                    </span>
+                  </div>
                   <el-button
                     @click.prevent.stop="HandleClickOver(index)"
                     type="warning"
@@ -227,13 +244,7 @@ export default {
       }
     },
     getOneInfo(index) {
-      console.log(this.single[index]);
-      this.single[index].openOrCls = true;
-      // if (this.single[index].openOrCls == true) {
-      //   this.single[index].openOrCls = false;
-      // } else {
-
-      // }
+      this.single[index].openOrCls = !this.single[index].openOrCls;
     },
     HandleClickOver(index) {
       this.single[index].openOrCls = false;
@@ -244,6 +255,7 @@ export default {
 <style lang='less'>
 * {
   margin: 0;
+
   padding: 0;
 }
 ul {
@@ -311,6 +323,7 @@ ul {
   padding-bottom: 30px;
 }
 .info-change-list {
+  cursor: move;
   margin-left: 60px;
 }
 .el-checkbox__input.is-checked .el-checkbox__inner,
@@ -322,7 +335,7 @@ ul {
   position: relative;
   border-top: 1px solid #e0e0e0;
   padding: 20px;
-  width: 100%;
+  width: 95%;
   background-color: #f5f5f5;
 }
 .conTitle {
