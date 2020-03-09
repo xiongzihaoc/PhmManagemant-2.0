@@ -1,163 +1,170 @@
 <template>
-  <div class="add-con">
-    <div class="add-info-warrper" v-for="(item,index) of single" :key="index">
-      <div class="add-title-wrapper">
-        QT:
-        <input class="info-title" type="text" v-model="item.title" />
+  <div class="CONTENT" style="position: relative;">
+    <el-card class="main_left">
+      <p class="queschoose">题型选择</p>
+      <el-button
+        class="chooseType"
+        size="mini"
+        type="info"
+        plain
+        style="border:none"
+        icon="el-icon-s-opportunity"
+        @click="changetype"
+      >单选</el-button>
+      <el-button
+        class="chooseType"
+        size="mini"
+        type="info"
+        plain
+        style="border:none;"
+        icon="el-icon-finished"
+        @click="changetype"
+      >多选</el-button>
+      <el-button
+        class="chooseType"
+        size="mini"
+        type="info"
+        plain
+        style="border:none;"
+        icon="el-icon-tickets"
+        @click="changetype"
+      >文本</el-button>
+    </el-card>
+    <el-card class="main_right">
+      <h3 style="text-align: center;margin-bottom:40px;">量表标题</h3>
+      <!-- <div> -->
+      <!-- <draggable> -->
+      <div class="list_box">
+        <ul v-for="(item,index) of single" :key="index">
+          <li @click.stop="getOneInfo(index)">
+            <p style="margin:25px 0 0 40px;font-weight:700;font-size:16px;">{{item.title}}</p>
+            <div class="info-change-list">
+              <div class="listiconshow" v-for="(list,index) of item.changelist" :key="index">
+                <div v-if="item.type==1">
+                  <el-radio :label="1">{{list.value}}</el-radio>
+                </div>
+                <div class="listlabel" v-else-if="item.type==2">
+                  <el-checkbox>{{list.value}}</el-checkbox>
+                </div>
+                <div v-else-if="item.type==3">
+                  <el-input
+                    type="textarea"
+                    :rows="2"
+                    placeholder="请输入内容"
+                    style="width:400px;"
+                    v-model="list.textareavalue"
+                  ></el-input>
+                </div>
+              </div>
+            </div>
+            <div class="bgDv" v-show="item.openOrCls">
+              <div class="posImg"></div>
+              <el-input
+                type="textarea"
+                :rows="2"
+                class="conTitle"
+                v-model="item.title"
+                style="width: 95%;"
+              ></el-input>
+              <div style="margin-bottom:10px;width:95%;">
+                <el-select size="mini" v-model="item.value" placeholder="请选择" style="width:20%;">
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+                <span style="font-size:14px;color:#ccc;margin-left:80px;">必答</span>
+                <span style="font-size:14px;color:#ccc;margin-left:80px;">填写提示</span>
+              </div>
+              <div
+                style="margin-bottom:10px;width:95%;background:#e8e8e8;font-size:14px;line-height:28px;"
+              >
+                <span style="margin-left:20px;">选项文字</span>
+                <span style="margin-left:320px;">图片</span>
+                <span style="margin-left:40px;">说明</span>
+                <span style="margin-left:40px;">允许填空</span>
+                <span style="margin-left:40px;">默认</span>
+                <span style="margin-left:40px;">上移下移</span>
+              </div>
+              <el-input
+                size="mini"
+                class="conContent"
+                v-for="(subItem,index) of item.changelist"
+                :key="index"
+                v-model="subItem.value"
+                style="width:300px;"
+              ></el-input>
+              <el-button
+                @click="HandleClickAddList(item.changelist)"
+                size="mini"
+                style="border:none;background:#f5f5f5;color:#0095ff!important;"
+                icon="el-icon-circle-plus-outline"
+              >添加选项</el-button>
+              <el-button
+                @click="HandleClickOver()"
+                type="warning"
+                style="display:block;margin-top:10px;width:95%"
+                size="small"
+              >完成编辑</el-button>
+            </div>
+          </li>
+        </ul>
       </div>
-      <div class="info-icon-show">
-        <div class="info-icon">
-          <div
-            class="iconfont add-info-icon"
-            title="上移"
-            @click="UpChangeSingleList(item.id)"
-          >&#xe632;</div>
-          <div
-            class="iconfont add-info-icon"
-            title="下移"
-            @click="DownChangeSingleList(item.id)"
-          >&#xe600;</div>
-          <div
-            class="iconfont add-info-icon"
-            title="复用"
-            @click="CopyChangeSingleList(item.id)"
-          >&#xe60e;</div>
-          <div
-            class="iconfont add-info-icon"
-            title="删除"
-            @click="RemoveChangeSingleList(item.id)"
-          >&#xe8d0;</div>
-        </div>
-      </div>
-      <div class="info-change-list">
-        <div class="listiconshow" v-for="(list,index) of item.changelist" :key="index">
-          <label for="list.inid" v-if="item.type==1">
-            <input
-              type="radio"
-              id="list.inid"
-              name="change-one"
-              :value="list.value"
-              @click="HandleRadio"
-            />
-            <input v-model="list.value" type="text" class="change-list" />
-            <span
-              class="iconfont listicon"
-              @click.prevent.stop="HandleClickUp(index,item.changelist)"
-            >&#xe60a;</span>
-            <span
-              class="iconfont listicon"
-              @click.prevent.stop="HandleClickDown(index,item.changelist)"
-            >&#xe602;</span>
-            <span
-              class="iconfont listicon"
-              @click.prevent.stop="HandleClickRemoveList(index,item.changelist)"
-            >&#xe60b;</span>
-          </label>
-          <label for="list.inid" class="listlabel" v-else-if="item.type==2">
-            <input
-              type="checkbox"
-              id="list.inid"
-              name="change-one"
-              :value="list.value"
-              @click="HandleRadio"
-            />
-            <input v-model="list.value" type="text" class="change-list" />
-            <span
-              class="iconfont listicon"
-              @click.prevent.stop="HandleClickUp(index,item.changelist)"
-            >&#xe60a;</span>
-            <span
-              class="iconfont listicon"
-              @click.prevent.stop="HandleClickDown(index,item.changelist)"
-            >&#xe602;</span>
-            <span
-              class="iconfont listicon"
-              @click.prevent.stop="HandleClickRemoveList(index,item.changelist)"
-            >&#xe60b;</span>
-          </label>
-          <div v-else-if="item.type==3">
-            <textarea class="textarea" placeholder="请在此填写内容" v-model="list.textareavalue"></textarea>
-            <label class="required">
-              <input @click="HandleChecked" type="checkbox" v-model="list.necessary" />
-              <span>是否必填</span>
-            </label>
-          </div>
-        </div>
-        <div class="add-changelist-button" @click="HandleClickAddList(item.changelist)">
-          <span class="iconfont">&#xe631;</span>
-          添加选项
-        </div>
-      </div>
-    </div>
-    <div class="select-wrapper">
-      <div class="add-explain">添加问题:</div>
-      <div class="select-button" @click="changetype">
-        <span class="iconfont">&#xe607;</span>
-        单选题
-      </div>
-      <div class="select-button" @click="changetype">
-        <span class="iconfont">&#xe607;</span>
-        多选题
-      </div>
-      <div class="select-button" @click="changetype">
-        <span class="iconfont">&#xe607;</span>
-        文本题
-      </div>
-    </div>
+      <!-- </draggable> -->
+      <!-- </div> -->
+    </el-card>
   </div>
 </template>
-
 <script>
+import draggable from "vuedraggable";
 export default {
-  name: "CreateAdd",
+  components: { draggable },
   data() {
     return {
-      //创建选题
-      single: [
-        // {
-        //     id:'1',
-        //     title:'题目1',
-        //     type:'1',
-        //     changelist:[
-        //         {inid:'1',value:'选项1',check:false},
-        //         {inid:'2',value:'选项2',check:false}
-        //     ],
-        // },
-        // {
-        //     id:'2',
-        //     title:'题目2',
-        //     type:'2',
-        //     changelist:[
-        //         {inid:'1',value:'选项1',check:false},
-        //         {inid:'2',value:'选项2',check:false}
-        //     ],
-        // },
-        // {
-        //     id:'3',
-        //     title:'题目2',
-        //     type:'3',
-        //     changelist:[
-        //         {textareavalue:'',necessary:[],textprompt:false},
-        //     ],
-        // }
-      ],
+      radio: "1",
+      checkedCities: [],
+      textarea: "",
+      single: [],
+      listtype: "",
       singleid: 1,
       singletitle: "题目",
       listtype: "",
       timer: null,
       infolistid: 2,
       infolistval: "选项",
-      checked: ""
+      checked: "",
+      selValue: "",
+      options: [
+        {
+          value: "1",
+          label: "单选题"
+        },
+        {
+          value: "2",
+          label: "多选题"
+        },
+        {
+          value: "3",
+          label: "文本题"
+        }
+      ]
     };
   },
   methods: {
     HandleRadio(e) {
-      window.console.log(e.target.value);
+      window.console.log(e);
+      console.log(111);
     },
-    //指定type类型
+    sorted() {
+      if (this.single.length <= 0) {
+        this.singleid = "1";
+      } else if (!(this.single.length == this.singleid)) {
+        this.singleid = this.single.length + 1;
+      }
+    },
     changetype(e) {
-      console.log(e);
-      
       if (e.target.innerText.indexOf("单") > -1) {
         this.listtype = 1;
         this.CreateChangeSingleList();
@@ -169,14 +176,6 @@ export default {
         this.CreateChangeTextareaList();
       }
     },
-    //整理排序
-    sorted() {
-      if (this.single.length <= 0) {
-        this.singleid = "1";
-      } else if (!(this.single.length == this.singleid)) {
-        this.singleid = this.single.length + 1;
-      }
-    },
     //创建一个新单/多选题
     CreateChangeSingleList() {
       this.sorted();
@@ -185,268 +184,153 @@ export default {
         { inid: "2", value: "选项2", check: false }
       ];
       this.single.push({
+        openOrCls: false,
         id: this.singleid++,
         title: this.singletitle + (this.singleid - 1),
         type: this.listtype,
         changelist: changelist
       });
     },
-    //判断文本题是否必填
-    HandleChecked(e) {
-      if (e.target.checked) {
-        this.checked = "必填";
-      }
-    },
-    //创建一个新文本选题
     CreateChangeTextareaList() {
       this.sorted();
       let changelist = [
         { textareavalue: "", necessary: this.checked, textprompt: false }
       ];
       this.single.push({
+        openOrCls: false,
         id: this.singleid++,
         title: this.singletitle + (this.singleid - 1),
         type: this.listtype,
         changelist: changelist
       });
     },
-    //删除指定选题
-    RemoveChangeSingleList(id) {
-      this.single.splice(id, 1);
-    },
-    //指定某个选题选项上移
-    UpChangeSingleList(id) {
-      if (id == 0) {
-        return false;
-      } else {
-        this.single.splice(id - 1, 0, this.single[id]);
-        this.single.splice(id + 1, 1);
-      }
-    },
-    //指定某个选题选项下移
-    DownChangeSingleList(id) {
-      if (id >= 10 || id == this.single.length - 1) {
-        return false;
-      } else {
-        this.single.splice(id + 2, 0, this.single[id]);
-        this.single.splice(id, 1);
-      }
-    },
-    //复用某个选题
-    CopyChangeSingleList(id) {
-      let index = this.single[id];
-      index = Object.assign({}, index); //不这样写会无限循环，即便如此id还是重复了
-      this.single.splice(id + 1, 0, index);
-    },
     //创建内部选项
     HandleClickAddList(list) {
       if (!(list.length == this.infolistid)) {
         this.infolistid = list.length;
       }
-      if (list.length < 10) {
+      if (list.length < 30) {
         list.push({
           id: this.infolistid++,
           value: this.infolistval + this.infolistid
         });
       } else {
-        this.$message.error('最多只能创建10个选项')
+        this.$message.error("最多只能创建30个选项哦");
       }
     },
-    //删除指定内部选项
-    HandleClickRemoveList(index, list) {
-      list.splice(index, 1);
+    getOneInfo(index) {
+      console.log(this.single[index]);
+      this.editObj = this.single[index];
+      this.single[index].openOrCls = true;
+      // if (this.single[index].openOrCls == true) {
+      //   this.single[index].openOrCls = false;
+      // } else {
+
+      // }
     },
-    //内部选项上移
-    HandleClickUp(index, list) {
-      if (index == 0) {
-        return false;
-      } else {
-        list.splice(index - 1, 0, list[index]);
-        list.splice(index + 1, 1);
-      }
-    },
-    //内部选项下移
-    HandleClickDown(index, list) {
-      if (index >= 10 || index == list.length - 1) {
-        return false;
-      } else {
-        list.splice(index + 2, 0, list[index]);
-        list.splice(index, 1);
-      }
-    }
-  },
-  watch: {
-    //侦听single数组
-    single: {
-      handler() {
-        if (this.timer) {
-          //提升性能
-          clearTimeout(this.timer);
-        }
-        this.timer = setTimeout(() => {
-          this.single.forEach((val, index) => {
-            val.id = index;
-          });
-          let single = "single" + this.$route.params.id;
-          localStorage.setItem(single, JSON.stringify(this.single));
-        }, 100);
-      },
-      // 开启深度监听
-      deep: true,
-      immediate: true
-    }
-  },
-  mounted() {
-    //页面加载或刷新时把存在本地的数据赋予
-    let id = "single" + this.$route.params.id;
-    this.single = JSON.parse(localStorage.getItem(id)) || [];
+    HandleClickOver() {}
   }
 };
 </script>
-
-<style scoped>
-.add-con {
+<style lang='less'>
+* {
+  margin: 0;
+  padding: 0;
+}
+ul {
+  list-style: none;
+}
+.main_left {
+  position: fixed;
+  z-index: 100;
+  left: 25%;
+  top: 112px;
+  width: 10%;
+  height: 850px;
+  padding: 20px;
+}
+.main_right {
+  overflow: auto;
   box-sizing: border-box;
-  padding: 10px 0;
-  border-top: 1px solid #e1e1e1;
-  border-bottom: 1px solid #e1e1e1;
+  position: fixed;
+  z-index: 100;
+  left: 37.5%;
+  top: 112px;
+  padding-top: 20px;
+  height: 850px;
+  width: 50%;
+}
+.queschoose {
+  text-align: center;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 4px 0;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  background-color: #f5f5f5;
+}
+.chooseType {
+  text-align: center;
+  display: inline-block;
+  margin: 0 20px 10px 0;
   overflow: hidden;
 }
-.add-explain {
-  height: 20px;
-  line-height: 20px;
-  font-size: 1.2em;
-  margin-right: 2em;
+.CONTENT .el-button + .el-button {
+  margin-left: 0px;
 }
-@media screen and (max-width: 500px) {
-  .add-explain {
-    display: none;
-  }
+.CONTENT .el-card__body {
+  padding: 0;
 }
-.add-explain > span {
-  vertical-align: middle;
-  font-size: 1.2em;
-}
-.select-wrapper {
-  background: #fff;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  padding: 10px 0;
-  border: 1px solid rgba(109, 107, 107, 0.664);
-}
-.select-wrapper:hover {
-  background: #e1e1e1;
-}
-.select-button {
-  border: 1px solid black;
-  border-radius: 5px;
-  width: 8%;
-  min-width: 70px;
-  height: 20px;
-  line-height: 20px;
-  margin-right: 5px;
-}
-.select-button:hover {
-  background: #31383e;
-  color: #fff;
-  cursor: pointer;
-}
-.add-info-warrper {
-  padding: 10px;
-  margin-bottom: 5px;
-  min-width: 350px;
-  min-height: 180px;
-}
-.add-con .add-info-warrper:hover {
-  box-shadow: 1px 1px 2px 2px #eee;
-}
-.add-title-wrapper {
-  font-size: 1.2em;
-  margin-bottom: 5px;
-}
-.add-title-wrapper .info-title {
+.list_box li {
+  position: relative;
   box-sizing: border-box;
-  width: 90%;
-  height: 30px;
-  padding: 3px 5px;
-  color: rgb(151, 148, 148);
-  border-radius: 3px;
+  width: 100%;
+  border-top: 1px solid #e0e0e0;
 }
-.add-title-wrapper .info-title:hover {
-  background: rgba(255, 68, 0, 0.158);
-  border: 1px solid #31708f;
+.list_box li:hover {
+  background-color: #fafafa;
 }
-.info-icon-show {
-  width: 2em;
-  vertical-align: top;
-  display: inline-block;
+.list_box li .tips {
+  position: absolute;
+  top: 5px;
+  right: 5px;
 }
-.info-icon {
-  width: 2em;
-  display: none;
-  vertical-align: top;
+.listiconshow {
+  padding-top: 10px;
 }
-.add-info-warrper:hover .info-icon {
-  display: inline-block;
+.listiconshow:last-child {
+  padding-bottom: 30px;
 }
-.add-info-icon {
-  padding-bottom: 15px;
-  width: 27px;
-  font-size: 18px;
-  cursor: pointer;
+.info-change-list {
+  margin-left: 60px;
 }
-.add-info-icon:hover {
-  color: #018fe5;
+.el-checkbox__input.is-checked .el-checkbox__inner,
+.el-checkbox__input.is-indeterminate .el-checkbox__inner {
+  background-color: #afdd22 !important;
+  border-color: #afdd22 !important;
 }
-.add-info-warrper .info-change-list {
-  display: inline-block;
-  width: 85%;
+.bgDv {
+  position: relative;
+  border-top: 1px solid #e0e0e0;
+  padding: 20px;
+  width: 100%;
+  background-color: #f5f5f5;
 }
-.info-change-list .change-list {
-  box-sizing: border-box;
-  width: 90%;
-  padding: 0 3px;
-  border-radius: 3px;
-  color: rgb(151, 148, 148);
-  margin-bottom: 3px;
-  height: 30px;
-}
-.info-change-list .change-list:hover {
-  background: rgba(255, 68, 0, 0.158);
-  border: 1px solid #31708f;
-}
-.info-change-list .add-changelist-button {
-  padding: 15px 10px;
-  font-size: 1.2em;
-  color: rgb(151, 148, 148);
-  cursor: pointer;
-}
-.add-changelist-button:hover {
-  color: #a94442;
-}
-.listicon {
-  color: #018fe5;
-  display: none;
-  vertical-align: middle;
-  text-align: right;
-  font-size: 1.3em;
-  margin-left: 2px;
-  cursor: pointer;
-}
-.listiconshow:hover .listicon {
-  display: inline-block;
-}
-.textarea {
-  border: 1px solid;
-  width: 90%;
-  height: 100px;
-  border-radius: 3px;
-}
-.textarea:hover {
-  background: rgba(255, 68, 0, 0.158);
-}
-.required {
+.conTitle {
   display: block;
+  margin-bottom: 10px;
+}
+.conContent {
+  display: block;
+  margin-bottom: 10px;
+}
+.posImg {
+  position: absolute;
+  top: -12px;
+  left: 94px;
+  width: 24px;
+  height: 12px;
+  background-image: url("../../assets/images/icoall.png");
+  background-position: 0px -60px;
 }
 </style>

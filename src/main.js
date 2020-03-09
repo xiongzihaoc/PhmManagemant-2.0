@@ -10,11 +10,11 @@ import Nprogress from 'nprogress'
 import 'nprogress/nprogress.css'
 // 导入字体图表图标
 import './assets/iconfont/iconfont.css'
-import VueQuillEditor from 'vue-quill-editor'
-import 'quill/dist/quill.core.css'
-import 'quill/dist/quill.snow.css'
-import 'quill/dist/quill.bubble.css'
-Vue.use(VueQuillEditor);
+// import VueQuillEditor from 'vue-quill-editor'
+// import 'quill/dist/quill.core.css'
+// import 'quill/dist/quill.snow.css'
+// import 'quill/dist/quill.bubble.css'
+// Vue.use(VueQuillEditor);
 // 引入md5加密
 import md5 from 'js-md5';
 Vue.prototype.$md5 = md5;

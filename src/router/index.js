@@ -153,7 +153,7 @@ const routes = [{
       {
         path: '/addsheet',
         name: '题目列表',
-        component: () => import('@/components/InventoryMana/demo.vue'),
+        component: () => import('@/components/InventoryMana/AddInventory.vue'),
         meta: {
           title: '题目列表'
         }

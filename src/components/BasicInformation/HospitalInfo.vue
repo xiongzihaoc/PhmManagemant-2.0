@@ -375,6 +375,7 @@ export default {
     },
     // 修改
     showEditdialog(info) {
+      // console.log(info);
       this.newStr = info.addressCodes.split(",");
       this.addEditValue = info.hospital;
       this.infoTitle = "修改信息";
