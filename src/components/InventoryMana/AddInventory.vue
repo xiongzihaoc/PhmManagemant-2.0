@@ -351,8 +351,7 @@ export default {
       }
     },
     getOneInfo(index) {
-      console.log(index);
-      this.single[index] = true;
+      // console.log(index);
       // this.openOr = true
       // this.single[index].openOrCls = !this.single[index].openOrCls;
     },
