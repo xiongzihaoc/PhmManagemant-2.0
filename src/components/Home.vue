@@ -90,9 +90,9 @@
       <el-main>
         <router-view></router-view>
       </el-main>
-      <!-- <el-footer>
+      <!-- <el-footer style="z-index:9999">
        Copyright © 2019 zhuoya All rights reserved
-      </el-footer>-->
+      </el-footer> -->
     </el-container>
   </el-container>
 </template>

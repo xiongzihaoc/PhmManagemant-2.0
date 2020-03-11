@@ -2,7 +2,7 @@
   <div class="CONTENT" style="position: relative;">
     <el-card class="main_left">
       <p class="queschoose">题型选择</p>
-      <div>
+      <div class="changeBtn">
         <el-button
           class="chooseType"
           size="mini"
@@ -42,46 +42,61 @@
       </div>
     </el-card>
     <el-card class="main_right">
-      <h3 style="text-align: center;margin-bottom:40px;">量表标题</h3>
+      <h3 style="text-align: center;margin-bottom:40px;">{{inveName}}</h3>
       <div class="list_box">
+        <!-- 拖拽模块 -->
         <vuedraggable v-model="single">
           <transition-group tag="p">
+            <!-- 循环生成各项题目 -->
             <ul v-for="(item,index) in single" :key="index">
               <li>
                 <p
                   style="margin:25px 0 0 40px;font-weight:700;font-size:16px;"
                   @click.prevent.stop="getOneInfo(index)"
-                >{{item.title}}</p>
+                >{{item.quesContent}}</p>
+                <!-- 编辑删除按钮 -->
+                <div class="editDel">
+                  <el-button
+                    plain
+                    size="mini"
+                    class="editBtn"
+                    @click.prevent.stop="editBtn(index)"
+                  >编辑</el-button>
+                  <el-button plain size="mini" class="delBtn" @click.prevent.stop="delBtn(item,index)">删除</el-button>
+                </div>
                 <div class="info-change-list" @click.prevent.stop="getOneInfo(index)">
-                  <div class="listiconshow" v-for="(list,index) in item.changelist" :key="index">
-                    <div v-if="item.type==1">
-                      <el-radio :label="1">{{list.value}}</el-radio>
+                  <!-- 循环生成选项 -->
+                  <div class="listiconshow" v-for="(list,index) in item.option" :key="index">
+                    <!-- 判断type类型 -->
+                    <div v-if="item.quesType==1">
+                      <el-radio :label="1">{{list.optContent}}</el-radio>
                     </div>
-                    <div class="listlabel" v-else-if="item.type==2">
-                      <el-checkbox>{{list.value}}</el-checkbox>
+                    <div class="listlabel" v-else-if="item.quesType==2">
+                      <el-checkbox>{{list.optContent}}</el-checkbox>
                     </div>
-                    <div v-else-if="item.type==3">
+                    <div v-else-if="item.quesType==3">
                       <el-input
                         type="textarea"
                         :rows="2"
                         placeholder="请输入内容"
                         style="width:400px;"
-                        v-model="list.value"
+                        v-model="list.optContent"
                       ></el-input>
                     </div>
-                    <div v-if="item.type==4">
-                      <el-radio :label="2" style="margin-right:10px;">{{list.value}}</el-radio>
-                      <span style="color:orange;font-size:14px;">( 分值：{{list.score}} )</span>
+                    <div v-if="item.quesType==4">
+                      <el-radio :label="2" style="margin-right:10px;">{{list.optContent}}</el-radio>
+                      <span style="color:orange;font-size:14px;">( 分值：{{list.optScore}} )</span>
                     </div>
                   </div>
                 </div>
-                <div class="bgDv" v-show="item.openOrCls">
+                <!-- 编辑框 -->
+                <div class="bgDv" v-show="openOr">
                   <div class="posImg"></div>
                   <el-input
                     type="textarea"
                     :rows="2"
                     class="conTitle"
-                    v-model="item.title"
+                    v-model="item.quesContent"
                     style="width: 95%;"
                   ></el-input>
                   <div style="margin-bottom:10px;width:95%;">
@@ -109,18 +124,22 @@
                     <span style="margin-left:20px;">选项文字</span>
                     <span style="margin-left:288px;">图片</span>
                     <span style="margin-left:40px;">说明</span>
-                    <span style="margin-left:40px;" v-if="item.type == 4" v-show="true">分数</span>
-                    <span v-if="item.type == 4" style="margin-left:80px;">上移下移</span>
+                    <span style="margin-left:40px;" v-if="item.quesType == 4" v-show="true">分数</span>
+                    <span v-if="item.quesType == 4" style="margin-left:80px;">上移下移</span>
                     <span v-else style="margin-left:80px;">上移下移</span>
                   </div>
-                  <div v-for="(subItem,i) in item.changelist" :key="i">
+                  <div v-for="(subItem,i) in item.option" :key="i">
                     <el-input
                       size="mini"
                       class="conContent"
-                      v-model="subItem.value"
+                      v-model="subItem.optContent"
                       style="width:220px;display:inline-block;"
                     ></el-input>
-                    <span style="margin-left:5px;" class="quesPosAdd"></span>
+                    <span
+                      style="margin-left:5px;"
+                      class="quesPosAdd"
+                      @click.prevent.stop="quesPosAdd(item.option,index,i)"
+                    ></span>
                     <span
                       style="margin-left:3px;"
                       class="quesPosDel"
@@ -133,19 +152,28 @@
                     ></span>
                     <span style="margin-left:51px;" class="quesInstr"></span>
                     <el-input
-                      v-if="item.type == 4"
+                      v-if="item.quesType == 4"
                       v-show="true"
                       size="mini"
-                      v-model="subItem.score"
+                      v-model="subItem.optScore"
                       style="width:40px;display:inline-block;margin-left:34px;padding:5px;text-align:center;"
                     ></el-input>
-                    <span v-if="item.type == 4" style="margin-left:75px;" class="quesPosTop"></span>
-                    <span v-else style="margin-left:90px;" class="quesPosTop"></span>
-                    <span style="margin-left:7px;" class="quesPosBottom"></span>
+                    <span v-if="item.quesType == 4" style="margin-left:75px;" class="quesPosTop"></span>
+                    <span
+                      v-else
+                      style="margin-left:90px;"
+                      class="quesPosTop"
+                      @click.prevent.stop="quesPosTop(item.option.i)"
+                    ></span>
+                    <span
+                      style="margin-left:7px;"
+                      class="quesPosBottom"
+                      @click.prevent.stop="quesPosBottom(item.option.i)"
+                    ></span>
                   </div>
-
+                  <!-- 添加选项按钮 -->
                   <el-button
-                    @click.prevent.stop="HandleClickAddList(item.changelist)"
+                    @click.prevent.stop="HandleClickAddList(item.option,index)"
                     size="mini"
                     style="border:none;background:#f5f5f5;color:#0095ff!important;margin-bottom:5px;"
                     icon="el-icon-circle-plus-outline"
@@ -164,6 +192,7 @@
                       <a href="###" style="color: #666666;text-decoration: underline;">选项关联</a>
                     </span>
                   </div>
+                  <!-- 完成编辑按钮 -->
                   <el-button
                     @click.prevent.stop="HandleClickOver(index)"
                     type="warning"
@@ -209,13 +238,15 @@ export default {
       listtype: "",
       singleid: 1,
       singletitle: "题目",
-      listtype: "",
       timer: null,
       infolistid: 2,
       score: 3,
       infolistval: "选项",
       checked: "",
       selValue: "",
+      sheetUuid: "",
+      inveName: "",
+      openOr: false,
       options: [
         {
           value: "1",
@@ -236,9 +267,23 @@ export default {
       editDialogVisible: false
     };
   },
+  created() {
+    this.sheetUuid = this.$route.query.uuid;
+    this.inveName = this.$route.query.inveName;
+    this.sheetQuesList();
+  },
   methods: {
     HandleRadio(e) {
       window.console.log(e);
+    },
+    async sheetQuesList() {
+      const { data: res } = await this.$http.post(
+        this.$ajax + "sheetQues/list",
+        {
+          sheetUuid: this.sheetUuid
+        }
+      );
+      this.single = res.rows;
     },
     sorted() {
       if (this.single.length <= 0) {
@@ -249,16 +294,16 @@ export default {
     },
     changetype(e) {
       if (e.target.innerText.indexOf("单") > -1) {
-        this.listtype = 1;
+        this.listtype = "1";
         this.CreateChangeSingleList();
       } else if (e.target.innerText.indexOf("多") > -1) {
-        this.listtype = 2;
+        this.listtype = "2";
         this.CreateChangeSingleList();
       } else if (e.target.innerText.indexOf("文本") > -1) {
-        this.listtype = 3;
+        this.listtype = "3";
         this.CreateChangeTextareaList();
       } else {
-        this.listtype = 4;
+        this.listtype = "4";
         this.CreateChangeSingleList();
       }
     },
@@ -266,15 +311,15 @@ export default {
     CreateChangeSingleList() {
       this.sorted();
       let changelist = [
-        { inid: "1", value: "选项1", score: "1", check: false },
-        { inid: "2", value: "选项2", score: "2", check: false }
+        { inid: "1", optContent: "选项1", optScore: "1", check: false },
+        { inid: "2", optContent: "选项2", optScore: "2", check: false }
       ];
       this.single.push({
         openOrCls: false,
         id: this.singleid++,
-        title: this.singletitle + (this.singleid - 1),
-        type: this.listtype,
-        changelist: changelist
+        quesContent: this.singletitle + (this.singleid - 1),
+        quesType: this.listtype,
+        option: changelist
       });
     },
     CreateChangeTextareaList() {
@@ -285,13 +330,13 @@ export default {
       this.single.push({
         openOrCls: false,
         id: this.singleid++,
-        title: this.singletitle + (this.singleid - 1),
-        type: this.listtype,
-        changelist: changelist
+        quesContent: this.singletitle + (this.singleid - 1),
+        quesType: this.listtype,
+        option: changelist
       });
     },
     //创建内部选项
-    HandleClickAddList(list) {
+    HandleClickAddList(list, index) {
       if (!(list.length == this.infolistid)) {
         this.infolistid = list.length;
       }
@@ -299,25 +344,74 @@ export default {
         list.push({
           score: this.score++,
           id: this.infolistid++,
-          value: this.infolistval + this.infolistid
+          optContent: this.infolistval + this.infolistid
         });
       } else {
         this.$message.error("最多只能创建30个选项哦");
       }
     },
     getOneInfo(index) {
-      this.single[index].openOrCls = !this.single[index].openOrCls;
+      console.log(index);
+      this.single[index] = true;
+      // this.openOr = true
+      // this.single[index].openOrCls = !this.single[index].openOrCls;
+    },
+    // 删除题目
+    async delBtn(info,index) {
+      const { data: res } = await this.$http.post(
+        this.$ajax + "sheetQues/remove",
+        {
+          quesUuid: info.quesUuid
+        }
+      );
+      this.single.splice(index, 1);
+    },
+    // 编辑题目
+    editBtn(index) {
+      // this.single[index].openOrCls = !this.single[index].openOrCls;
     },
     // 删除选项
     quesPosDel(index, i) {
-      if (this.single[index].changelist.length <= 1) {
-        return this.$message.error("请至少保留一个选项");
+      if (this.single[index].option.length <= 2) {
+        return this.$message.error("请至少保留2个选项");
       } else {
-        this.single[index].changelist.splice(i, 1);
+        this.single[index].option.splice(i, 1);
       }
     },
-    HandleClickOver(index) {
-      this.single[index].openOrCls = false;
+    // 插入选项
+    quesPosAdd(list, index, i) {
+      list.push({
+        optScore: this.score++,
+        id: this.infolistid++,
+        optContent: this.infolistval + this.infolistid
+      });
+    },
+    // 调整选项位置
+    quesPosTop(index) {
+      console.log(index);
+    },
+    quesPosBottom(index) {},
+    async HandleClickOver(index) {
+      // 当前项li
+      var info = this.single[index];
+      var list = info.option;
+      var Arr = [];
+      for (var i = 0; i < list.length; i++) {
+        var optObj = {
+          optContent: list[i].optContent,
+          optScore: list[i].optScore
+        };
+        Arr.push(optObj);
+      }
+      // const { data: res } = await this.$http.post(
+      //   this.$ajax + "sheetQues/add",
+      //   {
+      //     sheetUuid: this.sheetUuid,
+      //     quesContent: info.quesContent,
+      //     quesType: info.quesType,
+      //     option: Arr
+      //   }
+      // );
     },
     // 添加图片
     handleClickImg(info) {
@@ -331,7 +425,6 @@ export default {
 <style lang='less'>
 * {
   margin: 0;
-
   padding: 0;
 }
 ul {
@@ -370,7 +463,7 @@ ul {
   display: block;
   margin-bottom: 10px;
 }
-.CONTENT .el-button + .el-button {
+.changeBtn .el-button + .el-button {
   margin-left: 0px;
 }
 .CONTENT .el-card__body {
@@ -393,6 +486,30 @@ ul {
   top: 5px;
   right: 5px;
 }
+.editDel {
+  position: absolute;
+  right: 70px;
+  bottom: 5px;
+  display: none;
+}
+.list_box li:hover .editDel {
+  display: block;
+}
+.delBtn.is-plain:focus,
+.delBtn.is-plain:hover {
+  background: #fff;
+  border-color: #ff6060;
+  color: #ff6060;
+}
+.editDel .el-button + .el-button {
+  margin-left: 5px;
+}
+.editBtn.is-plain:focus,
+.editBtn.is-plain:hover {
+  background: #fff;
+  border-color: #1ea0fa;
+  color: #1ea0fa;
+}
 .listiconshow {
   padding-top: 10px;
 }
@@ -403,11 +520,7 @@ ul {
   cursor: move;
   margin-left: 60px;
 }
-.el-checkbox__input.is-checked .el-checkbox__inner,
-.el-checkbox__input.is-indeterminate .el-checkbox__inner {
-  background-color: #afdd22 !important;
-  border-color: #afdd22 !important;
-}
+
 .bgDv {
   position: relative;
   border-top: 1px solid #e0e0e0;

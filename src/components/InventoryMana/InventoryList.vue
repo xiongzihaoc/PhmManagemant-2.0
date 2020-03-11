@@ -163,7 +163,10 @@ export default {
       this.eleNameList = res.data;
     },
     addDictionarybtn(info) {
-      this.$router.push("/addsheet");
+      this.$router.push({
+        path: "/addsheet",
+        query: { uuid: info.uuid, inveName: info.name }
+      });
     },
     // 修改
     showEditdialog(info) {
