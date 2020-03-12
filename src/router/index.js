@@ -162,16 +162,31 @@ const routes = [{
         path: '/InvenSet',
         name: '量表设置',
         component: () => import('@/components/InventoryMana/InvenSet.vue'),
-        meta: {
-          title: '量表设置'
-        }
+        redirect: '/basicsSet',
+        children: [{
+            path: '/basicsSet',
+            name: "基础设置",
+            component: () => import('@/components/InventoryMana/BasicsSet.vue'),
+            meta: {
+              title: '基础设置'
+            }
+          },
+          {
+            path: '/divisor',
+            name: "因子设置",
+            component: () => import('@/components/InventoryMana/DivisorSet.vue'),
+            meta: {
+              title: '因子设置'
+            }
+          },
+        ]
       },
       {
         path: '/InvenAnalyze',
-        name: '量表分析',
-        component: () => import('@/components/InventoryMana/InvenAnalyze.vue'),
+        name: '量表列表',
+        component: () => import('@/components/InventoryMana/AddInventory.vue'),
         meta: {
-          title: '量表分析'
+          title: '量表列表'
         }
       },
     ]
