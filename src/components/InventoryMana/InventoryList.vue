@@ -44,7 +44,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column align="center" prop="operate" label="操作" width="200">
+        <el-table-column align="center" prop="operate" label="操作" width="210">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
             <el-button
@@ -54,26 +54,23 @@
               icon="el-icon-edit"
             >编辑</el-button>
             <!-- 新增题目按钮 -->
-            <el-button
-              size="mini"
-              @click="addDictionarybtn(scope.row)"
-              type="success"
-              icon="el-icon-circle-plus"
-            >题目列表</el-button>
-            <!-- 新增题目按钮 -->
             <!-- <el-button
               size="mini"
               @click="addDictionarybtn(scope.row)"
               type="success"
               icon="el-icon-circle-plus"
-            >量表设置</el-button> -->
-            <!-- 新增题目按钮 -->
-            <!-- <el-button
-              size="mini"
-              @click="addDictionarybtn(scope.row)"
-              type="success"
-              icon="el-icon-circle-plus"
-            >量表分析</el-button> -->
+            >题目列表</el-button>-->
+            <el-dropdown style="margin-left:10px;">
+              <el-button type="primary" size="mini">
+                更多菜单
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item @click.native="addDictionarybtn(scope.row)">题目列表</el-dropdown-item>
+                <el-dropdown-item @click.native="invenSet(scope.row)">量表设置</el-dropdown-item>
+                <el-dropdown-item @click.native="invenAnalyze(scope.row)">量表分析</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
@@ -176,10 +173,25 @@ export default {
       });
       this.eleNameList = res.data;
     },
+    // 跳转到题目列表
     addDictionarybtn(info) {
       this.$router.push({
         path: "/addsheet",
         query: { uuid: info.uuid, inveName: info.name }
+      });
+    },
+    // 跳转到量表设置
+    invenSet(info) {
+      this.$router.push({
+        path: "/InvenSet"
+        // query: { uuid: info.uuid, inveName: info.name }
+      });
+    },
+    // 跳转到量表分析
+    invenAnalyze(info) {
+      this.$router.push({
+        path: "/InvenAnalyze"
+        // query: { uuid: info.uuid, inveName: info.name }
       });
     },
     // 修改

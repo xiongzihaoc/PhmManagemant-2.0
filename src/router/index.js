@@ -158,6 +158,22 @@ const routes = [{
           title: '题目列表'
         }
       },
+      {
+        path: '/InvenSet',
+        name: '量表设置',
+        component: () => import('@/components/InventoryMana/InvenSet.vue'),
+        meta: {
+          title: '量表设置'
+        }
+      },
+      {
+        path: '/InvenAnalyze',
+        name: '量表分析',
+        component: () => import('@/components/InventoryMana/InvenAnalyze.vue'),
+        meta: {
+          title: '量表分析'
+        }
+      },
     ]
   },
 ]

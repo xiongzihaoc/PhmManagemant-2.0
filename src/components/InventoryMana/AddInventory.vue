@@ -54,6 +54,7 @@
                   style="margin:25px 0 0 40px;font-weight:700;font-size:16px;"
                   @click.prevent.stop="getOneInfo(index)"
                 >{{item.quesContent}}</p>
+                <p style="margin:10px 0 0 80px;font-size:12px;color:#999;">{{instrValue}}</p>
                 <!-- 编辑删除按钮 -->
                 <div class="editDel">
                   <el-button
@@ -95,7 +96,7 @@
                   </div>
                 </div>
                 <!-- 编辑框 -->
-                <div class="bgDv" v-show="true">
+                <div class="bgDv" v-show="openOrCls">
                   <div class="posImg"></div>
                   <el-input
                     type="textarea"
@@ -107,7 +108,7 @@
                   <div style="margin-bottom:10px;width:95%;">
                     <el-select
                       size="mini"
-                      v-model="item.value"
+                      v-model="item.quesType"
                       placeholder="请选择"
                       style="width:20%;"
                     >
@@ -118,9 +119,13 @@
                         :value="asItem.value"
                       ></el-option>
                     </el-select>
-                    <span style="font-size:14px;color:#6A6A6A;margin-left:80px;">必答</span>
+                    <el-checkbox class="mustChecked" v-model="mustChecked">必答</el-checkbox>
                     <span style="font-size:14px;color:#6A6A6A;margin-left:80px;">
-                      <a href="###" style="color: #666666;text-decoration: underline;">填写提示</a>
+                      <a
+                        href="###"
+                        style="color: #666666;text-decoration: underline;"
+                        @click.prevent.stop="handleClickInstr(item)"
+                      >填写提示</a>
                     </span>
                   </div>
                   <div
@@ -217,15 +222,15 @@
       </div>
     </el-card>
     <!-- 添加图片和添加说明的弹框 -->
-    <el-dialog title="添加图片" :visible.sync="editDialogVisible" width="40%" v-dialogDrag>
+    <el-dialog title="题目说明" :visible.sync="editDialogVisible" width="40%" v-dialogDrag>
       <el-form
         ref="loginFormRef"
         :model="editAddForm"
         label-width="80px"
         @closed="editDialogClosed"
       >
-        <el-form-item label="医院科室" prop="office">
-          <el-input v-model="editAddForm.addEditValue"></el-input>
+        <el-form-item label="题目说明" prop="instrValue">
+          <el-input v-model="editAddForm.instrValue"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -250,29 +255,36 @@ export default {
       singletitle: "题目",
       timer: null,
       infolistid: 2,
-      score: 3,
+      score: 5,
       infolistval: "选项",
       checked: "",
       selValue: "",
       sheetUuid: "",
       inveName: "",
-      openOr: false,
+      instrValue: "",
+      mustChecked: true,
+      openOrCls: false,
       options: [
         {
           value: "1",
-          label: "单选题"
+          label: "单选"
         },
         {
           value: "2",
-          label: "多选题"
+          label: "多选"
+        },
+
+        {
+          value: "4",
+          label: "评分"
         },
         {
           value: "3",
-          label: "文本题"
+          label: "文本"
         }
       ],
       editAddForm: {
-        addEditValue: ""
+        instrValue: ""
       },
       editDialogVisible: false
     };
@@ -322,10 +334,12 @@ export default {
       this.sorted();
       let changelist = [
         { inid: "1", optContent: "选项1", optScore: "1", check: false },
-        { inid: "2", optContent: "选项2", optScore: "2", check: false }
+        { inid: "2", optContent: "选项2", optScore: "2", check: false },
+        { inid: "3", optContent: "选项3", optScore: "3", check: false },
+        { inid: "4", optContent: "选项4", optScore: "4", check: false }
       ];
       this.single.push({
-        openOrCls: false,
+        // openOrCls: false,
         id: this.singleid++,
         quesContent: this.singletitle + (this.singleid - 1),
         quesType: this.listtype,
@@ -338,7 +352,7 @@ export default {
         { textareavalue: "", necessary: this.checked, textprompt: false }
       ];
       this.single.push({
-        openOrCls: false,
+        // openOrCls: false,
         id: this.singleid++,
         quesContent: this.singletitle + (this.singleid - 1),
         quesType: this.listtype,
@@ -364,6 +378,7 @@ export default {
       // console.log(index);
       // this.openOr = true
       // this.single[index].openOrCls = !this.single[index].openOrCls;
+      this.openOrCls = !this.openOrCls;
     },
     // 删除题目
     async delBtn(info, index) {
@@ -377,7 +392,7 @@ export default {
     },
     // 编辑题目
     editBtn(index) {
-      // this.single[index].openOrCls = !this.single[index].openOrCls;
+      this.openOrCls = !this.openOrCls;
     },
     // 删除选项
     quesPosDel(index, i) {
@@ -424,21 +439,34 @@ export default {
         };
         Arr.push(optObj);
       }
-      // const { data: res } = await this.$http.post(
-      //   this.$ajax + "sheetQues/add",
-      //   {
-      //     sheetUuid: this.sheetUuid,
-      //     quesContent: info.quesContent,
-      //     quesType: info.quesType,
-      //     option: Arr
-      //   }
-      // );
+      // 新增编辑题目接口
+      const { data: res } = await this.$http.post(
+        this.$ajax + "sheetQues/add",
+        {
+          sheetUuid: this.sheetUuid,
+          quesUuid: info.quesUuid,
+          quesContent: info.quesContent,
+          quesType: info.quesType,
+          quesTips: info.quesTips,
+          option: Arr
+        }
+      );
+      if (res.code != 200) return this.$message.error("操作失败");
+      this.$message.success("操作成功");
+      this.openOrCls = false;
     },
     // 添加图片
     handleClickImg(info) {
+      // this.editDialogVisible = true;
+    },
+    handleClickInstr(item) {
+      console.log(item);
       this.editDialogVisible = true;
     },
-    editPageEnter() {},
+    editPageEnter() {
+      this.editDialogVisible = false;
+      this.instrValue = this.editAddForm.instrValue;
+    },
     editDialogClosed() {}
   }
 };
@@ -641,5 +669,22 @@ ul {
   border-radius: 0;
   border: 1px solid #cdcdcd;
   outline: none;
+}
+.mustChecked {
+  font-size: 14px;
+  color: #6a6a6a;
+  margin-left: 80px;
+}
+/* 必答样式部分修改 */
+.bgDv .el-checkbox__label {
+  padding-left: 0px;
+}
+.bgDv .el-checkbox__input.is-checked + .el-checkbox__label {
+  color: #6a6a6a;
+}
+.bgDv .el-checkbox__input.is-checked .el-checkbox__inner,
+.el-checkbox__input.is-indeterminate .el-checkbox__inner {
+  background-color: #409eff !important;
+  border-color: #409eff !important;
 }
 </style>
