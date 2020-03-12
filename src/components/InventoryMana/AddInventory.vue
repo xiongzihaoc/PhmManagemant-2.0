@@ -62,7 +62,12 @@
                     class="editBtn"
                     @click.prevent.stop="editBtn(index)"
                   >编辑</el-button>
-                  <el-button plain size="mini" class="delBtn" @click.prevent.stop="delBtn(item,index)">删除</el-button>
+                  <el-button
+                    plain
+                    size="mini"
+                    class="delBtn"
+                    @click.prevent.stop="delBtn(item,index)"
+                  >删除</el-button>
                 </div>
                 <div class="info-change-list" @click.prevent.stop="getOneInfo(index)">
                   <!-- 循环生成选项 -->
@@ -90,7 +95,7 @@
                   </div>
                 </div>
                 <!-- 编辑框 -->
-                <div class="bgDv" v-show="openOr">
+                <div class="bgDv" v-show="true">
                   <div class="posImg"></div>
                   <el-input
                     type="textarea"
@@ -158,17 +163,22 @@
                       v-model="subItem.optScore"
                       style="width:40px;display:inline-block;margin-left:34px;padding:5px;text-align:center;"
                     ></el-input>
-                    <span v-if="item.quesType == 4" style="margin-left:75px;" class="quesPosTop"></span>
+                    <span
+                      v-if="item.quesType == 4"
+                      style="margin-left:75px;"
+                      class="quesPosTop"
+                      @click.prevent.stop="quesPosTop(index,i)"
+                    ></span>
                     <span
                       v-else
                       style="margin-left:90px;"
                       class="quesPosTop"
-                      @click.prevent.stop="quesPosTop(item.option.i)"
+                      @click.prevent.stop="quesPosTop(index,i)"
                     ></span>
                     <span
                       style="margin-left:7px;"
                       class="quesPosBottom"
-                      @click.prevent.stop="quesPosBottom(item.option.i)"
+                      @click.prevent.stop="quesPosBottom(index,i)"
                     ></span>
                   </div>
                   <!-- 添加选项按钮 -->
@@ -356,7 +366,7 @@ export default {
       // this.single[index].openOrCls = !this.single[index].openOrCls;
     },
     // 删除题目
-    async delBtn(info,index) {
+    async delBtn(info, index) {
       const { data: res } = await this.$http.post(
         this.$ajax + "sheetQues/remove",
         {
@@ -386,10 +396,22 @@ export default {
       });
     },
     // 调整选项位置
-    quesPosTop(index) {
-      console.log(index);
+    quesPosTop(index, i) {
+      var upArr = this.single[index].option;
+      if (i != 0) {
+        upArr[i] = upArr.splice(i - 1, 1, upArr[i])[0];
+      } else {
+        return;
+      }
     },
-    quesPosBottom(index) {},
+    quesPosBottom(index, i) {
+      var downArr = this.single[index].option;
+      if (i + 1 != downArr.length) {
+        downArr[i] = downArr.splice(i + 1, 1, downArr[i])[0];
+      } else {
+        return;
+      }
+    },
     async HandleClickOver(index) {
       // 当前项li
       var info = this.single[index];

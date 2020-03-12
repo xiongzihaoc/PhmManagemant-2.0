@@ -60,6 +60,20 @@
               type="success"
               icon="el-icon-circle-plus"
             >题目列表</el-button>
+            <!-- 新增题目按钮 -->
+            <!-- <el-button
+              size="mini"
+              @click="addDictionarybtn(scope.row)"
+              type="success"
+              icon="el-icon-circle-plus"
+            >量表设置</el-button> -->
+            <!-- 新增题目按钮 -->
+            <!-- <el-button
+              size="mini"
+              @click="addDictionarybtn(scope.row)"
+              type="success"
+              icon="el-icon-circle-plus"
+            >量表分析</el-button> -->
           </template>
         </el-table-column>
       </el-table>
