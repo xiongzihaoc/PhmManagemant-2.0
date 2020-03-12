@@ -12,7 +12,7 @@
         </ul>
       </div>
       <div class="set_box_right">
-          <router-view></router-view>
+        <router-view></router-view>
       </div>
     </div>
   </div>
@@ -23,12 +23,12 @@ export default {
     return {};
   },
   methods: {
-      jumpBasicsSet(){
-          this.$router.push({path:"/basicsSet"})
-      },
-      jumpInvenSet(){
-          this.$router.push({path:"/divisor"})
-      },
+    jumpBasicsSet() {
+      this.$router.push({ path: "/basicsSet" });
+    },
+    jumpInvenSet() {
+      this.$router.push({ path: "/divisor" });
+    }
   }
 };
 </script>
@@ -47,8 +47,7 @@ ul {
   box-sizing: border-box;
   width: 260px;
   height: 460px;
-  border: 1px solid #e3e9ed;
-  background-color: #fff;
+  border: 1px solid #ccc;
   border-radius: 5px;
 }
 .set_box_left li {
@@ -57,7 +56,7 @@ ul {
   font-weight: 700;
   font-size: 14px;
   color: #999;
-  border-bottom: 1px solid #e3e9ed;
+  border-bottom: 1px solid #ccc;
 }
 .set_box_left li:hover {
   color: #000;
@@ -65,7 +64,7 @@ ul {
 .set_box_right {
   float: right;
   width: 700px;
-  height: 900px;
-  background-color: #fff;
+  height: 700px;
+  border: 1px solid #ccc;
 }
 </style>

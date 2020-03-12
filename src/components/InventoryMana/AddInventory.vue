@@ -1,5 +1,5 @@
 <template>
-  <div class="CONTENT" style="position: relative;">
+  <div class="CONTENT" style="position: relative;width:1000px;height:500px;margin:0 auto;">
     <el-card class="main_left">
       <p class="queschoose">题型选择</p>
       <div class="changeBtn">
@@ -96,7 +96,7 @@
                   </div>
                 </div>
                 <!-- 编辑框 -->
-                <div class="bgDv" v-show="openOrCls">
+                <div class="bgDv" v-show="item.openOrCls">
                   <div class="posImg"></div>
                   <el-input
                     type="textarea"
@@ -263,7 +263,6 @@ export default {
       inveName: "",
       instrValue: "",
       mustChecked: true,
-      openOrCls: false,
       options: [
         {
           value: "1",
@@ -339,7 +338,7 @@ export default {
         { inid: "4", optContent: "选项4", optScore: "4", check: false }
       ];
       this.single.push({
-        // openOrCls: false,
+        openOrCls: false,
         id: this.singleid++,
         quesContent: this.singletitle + (this.singleid - 1),
         quesType: this.listtype,
@@ -352,7 +351,7 @@ export default {
         { textareavalue: "", necessary: this.checked, textprompt: false }
       ];
       this.single.push({
-        // openOrCls: false,
+        openOrCls: false,
         id: this.singleid++,
         quesContent: this.singletitle + (this.singleid - 1),
         quesType: this.listtype,
@@ -375,10 +374,8 @@ export default {
       }
     },
     getOneInfo(index) {
-      // console.log(index);
-      // this.openOr = true
-      // this.single[index].openOrCls = !this.single[index].openOrCls;
-      this.openOrCls = !this.openOrCls;
+      console.log(this.single[index]);
+      this.single[index].openOrCls = !this.single[index].openOrCls;
     },
     // 删除题目
     async delBtn(info, index) {
@@ -388,12 +385,11 @@ export default {
           quesUuid: info.quesUuid
         }
       );
+      if (res.code != 200) return this.$message.error("删除失败");
       this.single.splice(index, 1);
     },
     // 编辑题目
-    editBtn(index) {
-      this.openOrCls = !this.openOrCls;
-    },
+    editBtn(index) {},
     // 删除选项
     quesPosDel(index, i) {
       if (this.single[index].option.length <= 2) {
@@ -453,7 +449,7 @@ export default {
       );
       if (res.code != 200) return this.$message.error("操作失败");
       this.$message.success("操作成功");
-      this.openOrCls = false;
+      // info.openOrCls = false;
     },
     // 添加图片
     handleClickImg(info) {
