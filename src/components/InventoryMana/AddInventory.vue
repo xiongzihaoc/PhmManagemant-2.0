@@ -61,7 +61,7 @@
                     plain
                     size="mini"
                     class="editBtn"
-                    @click.prevent.stop="editBtn(index)"
+                    @click.prevent.stop="editBtn(item,index)"
                   >编辑</el-button>
                   <el-button
                     plain
@@ -294,9 +294,7 @@ export default {
     this.sheetQuesList();
   },
   methods: {
-    HandleRadio(e) {
-      window.console.log(e);
-    },
+    // 获取量表题目列表
     async sheetQuesList() {
       const { data: res } = await this.$http.post(
         this.$ajax + "sheetQues/list",
@@ -306,6 +304,7 @@ export default {
       );
       this.single = res.rows;
     },
+    // 排序
     sorted() {
       if (this.single.length <= 0) {
         this.singleid = "1";
@@ -338,24 +337,25 @@ export default {
         { inid: "4", optContent: "选项4", optScore: "4", check: false }
       ];
       this.single.push({
-        openOrCls: false,
         id: this.singleid++,
         quesContent: this.singletitle + (this.singleid - 1),
         quesType: this.listtype,
-        option: changelist
+        option: changelist,
+        openOrCls: false
       });
     },
+    // 创建文本题
     CreateChangeTextareaList() {
       this.sorted();
       let changelist = [
         { textareavalue: "", necessary: this.checked, textprompt: false }
       ];
       this.single.push({
-        openOrCls: false,
         id: this.singleid++,
         quesContent: this.singletitle + (this.singleid - 1),
         quesType: this.listtype,
-        option: changelist
+        option: changelist,
+        openOrCls: false
       });
     },
     //创建内部选项
@@ -389,7 +389,7 @@ export default {
       this.single.splice(index, 1);
     },
     // 编辑题目
-    editBtn(index) {},
+    editBtn(item, index) {},
     // 删除选项
     quesPosDel(index, i) {
       if (this.single[index].option.length <= 2) {
@@ -423,9 +423,11 @@ export default {
         return;
       }
     },
+    // 完成编辑按钮
     async HandleClickOver(index) {
       // 当前项li
       var info = this.single[index];
+
       var list = info.option;
       var Arr = [];
       for (var i = 0; i < list.length; i++) {
@@ -444,12 +446,12 @@ export default {
           quesContent: info.quesContent,
           quesType: info.quesType,
           quesTips: info.quesTips,
-          option: Arr
+          option: Arr,
+          openOrCls: false
         }
       );
       if (res.code != 200) return this.$message.error("操作失败");
       this.$message.success("操作成功");
-      // info.openOrCls = false;
     },
     // 添加图片
     handleClickImg(info) {

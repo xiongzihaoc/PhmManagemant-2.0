@@ -3,11 +3,13 @@
     <div class="set_box">
       <div class="set_box_left">
         <ul>
-          <li @click="jumpBasicsSet">
-            <span>基础设置</span>
-          </li>
-          <li @click="jumpInvenSet">
-            <span>因子设置</span>
+          <li
+            v-for="(item,index) in list"
+            @click="changSemester(item,index)"
+            :key="index"
+            :class="{blue:i===index}"
+          >
+            <span>{{item.name}}</span>
           </li>
         </ul>
       </div>
@@ -20,14 +22,19 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      list: [
+        { name: "基础设置", path: "/basicsSet" },
+        { name: "因子设置", path: "/divisor" }
+      ],
+      i: null
+    };
   },
   methods: {
-    jumpBasicsSet() {
-      this.$router.push({ path: "/basicsSet" });
-    },
-    jumpInvenSet() {
-      this.$router.push({ path: "/divisor" });
+    // 侧边导航动态绑定class
+    changSemester(item, index) {
+      this.i = index;
+      this.$router.push(this.list[index].path);
     }
   }
 };
@@ -49,6 +56,7 @@ ul {
   height: 460px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  overflow: hidden;
 }
 .set_box_left li {
   cursor: pointer;
@@ -59,12 +67,15 @@ ul {
   border-bottom: 1px solid #ccc;
 }
 .set_box_left li:hover {
-  color: #000;
+  color: #fff;
+  background-color: #afdd22;
 }
 .set_box_right {
   float: right;
   width: 700px;
-  height: 700px;
-  border: 1px solid #ccc;
+  background-color: #fff;
+}
+.blue {
+  color: #fe7300 !important;
 }
 </style>

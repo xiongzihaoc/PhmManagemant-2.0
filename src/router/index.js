@@ -183,10 +183,10 @@ const routes = [{
       },
       {
         path: '/InvenAnalyze',
-        name: '量表列表',
-        component: () => import('@/components/InventoryMana/AddInventory.vue'),
+        name: '量表分析',
+        component: () => import('@/components/InventoryMana/InvenAnalyze.vue'),
         meta: {
-          title: '量表列表'
+          title: '量表分析'
         }
       },
     ]

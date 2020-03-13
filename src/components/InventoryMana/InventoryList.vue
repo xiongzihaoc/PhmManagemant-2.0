@@ -62,7 +62,7 @@
             >题目列表</el-button>-->
             <el-dropdown style="margin-left:10px;">
               <el-button type="primary" size="mini">
-                更多菜单
+                量表设计
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </el-button>
               <el-dropdown-menu slot="dropdown">
@@ -182,16 +182,17 @@ export default {
     },
     // 跳转到量表设置
     invenSet(info) {
+      window.localStorage.setItem("sheetUuid", info.uuid);
       this.$router.push({
-        path: "/InvenSet"
-        // query: { uuid: info.uuid, inveName: info.name }
+        path: "/InvenSet",
+        query: { uuid: info.uuid }
       });
     },
     // 跳转到量表分析
     invenAnalyze(info) {
       this.$router.push({
-        path: "/InvenAnalyze"
-        // query: { uuid: info.uuid, inveName: info.name }
+        path: "/InvenAnalyze",
+        query: { uuid: info.uuid }
       });
     },
     // 修改
