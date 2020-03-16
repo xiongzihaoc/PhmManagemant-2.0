@@ -52,7 +52,7 @@
               <li>
                 <p
                   style="margin:25px 0 0 40px;font-weight:700;font-size:16px;"
-                  @click.prevent.stop="getOneInfo(index)"
+                  @click.prevent.stop="getOneInfo(item,index)"
                 >{{item.quesContent}}</p>
                 <p style="margin:10px 0 0 80px;font-size:12px;color:#999;">{{instrValue}}</p>
                 <!-- 编辑删除按钮 -->
@@ -70,7 +70,7 @@
                     @click.prevent.stop="delBtn(item,index)"
                   >删除</el-button>
                 </div>
-                <div class="info-change-list" @click.prevent.stop="getOneInfo(index)">
+                <div class="info-change-list" @click.prevent.stop="getOneInfo(item,index)">
                   <!-- 循环生成选项 -->
                   <div class="listiconshow" v-for="(list,index) in item.option" :key="index">
                     <!-- 判断type类型 -->
@@ -96,7 +96,7 @@
                   </div>
                 </div>
                 <!-- 编辑框 -->
-                <div class="bgDv" v-show="item.openOrCls">
+                <div class="bgDv" v-show="item.open">
                   <div class="posImg"></div>
                   <el-input
                     type="textarea"
@@ -282,6 +282,7 @@ export default {
           label: "文本"
         }
       ],
+      i: null,
       editAddForm: {
         instrValue: ""
       },
@@ -337,11 +338,11 @@ export default {
         { inid: "4", optContent: "选项4", optScore: "4", check: false }
       ];
       this.single.push({
+        open: false,
         id: this.singleid++,
         quesContent: this.singletitle + (this.singleid - 1),
         quesType: this.listtype,
-        option: changelist,
-        openOrCls: false
+        option: changelist
       });
     },
     // 创建文本题
@@ -351,11 +352,11 @@ export default {
         { textareavalue: "", necessary: this.checked, textprompt: false }
       ];
       this.single.push({
+        open: false,
         id: this.singleid++,
         quesContent: this.singletitle + (this.singleid - 1),
         quesType: this.listtype,
-        option: changelist,
-        openOrCls: false
+        option: changelist
       });
     },
     //创建内部选项
@@ -373,9 +374,10 @@ export default {
         this.$message.error("最多只能创建30个选项哦");
       }
     },
-    getOneInfo(index) {
-      console.log(this.single[index]);
-      this.single[index].openOrCls = !this.single[index].openOrCls;
+    getOneInfo(item, index) {
+      console.log(index);
+      
+      this.single[index].open = !this.single[index].open;
     },
     // 删除题目
     async delBtn(info, index) {
@@ -427,7 +429,6 @@ export default {
     async HandleClickOver(index) {
       // 当前项li
       var info = this.single[index];
-
       var list = info.option;
       var Arr = [];
       for (var i = 0; i < list.length; i++) {
@@ -446,12 +447,12 @@ export default {
           quesContent: info.quesContent,
           quesType: info.quesType,
           quesTips: info.quesTips,
-          option: Arr,
-          openOrCls: false
+          option: Arr
         }
       );
       if (res.code != 200) return this.$message.error("操作失败");
       this.$message.success("操作成功");
+      info.open = false
     },
     // 添加图片
     handleClickImg(info) {

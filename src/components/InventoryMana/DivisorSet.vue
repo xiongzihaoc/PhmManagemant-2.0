@@ -27,7 +27,7 @@
           >编辑</el-button>
           <el-button
             size="mini"
-            @click="showEditdialog(scope.row)"
+            @click="delEditdialog(scope.row)"
             type="danger"
             icon="el-icon-edit"
           >删除</el-button>
@@ -72,7 +72,8 @@ export default {
         facName: "",
         facQues: "",
         facCalc: ""
-      }
+      },
+      editId: null
     };
   },
   created() {
@@ -98,11 +99,14 @@ export default {
     editPageEnter() {
       let httpUrl = "";
       let parm = {};
-      if (this.infoTitle == "修改信息") {
+      if (this.infoTitle == "修改因子") {
         httpUrl = "hospital/updateHospitalDetail";
         parm = {
           id: this.editId,
-          account: this.editAddForm.account
+          sheetUuid: this.sheetUuid,
+          facName: this.editAddForm.facName,
+          facQues: this.editAddForm.facQues,
+          facCalc: this.editAddForm.facCalc
         };
       } else {
         httpUrl = "sheet/addFactor";
@@ -122,6 +126,14 @@ export default {
         this.editDialogVisible = false;
       });
     },
+    // 编辑因子
+    showEditdialog(info) {
+      this.editId = info.id;
+      this.infoTitle = "修改因子";
+      this.editDialogVisible = true;
+    },
+    // 删除因子
+    delEditdialog() {},
     editDialogClosed() {}
   }
 };
