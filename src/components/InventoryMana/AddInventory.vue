@@ -119,7 +119,12 @@
                         :value="asItem.value"
                       ></el-option>
                     </el-select>
-                    <el-checkbox class="mustChecked" v-model="mustChecked">必答</el-checkbox>
+                    <el-checkbox
+                      class="mustChecked"
+                      v-model="item.mustChecked"
+                      true-label="1"
+                      false-label="0"
+                    >必答</el-checkbox>
                     <span style="font-size:14px;color:#6A6A6A;margin-left:80px;">
                       <a
                         href="###"
@@ -210,15 +215,18 @@
                   <!-- 完成编辑按钮 -->
                   <el-button
                     @click.prevent.stop="HandleClickOver(index)"
-                    type="warning"
-                    style="display:block;margin-top:10px;width:95%"
-                    size="small"
+                    type="primary"
+                    class="endEdit"
+                    size="medium "
                   >完成编辑</el-button>
                 </div>
               </li>
             </ul>
           </transition-group>
         </vuedraggable>
+        <div class="batchAdd">
+          <el-button type="info" plain @click.prevent.stop="batchAddQues">批量添加题目</el-button>
+        </div>
       </div>
     </el-card>
     <!-- 添加图片和添加说明的弹框 -->
@@ -238,6 +246,20 @@
         <el-button type="primary" @click="editPageEnter">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 批量增加题目的弹框 -->
+    <div class="batchAdd">
+      <el-dialog title="批量添加题目" :visible.sync="batchAddDialogVisible" width="50%" v-dialogDrag>
+        <ul>
+          <li>批量添加</li>
+          <li>题库添加</li>
+          <li></li>
+        </ul>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="batchAddDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="batchEnter">确 定</el-button>
+        </span>
+      </el-dialog>
+    </div>
   </div>
 </template>
 <script>
@@ -262,7 +284,6 @@ export default {
       sheetUuid: "",
       inveName: "",
       instrValue: "",
-      mustChecked: true,
       options: [
         {
           value: "1",
@@ -286,7 +307,8 @@ export default {
       editAddForm: {
         instrValue: ""
       },
-      editDialogVisible: false
+      editDialogVisible: false,
+      batchAddDialogVisible: false
     };
   },
   created() {
@@ -339,6 +361,7 @@ export default {
       ];
       this.single.push({
         open: false,
+        mustChecked: true,
         id: this.singleid++,
         quesContent: this.singletitle + (this.singleid - 1),
         quesType: this.listtype,
@@ -353,6 +376,7 @@ export default {
       ];
       this.single.push({
         open: false,
+        mustChecked: true,
         id: this.singleid++,
         quesContent: this.singletitle + (this.singleid - 1),
         quesType: this.listtype,
@@ -364,18 +388,20 @@ export default {
       if (!(list.length == this.infolistid)) {
         this.infolistid = list.length;
       }
-      if (list.length < 30) {
+      if (list.length < 10) {
         list.push({
           score: this.score++,
           id: this.infolistid++,
           optContent: this.infolistval + this.infolistid
         });
       } else {
-        this.$message.error("最多只能创建30个选项哦");
+        this.$message.error("最多只能创建10个选项哦");
       }
     },
     // 显示隐藏编辑框
     getOneInfo(item, index) {
+      console.log(item);
+
       this.$set(this.single[index], "open", !this.single[index].open);
     },
     // 删除题目
@@ -439,6 +465,7 @@ export default {
         };
         Arr.push(optObj);
       }
+
       // 新增编辑题目接口
       const { data: res } = await this.$http.post(
         this.$ajax + "sheetQues/add",
@@ -448,11 +475,14 @@ export default {
           quesContent: info.quesContent,
           quesType: info.quesType,
           quesTips: info.quesTips,
+          quesIsAnswer: info.mustChecked,
           option: Arr
         }
       );
+
       if (res.code != 200) return this.$message.error("操作失败");
       this.$message.success("操作成功");
+      info.open = false;
     },
     // 添加图片
     handleClickImg(info) {
@@ -468,7 +498,12 @@ export default {
       this.instrValue = this.editAddForm.instrValue;
     },
     // dialog关闭
-    editDialogClosed() {}
+    editDialogClosed() {},
+    // 批量增加题目
+    batchAddQues() {
+      this.batchAddDialogVisible = true;
+    },
+    batchEnter() {}
   }
 };
 </script>
@@ -676,6 +711,18 @@ ul {
   color: #6a6a6a;
   margin-left: 80px;
 }
+/* 完成编辑按钮改变颜色 */
+.endEdit {
+  display: block;
+  margin-top: 10px;
+  width: 95%;
+  background-color: #ffab1a;
+}
+.bgDv .el-button--primary {
+  color: #fff;
+  background-color: #ffab1a;
+  border-color: #ffab1a;
+}
 /* 必答样式部分修改 */
 .bgDv .el-checkbox__label {
   padding-left: 0px;
@@ -687,5 +734,20 @@ ul {
 .el-checkbox__input.is-indeterminate .el-checkbox__inner {
   background-color: #409eff !important;
   border-color: #409eff !important;
+}
+/* 批量增加题目按钮 */
+.batchAdd {
+  width: 100%;
+  height: 150px;
+  padding-top: 30px;
+}
+.batchAdd .el-button {
+  margin-left: 50%;
+  transform: translate(-50%);
+}
+.batchAdd .el-dialog__header {
+  width: 0;
+  height: 0;
+  padding: 0 !important;
 }
 </style>

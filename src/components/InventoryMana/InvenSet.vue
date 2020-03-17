@@ -57,6 +57,7 @@ ul {
   border: 1px solid #ccc;
   border-radius: 5px;
   overflow: hidden;
+  background-color: #fff;
 }
 .set_box_left li {
   cursor: pointer;
