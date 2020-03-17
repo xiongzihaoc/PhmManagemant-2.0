@@ -252,6 +252,7 @@ export default {
       single: [],
       listtype: "",
       singleid: 1,
+      Array: [],
       singletitle: "题目",
       timer: null,
       infolistid: 2,
@@ -304,6 +305,11 @@ export default {
         }
       );
       this.single = res.rows;
+      var info = this.single;
+
+      for (var i = 0; i < info.length; i++) {
+        this.Array.push(info[i]);
+      }
     },
     // 排序
     sorted() {
@@ -374,10 +380,11 @@ export default {
         this.$message.error("最多只能创建30个选项哦");
       }
     },
+    // 显示隐藏编辑框
     getOneInfo(item, index) {
-      console.log(index);
-      
-      this.single[index].open = !this.single[index].open;
+      console.log(this.single[index]);
+
+      this.$set(this.single[index], "open", !this.single[index].open);
     },
     // 删除题目
     async delBtn(info, index) {
@@ -391,7 +398,9 @@ export default {
       this.single.splice(index, 1);
     },
     // 编辑题目
-    editBtn(item, index) {},
+    editBtn(item, index) {
+      this.$set(this.single[index], "open", !this.single[index].open);
+    },
     // 删除选项
     quesPosDel(index, i) {
       if (this.single[index].option.length <= 2) {
@@ -450,9 +459,11 @@ export default {
           option: Arr
         }
       );
+      console.log(info);
       if (res.code != 200) return this.$message.error("操作失败");
       this.$message.success("操作成功");
-      info.open = false
+      // this.Array.push()
+      info.open = false;
     },
     // 添加图片
     handleClickImg(info) {
