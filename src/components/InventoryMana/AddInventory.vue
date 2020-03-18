@@ -248,20 +248,20 @@
     </el-dialog>
     <!-- 批量增加题目的弹框 -->
     <div class="batchAddDialog">
-      <el-dialog :visible.sync="batchAddDialogVisible" width="50%" v-dialogDrag>
+      <el-dialog :visible.sync="batchAddDialogVisible" width="45%" v-dialogDrag>
         <ul>
           <li
             class="batchAddCon"
             v-for="(item,index) in bankList"
             :key="index"
-            @click="batchAddCon(index)"
+            @click="batchAddCon(index,item.view)"
             :class="{batchAddCla:Cla===index}"
           >{{item.name}}</li>
         </ul>
         <span slot="footer" class="dialog-footer">
-          <div>111</div>
-          <div>111</div>
-          <div>111</div>
+          <keep-alive>
+            <component :is="currentView"></component>
+          </keep-alive>
         </span>
       </el-dialog>
     </div>
@@ -269,8 +269,10 @@
 </template>
 <script>
 import vuedraggable from "vuedraggable";
+import BatchAdd from "./Addbatch/BatchAdd";
+import BankAdd from "./Addbatch/BankAdd";
 export default {
-  components: { vuedraggable },
+  components: { vuedraggable, BatchAdd, BankAdd },
   data() {
     return {
       radio: "1",
@@ -308,15 +310,16 @@ export default {
           label: "文本"
         }
       ],
-      Cla: null,
+      Cla: 0,
+      currentView: "BatchAdd",
       bankList: [
         {
-          value: 1,
-          name: "批量添加"
+          name: "批量添加",
+          view: "BatchAdd"
         },
         {
-          value: 2,
-          name: "题库添加"
+          name: "题库添加",
+          view: "BankAdd"
         }
       ],
       i: null,
@@ -520,8 +523,9 @@ export default {
       this.batchAddDialogVisible = true;
     },
     batchEnter() {},
-    batchAddCon(index) {
+    batchAddCon(index, v) {
       this.Cla = index;
+      this.currentView = v;
     }
   }
 };
@@ -782,11 +786,10 @@ ul {
   cursor: pointer;
   font-size: 16px;
   font-weight: 700;
-}
-.batchAddCon:first-child{
-    border-bottom: 3px solid #afdd22;
+  color: #ccc;
 }
 .batchAddCla {
-  border-bottom: 3px solid #afdd22;
+  border-bottom: 3px solid #409eff;
+  color: #000;
 }
 </style>

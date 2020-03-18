@@ -5,7 +5,7 @@
         <ul>
           <li
             v-for="(item,index) in list"
-            @click="changSemester(item,index)"
+            @click="changSemester(index,item.view)"
             :key="index"
             :class="{blue:i===index}"
           >
@@ -14,27 +14,31 @@
         </ul>
       </div>
       <div class="set_box_right">
-        <router-view></router-view>
+        <component :is="currentView"></component>
       </div>
     </div>
   </div>
 </template>
 <script>
+import basicsSet from "./BasicsSet";
+import divisor from "./DivisorSet";
 export default {
+  components: { basicsSet, divisor },
   data() {
     return {
       list: [
-        { name: "基础设置", path: "/basicsSet" },
-        { name: "因子设置", path: "/divisor" }
+        { name: "基础设置", view: "basicsSet" },
+        { name: "因子设置", view: "divisor" }
       ],
-      i: null
+      currentView: "basicsSet",
+      i: 0
     };
   },
   methods: {
     // 侧边导航动态绑定class
-    changSemester(item, index) {
+    changSemester(index, v) {
       this.i = index;
-      this.$router.push(this.list[index].path);
+      this.currentView = v;
     }
   }
 };
