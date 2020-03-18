@@ -88,11 +88,16 @@
       </div>
       <!-- 主体内容区域 -->
       <el-main>
-        <router-view></router-view>
+        <keep-alive>
+          <!--缓存组件-->
+          <router-view v-if="$route.meta.keepAlive"></router-view>
+          <!--非缓存组件-->
+        </keep-alive>
+        <router-view v-if="!$route.meta.keepAlive"></router-view>
       </el-main>
       <!-- <el-footer style="z-index:9999">
        Copyright © 2019 zhuoya All rights reserved
-      </el-footer> -->
+      </el-footer>-->
     </el-container>
   </el-container>
 </template>

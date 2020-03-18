@@ -247,16 +247,21 @@
       </span>
     </el-dialog>
     <!-- 批量增加题目的弹框 -->
-    <div class="batchAdd">
-      <el-dialog title="批量添加题目" :visible.sync="batchAddDialogVisible" width="50%" v-dialogDrag>
+    <div class="batchAddDialog">
+      <el-dialog :visible.sync="batchAddDialogVisible" width="50%" v-dialogDrag>
         <ul>
-          <li>批量添加</li>
-          <li>题库添加</li>
-          <li></li>
+          <li
+            class="batchAddCon"
+            v-for="(item,index) in bankList"
+            :key="index"
+            @click="batchAddCon(index)"
+            :class="{batchAddCla:Cla===index}"
+          >{{item.name}}</li>
         </ul>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="batchAddDialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="batchEnter">确 定</el-button>
+          <div>111</div>
+          <div>111</div>
+          <div>111</div>
         </span>
       </el-dialog>
     </div>
@@ -301,6 +306,17 @@ export default {
         {
           value: "3",
           label: "文本"
+        }
+      ],
+      Cla: null,
+      bankList: [
+        {
+          value: 1,
+          name: "批量添加"
+        },
+        {
+          value: 2,
+          name: "题库添加"
         }
       ],
       i: null,
@@ -503,7 +519,10 @@ export default {
     batchAddQues() {
       this.batchAddDialogVisible = true;
     },
-    batchEnter() {}
+    batchEnter() {},
+    batchAddCon(index) {
+      this.Cla = index;
+    }
   }
 };
 </script>
@@ -745,9 +764,29 @@ ul {
   margin-left: 50%;
   transform: translate(-50%);
 }
-.batchAdd .el-dialog__header {
-  width: 0;
-  height: 0;
+/* 批量增加题目弹框 */
+.batchAddDialog .el-dialog__header {
   padding: 0 !important;
+  height: 0;
+}
+.batchAddDialog .el-dialog__body {
+  margin-bottom: 4px !important;
+}
+.batchAddDialog .el-dialog__footer {
+  text-align: left;
+}
+.batchAddCon {
+  float: left;
+  margin-right: 50px;
+  padding-bottom: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+}
+.batchAddCon:first-child{
+    border-bottom: 3px solid #afdd22;
+}
+.batchAddCla {
+  border-bottom: 3px solid #afdd22;
 }
 </style>

@@ -19,7 +19,8 @@ const routes = [{
         name: "首页",
         component: () => import('@/components/Index.vue'),
         meta: {
-          title: '首页'
+          title: '首页',
+          keepAlive: true
         }
       },
       {
@@ -27,7 +28,8 @@ const routes = [{
         name: '菜单管理',
         component: () => import('@/components/SystemMana/MenuManag.vue'),
         meta: {
-          title: '菜单管理'
+          title: '菜单管理',
+          keepAlive: true
         }
       },
       {

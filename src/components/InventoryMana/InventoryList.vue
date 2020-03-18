@@ -37,14 +37,13 @@
           </template>
         </el-table-column>
         <el-table-column align="center" prop="createBy" label="创建人"></el-table-column>
-        <el-table-column align="center" prop="updateBy" label="修改人"></el-table-column>
         <el-table-column align="center" prop="createTime" label="创建时间" width="160">
           <template slot-scope="scope">
             <div>{{timesChangeDate(scope.row.createTime)}}</div>
           </template>
         </el-table-column>
 
-        <el-table-column align="center" prop="operate" label="操作" width="210">
+        <el-table-column align="center" prop="operate" label="操作" width="220">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
             <el-button
