@@ -238,6 +238,8 @@ export default {
         children: "child"
       },
       addEditValue: "",
+      showEditId:null,
+      cloneEditId:null,
       RoleList: [],
       hosMenuList: [],
       loginRules: {
@@ -290,8 +292,6 @@ export default {
     },
     // 修改
     showEditdialog(info) {
-      console.log(info);
-      
       this.idArr.push(info.id);
       this.addEditValue = `${info.hospital} / ${info.office}`;
       this.infoTitle = "修改信息";

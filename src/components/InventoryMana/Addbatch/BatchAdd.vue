@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="CONTENT">
     <div class="title">
       <p>1. 题目与题目之间需空一行，题目可以不加题号，题干中间不得换行</p>
       <p>2. 题干与选项，及各选项之间需回车换行，选项不得以数字开头（会被识别为题干）</p>
-      <p>3. 题目无选项直接空一行，会默认识别为文本型题目</p>
+      <p>3. 题目无选项直接空一行，会默认识别为单选题目</p>
       <el-button type="info" plain class="titleBtn" size="small" @click="clearTxt">清空文本框</el-button>
     </div>
     <el-input class="content" type="textarea" :rows="25" v-model="content"></el-input>
@@ -29,6 +29,7 @@ export default {
         var quesArrs = this.content.split("\n\n");
         for (var i = 0; i < quesArrs.length; i++) {
           var ques = quesArrs[i].split("\n");
+
           var question = {};
           var quesContent = ques[0];
           var quesType = 1;
@@ -39,6 +40,7 @@ export default {
           }
           var sheetUuid = this.Uuid;
           var option = [];
+
           for (var j = 0; j < ques.length; j++) {
             if (j != 0) {
               var temp_option = { optContent: ques[j], optScore: j };
@@ -61,6 +63,7 @@ export default {
             questions: obj
           }
         );
+        this.$emit("openOrCls", false);
       }
     },
     clearTxt() {
@@ -97,7 +100,7 @@ export default {
   bottom: 10px;
   right: 10px;
 }
-.el-icon-close:before {
+.CONTENT .el-icon-close:before {
   color: #ccc;
 }
 </style>

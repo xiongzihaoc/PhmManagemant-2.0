@@ -260,11 +260,7 @@
         </ul>
         <span slot="footer" class="dialog-footer">
           <keep-alive>
-            <component
-              :is="currentView"
-              :sheetUuid="sheetUuid"
-              :batchAddDialogVisible="batchAddDialogVisible"
-            ></component>
+            <component :is="currentView" :sheetUuid="sheetUuid" v-on:openOrCls="clsbatchDia=false"></component>
           </keep-alive>
         </span>
       </el-dialog>
@@ -533,7 +529,7 @@ export default {
     batchAddCon(index, v) {
       this.Cla = index;
       this.currentView = v;
-    }
+    },
   }
 };
 </script>

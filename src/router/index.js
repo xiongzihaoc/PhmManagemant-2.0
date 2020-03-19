@@ -133,7 +133,8 @@ const routes = [{
         name: '体检卡信息',
         component: () => import('@/components/BasicInformation/MedicalCard.vue'),
         meta: {
-          title: '体检卡信息'
+          title: '体检卡信息',
+          keepAlive: true,
         }
       },
       {

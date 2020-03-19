@@ -43,7 +43,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column align="center" prop="operate" label="操作" width="220">
+        <el-table-column align="center" prop="operate" label="操作" width="300">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
             <el-button
@@ -52,13 +52,13 @@
               type="primary"
               icon="el-icon-edit"
             >编辑</el-button>
-            <!-- 新增题目按钮 -->
-            <!-- <el-button
+            <!-- 修改按钮 -->
+            <el-button
               size="mini"
-              @click="addDictionarybtn(scope.row)"
-              type="success"
-              icon="el-icon-circle-plus"
-            >题目列表</el-button>-->
+              @click="cloneDialog(scope.row)"
+              type="primary"
+              icon="el-icon-document-copy"
+            >克隆</el-button>
             <el-dropdown style="margin-left:10px;">
               <el-button type="primary" size="mini">
                 量表设计
@@ -196,15 +196,18 @@ export default {
     },
     // 修改
     showEditdialog(info) {
+      console.log(info);
+      this.editAddForm = JSON.parse(JSON.stringify(info));
       this.infoTitle = "修改信息";
       this.editDialogVisible = true;
+      this.showEditId = info.id;
     },
     editDialogClosed() {
       this.$refs.editFormRef.resetFields();
     },
     // 添加用户
     addUsers() {
-      this.infoTitle = "新增医生信息";
+      this.infoTitle = "新增量表";
       this.editDialogVisible = true;
       this.editAddForm = {};
       this.addEditValue = "";
@@ -213,13 +216,26 @@ export default {
       let httpUrl = "";
       let parm = {};
       if (this.infoTitle == "修改信息") {
-        httpUrl = "doctor/updateDoctor";
+        httpUrl = "sheet/update";
         parm = {
-          id: this.editId
+          id: this.showEditId,
+          name: this.editAddForm.name,
+          type: this.editAddForm.type,
+          price: this.editAddForm.price,
+          state: this.editAddForm.state
         };
-      } else {
+      } else if (this.infoTitle == "新增量表") {
         httpUrl = "sheet/add";
         parm = {
+          name: this.editAddForm.name,
+          type: this.editAddForm.type,
+          price: this.editAddForm.price,
+          state: this.editAddForm.state
+        };
+      } else {
+        httpUrl = "sheet/copy";
+        parm = {
+          uuid: this.cloneEditId,
           name: this.editAddForm.name,
           type: this.editAddForm.type,
           price: this.editAddForm.price,
@@ -235,26 +251,14 @@ export default {
         this.editDialogVisible = false;
       });
     },
-    // 删除
-    async removeUserById(info) {
-      const confirmResult = await this.$confirm(
-        "你确定要执行此操作, 是否继续?",
-        "提示",
-        {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }
-      ).catch(err => console.log(err));
-      if (confirmResult != "confirm") {
-        return this.$message.info("取消删除");
-      }
-      const { data: res } = await this.$http.post("doctor/delDoctor", {
-        id: info.id
-      });
-      if (res.code != 200) return this.$message.error("删除失败");
-      this.$message.success("删除成功");
-      this.getScaleList();
+    // 复用克隆此量表
+    cloneDialog(info) {
+      console.log(info);
+      
+      this.editAddForm = JSON.parse(JSON.stringify(info));
+      this.infoTitle = "克隆量表";
+      this.editDialogVisible = true;
+      this.cloneEditId = info.uuid;
     },
     // 搜索
     systemSearch() {
