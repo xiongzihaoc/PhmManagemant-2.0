@@ -225,7 +225,7 @@
           </transition-group>
         </vuedraggable>
         <div class="batchAdd">
-          <el-button type="info" plain @click.prevent.stop="batchAddQues">批量添加题目</el-button>
+          <el-button type="info" plain @click.prevent.stop="batchAddQues()">批量添加题目</el-button>
         </div>
       </div>
     </el-card>
@@ -260,7 +260,11 @@
         </ul>
         <span slot="footer" class="dialog-footer">
           <keep-alive>
-            <component :is="currentView"></component>
+            <component
+              :is="currentView"
+              :sheetUuid="sheetUuid"
+              :batchAddDialogVisible="batchAddDialogVisible"
+            ></component>
           </keep-alive>
         </span>
       </el-dialog>
@@ -279,6 +283,7 @@ export default {
       checkedCities: [],
       textarea: "",
       single: [],
+      msg: "111",
       listtype: "",
       singleid: 1,
       singletitle: "题目",
@@ -491,10 +496,10 @@ export default {
         {
           sheetUuid: this.sheetUuid,
           quesUuid: info.quesUuid,
-          quesContent: info.quesContent,
-          quesType: info.quesType,
           quesTips: info.quesTips,
           quesIsAnswer: info.mustChecked,
+          quesType: info.quesType,
+          quesContent: info.quesContent,
           option: Arr
         }
       );
@@ -522,7 +527,9 @@ export default {
     batchAddQues() {
       this.batchAddDialogVisible = true;
     },
-    batchEnter() {},
+    batchEnter(e) {
+      console.log(e);
+    },
     batchAddCon(index, v) {
       this.Cla = index;
       this.currentView = v;

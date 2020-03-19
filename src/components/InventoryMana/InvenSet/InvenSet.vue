@@ -14,7 +14,9 @@
         </ul>
       </div>
       <div class="set_box_right">
-        <component :is="currentView"></component>
+        <keep-alive>
+          <component :is="currentView"></component>
+        </keep-alive>
       </div>
     </div>
   </div>

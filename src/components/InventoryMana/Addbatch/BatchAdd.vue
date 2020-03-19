@@ -7,19 +7,61 @@
       <el-button type="info" plain class="titleBtn" size="small" @click="clearTxt">清空文本框</el-button>
     </div>
     <el-input class="content" type="textarea" :rows="25" v-model="content"></el-input>
-    <el-button class="enterBtn" type="primary" @click.prevent.stop="enterBtn">确定增加</el-button>
+    <el-button class="enterBtn" type="primary" @click.prevent.stop="enterBtn()">确定保存</el-button>
   </div>
 </template>
 <script>
 export default {
+  // 接收父组件传来的量表Uuid
+  props: { sheetUuid: String },
   data() {
     return {
-      content: ""
+      content: "",
+      Uuid: this.sheetUuid
     };
   },
   methods: {
-    enterBtn() {
-      console.log(this.content);
+    async enterBtn() {
+      if (this.content == "") {
+        return this.$message.error("请输入内容");
+      } else {
+        let obj = [];
+        var quesArrs = this.content.split("\n\n");
+        for (var i = 0; i < quesArrs.length; i++) {
+          var ques = quesArrs[i].split("\n");
+          var question = {};
+          var quesContent = ques[0];
+          var quesType = 1;
+          if (quesContent.indexOf("多选") > -1) {
+            quesType = 2;
+          } else if (quesContent.indexOf("评分") > -1) {
+            quesType = 4;
+          }
+          var sheetUuid = this.Uuid;
+          var option = [];
+          for (var j = 0; j < ques.length; j++) {
+            if (j != 0) {
+              var temp_option = { optContent: ques[j], optScore: j };
+              option.push(temp_option);
+            }
+          }
+          question = {
+            quesContent: quesContent,
+            option: option,
+            quesType: quesType,
+            sheetUuid: sheetUuid
+          };
+          obj.push(question);
+        }
+
+        // 批量增加
+        const { data: res } = await this.$http.post(
+          this.$ajax + "sheetQues/batchAdd",
+          {
+            questions: obj
+          }
+        );
+      }
     },
     clearTxt() {
       this.content = "";
@@ -54,5 +96,8 @@ export default {
   position: absolute;
   bottom: 10px;
   right: 10px;
+}
+.el-icon-close:before {
+  color: #ccc;
 }
 </style>
