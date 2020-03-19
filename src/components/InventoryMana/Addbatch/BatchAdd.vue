@@ -22,10 +22,11 @@ export default {
   },
   methods: {
     async enterBtn() {
-      if (this.content == "") {
+      if (this.content.trim() == "") {
         return this.$message.error("请输入内容");
       } else {
         let obj = [];
+        // 去除空行的空格  暂时还没开发
         var quesArrs = this.content.split("\n\n");
         for (var i = 0; i < quesArrs.length; i++) {
           var ques = quesArrs[i].split("\n");
@@ -63,7 +64,10 @@ export default {
             questions: obj
           }
         );
+        if (res.code != 200) return this.$message.error("批量添加失败");
+        this.$message.success("批量添加成功");
         this.$emit("openOrCls", false);
+        this.content = "";
       }
     },
     clearTxt() {
@@ -91,7 +95,7 @@ export default {
   margin-top: 20px;
   margin-bottom: 20px;
 }
-.el-dialog__footer .el-button--primary {
+.CONTENT .el-dialog__footer .el-button--primary {
   background-color: #409eff !important;
   border-color: #409eff !important;
 }

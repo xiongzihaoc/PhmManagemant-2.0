@@ -260,7 +260,11 @@
         </ul>
         <span slot="footer" class="dialog-footer">
           <keep-alive>
-            <component :is="currentView" :sheetUuid="sheetUuid" v-on:openOrCls="clsbatchDia=false"></component>
+            <component
+              :is="currentView"
+              :sheetUuid="sheetUuid"
+              v-on:openOrCls="clsbatchDia($event)"
+            ></component>
           </keep-alive>
         </span>
       </el-dialog>
@@ -434,6 +438,7 @@ export default {
       );
       if (res.code != 200) return this.$message.error("删除失败");
       this.single.splice(index, 1);
+      this.sheetQuesList();
     },
     // 编辑题目
     editBtn(item, index) {
@@ -530,6 +535,10 @@ export default {
       this.Cla = index;
       this.currentView = v;
     },
+    clsbatchDia() {
+      this.batchAddDialogVisible = false;
+      this.sheetQuesList();
+    }
   }
 };
 </script>

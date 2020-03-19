@@ -56,7 +56,7 @@
             <el-button
               size="mini"
               @click="cloneDialog(scope.row)"
-              type="primary"
+              type="warning"
               icon="el-icon-document-copy"
             >克隆</el-button>
             <el-dropdown style="margin-left:10px;">
