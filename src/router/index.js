@@ -188,8 +188,6 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-
-
   //如果用户访问的路由是/login直接放行
   if (to.path == '/login') return next();
   const tokenStr = window.sessionStorage.getItem('token');

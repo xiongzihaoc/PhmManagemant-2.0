@@ -93,11 +93,12 @@
     border-color: #afdd22 !important;
 }
 
-.el-checkbox__input.is-checked .el-checkbox__inner,
+/*.el-checkbox__input.is-checked .el-checkbox__inner,
 .el-checkbox__input.is-indeterminate .el-checkbox__inner {
     background-color: #afdd22 !important;
     border-color: #afdd22 !important;
-}
+}*/
+
 
 .el-tree .el-tree-node__expand-icon.expanded {
     -webkit-transform: rotate(0deg);

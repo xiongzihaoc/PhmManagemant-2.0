@@ -17,7 +17,8 @@ export default {
   data() {
     return {
       content: "",
-      Uuid: this.sheetUuid
+      Uuid: this.sheetUuid,
+      Array: [],
     };
   },
   methods: {

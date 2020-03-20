@@ -61,12 +61,14 @@
                     plain
                     size="mini"
                     class="editBtn"
+                    icon="el-icon-edit"
                     @click.prevent.stop="editBtn(item,index)"
                   >编辑</el-button>
                   <el-button
                     plain
                     size="mini"
                     class="delBtn"
+                    icon="el-icon-delete"
                     @click.prevent.stop="delBtn(item,index)"
                   >删除</el-button>
                 </div>
@@ -259,13 +261,13 @@
           >{{item.name}}</li>
         </ul>
         <span slot="footer" class="dialog-footer">
-          <keep-alive>
+
             <component
               :is="currentView"
               :sheetUuid="sheetUuid"
               v-on:openOrCls="clsbatchDia($event)"
             ></component>
-          </keep-alive>
+
         </span>
       </el-dialog>
     </div>
@@ -424,8 +426,6 @@ export default {
     },
     // 显示隐藏编辑框
     getOneInfo(item, index) {
-      console.log(item);
-
       this.$set(this.single[index], "open", !this.single[index].open);
     },
     // 删除题目
@@ -624,6 +624,10 @@ ul {
 .editDel .el-button + .el-button {
   margin-left: 5px;
 }
+.delBtn,
+.editBtn {
+  border-radius: none !important;
+}
 .editBtn.is-plain:focus,
 .editBtn.is-plain:hover {
   background: #fff;
@@ -741,6 +745,9 @@ ul {
   border: 1px solid #cdcdcd;
   outline: none;
 }
+.CONTENT {
+  padding: 0px 20px 10px;
+}
 .mustChecked {
   font-size: 14px;
   color: #6a6a6a;
@@ -789,7 +796,10 @@ ul {
   margin-bottom: 4px !important;
 }
 .batchAddDialog .el-dialog__footer {
+  padding: 0 !important;
   text-align: left;
+
+  border-top: 1px solid #e8e8e8;
 }
 .batchAddCon {
   float: left;
