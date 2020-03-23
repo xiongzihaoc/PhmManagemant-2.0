@@ -49,7 +49,7 @@
           <transition-group tag="p">
             <!-- 循环生成各项题目 -->
             <ul v-for="(item,index) in single" :key="index">
-              <li style="padding-right:40px;box-sizing: border-box;">
+              <li>
                 <p
                   style="margin:25px 0 0 40px;font-weight:700;font-size:16px;"
                   @click.prevent.stop="getOneInfo(item,index)"
@@ -521,7 +521,7 @@ export default {
       // 当前项li
       var info = this.single[index];
       console.log(info);
-      
+
       // html代码片段转纯文本
       var txt = info.quesContent
         .replace(/<(style|script|iframe)[^>]*?>[\s\S]+?<\/\1\s*>/gi, "")
@@ -599,7 +599,6 @@ export default {
 * {
   margin: 0;
   padding: 0;
-
 }
 ul {
   list-style: none;
@@ -647,6 +646,7 @@ ul {
   position: relative;
   box-sizing: border-box;
   width: 100%;
+  padding-right: 20px;
   border-top: 1px solid #e0e0e0;
 }
 .list_box li:last-child {
@@ -700,6 +700,7 @@ ul {
 }
 
 .bgDv {
+  width: 100%;
   position: relative;
   border-top: 1px solid #e0e0e0;
   padding: 20px 0 20px 40px;
@@ -789,6 +790,9 @@ ul {
   display: inline-block;
   overflow: hidden;
 }
+.el-select .el-input.is-focus .el-input__inner {
+  border: 1px solid #cdcdcd;
+}
 .CONTENT .el-input__inner {
   border: 1px solid #cdcdcd;
   border-radius: 0;
@@ -872,6 +876,9 @@ ul {
   line-height: normal !important;
   width: 95%;
   margin-bottom: 15px;
+}
+.ql-toolbar.ql-snow {
+  background-color: #f0f0ee;
 }
 .ql-snow .ql-tooltip[data-mode="link"]::before {
   content: "请输入链接地址:";
