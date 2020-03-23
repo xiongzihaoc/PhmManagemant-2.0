@@ -52,7 +52,7 @@
                 </div>
               </div>
               <div class="posCheckInner">
-                <el-checkbox v-model="item.id" class="posCheck" @change="chooseItem"></el-checkbox>
+                <el-checkbox v-model="item.index" class="posCheck" @change="chooseItem(item,index)"></el-checkbox>
               </div>
             </li>
           </ul>
@@ -80,10 +80,12 @@ export default {
       input: "",
       sheetList: [],
       sheetQuesList: [],
+      radio: [],
       isIndeterminate: true,
       checkAll: false,
       question: {},
-      checkedCities: []
+      checkedCities: [],
+      Array: []
     };
   },
   created() {
@@ -113,30 +115,29 @@ export default {
       );
       this.sheetQuesList = res.rows;
     },
-    chooseItem(val) {
-      console.log(val);
-      
-      // if (check) {
-      //   var question = {};
-      //   var arr = [];
-      //   var options = [];
-      //   var repe_option = info.option;
-      //   for (var i = 0; i < repe_option.length; i++) {
-      //     var temp_option = {
-      //       optContent: repe_option[i].optContent,
-      //       optScore: repe_option[i].optScore
-      //     };
-      //     options.push(temp_option);
-      //   }
-      //   question = {
-      //     quesContent: info.quesContent,
-      //     option: options,
-      //     quesType: info.quesType,
-      //     sheetUuid: this.sheetUuid
-      //   };
-      //   arr.push(question);
-      //   this.Array = arr;
-      // }
+    chooseItem(info, index) {
+      console.log(info);
+      console.log(index);
+
+      if (info.index) {
+        var question = {};
+        var options = [];
+        var repe_option = info.option;
+        for (var i = 0; i < repe_option.length; i++) {
+          var temp_option = {
+            optContent: repe_option[i].optContent,
+            optScore: repe_option[i].optScore
+          };
+          options.push(temp_option);
+        }
+        question = {
+          quesContent: info.quesContent,
+          option: options,
+          quesType: info.quesType,
+          sheetUuid: this.sheetUuid
+        };
+        this.Array.push(question);
+      }
     },
     async enterCheked() {
       const { data: res } = await this.$http.post(

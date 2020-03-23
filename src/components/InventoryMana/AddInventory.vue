@@ -49,11 +49,12 @@
           <transition-group tag="p">
             <!-- 循环生成各项题目 -->
             <ul v-for="(item,index) in single" :key="index">
-              <li>
+              <li style="padding-right:40px;box-sizing: border-box;">
                 <p
                   style="margin:25px 0 0 40px;font-weight:700;font-size:16px;"
                   @click.prevent.stop="getOneInfo(item,index)"
-                >{{item.quesContent}}</p>
+                  v-html="item.quesMedia"
+                ></p>
                 <p style="margin:10px 0 0 80px;font-size:12px;color:#999;">{{instrValue}}</p>
                 <!-- 编辑删除按钮 -->
                 <div class="editDel">
@@ -100,13 +101,12 @@
                 <!-- 编辑框 -->
                 <div class="bgDv" v-show="item.open">
                   <div class="posImg"></div>
-                  <el-input
-                    type="textarea"
-                    :rows="2"
-                    class="conTitle"
-                    v-model="item.quesContent"
-                    style="width: 95%;"
-                  ></el-input>
+                  <quill-editor
+                    class="editor"
+                    ref="myTextEditor"
+                    v-model="item.quesMedia"
+                    :options="editorOption"
+                  ></quill-editor>
                   <div style="margin-bottom:10px;width:95%;">
                     <el-select
                       size="mini"
@@ -249,7 +249,7 @@
       </span>
     </el-dialog>
     <!-- 添加图片的弹框 -->
-    <el-dialog title="上传图片" :visible.sync="ImgDialogVisible" width="40%" v-dialogDrag>
+    <!-- <el-dialog title="上传图片" :visible.sync="ImgDialogVisible" width="40%" v-dialogDrag>
       <el-form
         ref="loginFormRef"
         :model="editAddForm"
@@ -264,7 +264,7 @@
         <el-button @click="editDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="editPageEnter">确 定</el-button>
       </span>
-    </el-dialog>
+    </el-dialog>-->
     <!-- 批量增加题目的弹框 -->
     <div class="batchAddDialog">
       <el-dialog :visible.sync="batchAddDialogVisible" width="45%" v-dialogDrag>
@@ -285,10 +285,12 @@
   </div>
 </template>
 <script>
+import E from "wangeditor";
 import vuedraggable from "vuedraggable";
 import BatchAdd from "./Addbatch/BatchAdd";
 import BankAdd from "./Addbatch/BankAdd";
 export default {
+  name: "editor",
   components: { vuedraggable, BatchAdd, BankAdd },
   data() {
     return {
@@ -345,7 +347,30 @@ export default {
         instrValue: ""
       },
       editDialogVisible: false,
-      batchAddDialogVisible: false
+      batchAddDialogVisible: false,
+      editorOption: {
+        modules: {
+          toolbar: [
+            ["bold", "italic", "underline", "strike"], // 加粗 斜体 下划线 删除线
+            // ["blockquote", "code-block"], // 引用  代码块
+            // [{ header: 1 }, { header: 2 }], // 1、2 级标题
+            // [{ list: "ordered" }, { list: "bullet" }], // 有序、无序列表
+            // [{ script: "sub" }, { script: "super" }], // 上标/下标
+            // [{ indent: "-1" }, { indent: "+1" }], // 缩进
+            // [{'direction': 'rtl'}],                         // 文本方向
+            // [{ size: ["small", false, "large", "huge"] }], // 字体大小
+            // [{ header: [1, 2, 3, 4, 5, 6, false] }], // 标题
+            [{ color: [] }, { background: [] }], // 字体颜色、字体背景颜色
+            [{ font: [] }], // 字体种类
+            [{ align: [] }], // 对齐方式
+            ["clean"], // 清除文本格式
+            ["link", "image", "video"] // 链接、图片、视频
+          ] //工具菜单栏配置
+        },
+        readyOnly: false, //是否只读
+        theme: "snow" //主题 snow/bubble
+        // syntax: true //语法检测
+      }
     };
   },
   created() {
@@ -353,6 +378,7 @@ export default {
     this.inveName = this.$route.query.inveName;
     this.sheetQuesList();
   },
+
   methods: {
     // 获取量表题目列表
     async sheetQuesList() {
@@ -362,6 +388,8 @@ export default {
           sheetUuid: this.sheetUuid
         }
       );
+      console.log(res);
+
       this.single = res.rows;
     },
     // 排序
@@ -492,6 +520,16 @@ export default {
     async HandleClickOver(index) {
       // 当前项li
       var info = this.single[index];
+      console.log(info);
+      
+      // html代码片段转纯文本
+      var txt = info.quesContent
+        .replace(/<(style|script|iframe)[^>]*?>[\s\S]+?<\/\1\s*>/gi, "")
+        .replace(/<[^>]+?>/g, "")
+        .replace(/\s+/g, " ")
+        .replace(/ /g, " ")
+        .replace(/>/g, " ");
+
       var list = info.option;
       var Arr = [];
       for (var i = 0; i < list.length; i++) {
@@ -511,7 +549,8 @@ export default {
           quesTips: info.quesTips,
           quesIsAnswer: info.mustChecked,
           quesType: info.quesType,
-          quesContent: info.quesContent,
+          quesContent: txt,
+          quesMedia: info.quesMedia,
           option: Arr
         }
       );
@@ -551,12 +590,16 @@ export default {
       this.sheetQuesList();
     }
   }
+  // onEditorBlur(){},
+  // onEditorFocus(){},
+  // onEditorChange(){},
 };
 </script>
 <style lang='less'>
 * {
   margin: 0;
   padding: 0;
+
 }
 ul {
   list-style: none;
@@ -824,5 +867,81 @@ ul {
 .batchAddCla {
   border-bottom: 3px solid #409eff;
   color: #000;
+}
+.editor {
+  line-height: normal !important;
+  width: 95%;
+  margin-bottom: 15px;
+}
+.ql-snow .ql-tooltip[data-mode="link"]::before {
+  content: "请输入链接地址:";
+}
+.ql-snow .ql-tooltip.ql-editing a.ql-action::after {
+  border-right: 0px;
+  content: "保存";
+  padding-right: 0px;
+}
+
+.ql-snow .ql-tooltip[data-mode="video"]::before {
+  content: "请输入视频地址:";
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-label::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item::before {
+  content: "14px";
+}
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="small"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="small"]::before {
+  content: "10px";
+}
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="large"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="large"]::before {
+  content: "18px";
+}
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="huge"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="huge"]::before {
+  content: "32px";
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-label::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item::before {
+  content: "文本";
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="1"]::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="1"]::before {
+  content: "标题1";
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="2"]::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="2"]::before {
+  content: "标题2";
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="3"]::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="3"]::before {
+  content: "标题3";
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="4"]::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="4"]::before {
+  content: "标题4";
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="5"]::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="5"]::before {
+  content: "标题5";
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="6"]::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="6"]::before {
+  content: "标题6";
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item::before {
+  content: "标准字体";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="serif"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="serif"]::before {
+  content: "衬线字体";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="monospace"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="monospace"]::before {
+  content: "等宽字体";
 }
 </style>
