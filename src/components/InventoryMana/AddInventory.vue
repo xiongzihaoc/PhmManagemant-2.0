@@ -166,7 +166,9 @@
                       style="margin-left:100px;"
                       class="quesImg"
                       @click.prevent.stop="handleClickImg(subItem)"
-                    ></span>
+                    >
+                      <img style="height: 18px;width: 20px;" :src="tipUrl" />
+                    </span>
                     <span style="margin-left:51px;" class="quesInstr"></span>
                     <el-input
                       v-if="item.quesType == 4"
@@ -249,22 +251,19 @@
       </span>
     </el-dialog>
     <!-- 添加图片的弹框 -->
-    <!-- <el-dialog title="上传图片" :visible.sync="ImgDialogVisible" width="40%" v-dialogDrag>
-      <el-form
-        ref="loginFormRef"
-        :model="editAddForm"
-        label-width="80px"
-        @closed="editDialogClosed"
+    <el-dialog title="上传图片" :visible.sync="ImgDialogVisible" width="40%" v-dialogDrag>
+      <el-upload
+        class="avatar-uploader"
+        :action="this.UPLOAD_IMG"
+        :show-file-list="false"
+        :on-success="handleAvatarSuccess"
+        :on-progress="uploadVideoProcess"
+        :before-upload="beforeAvatarUpload"
       >
-        <el-form-item label="题目说明" prop="instrValue">
-          <el-input v-model="editAddForm.instrValue"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="editDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="editPageEnter">确 定</el-button>
-      </span>
-    </el-dialog>-->
+        <img v-if="editAddForm.photoUrl" :src="editAddForm.photoUrl" class="avatar" />
+        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+      </el-upload>
+    </el-dialog>
     <!-- 批量增加题目的弹框 -->
     <div class="batchAddDialog">
       <el-dialog :visible.sync="batchAddDialogVisible" width="45%" v-dialogDrag>
@@ -294,11 +293,9 @@ export default {
   components: { vuedraggable, BatchAdd, BankAdd },
   data() {
     return {
-      radio: "1",
       checkedCities: [],
       textarea: "",
       single: [],
-      msg: "111",
       listtype: "",
       singleid: 1,
       singletitle: "题目",
@@ -311,6 +308,7 @@ export default {
       sheetUuid: "",
       inveName: "",
       instrValue: "",
+      tipUrl: "",
       options: [
         {
           value: "1",
@@ -348,6 +346,7 @@ export default {
       },
       editDialogVisible: false,
       batchAddDialogVisible: false,
+      ImgDialogVisible: false,
       editorOption: {
         modules: {
           toolbar: [
@@ -368,8 +367,8 @@ export default {
           ] //工具菜单栏配置
         },
         readyOnly: false, //是否只读
-        theme: "snow" //主题 snow/bubble
-        // syntax: true //语法检测
+        theme: "snow", //主题 snow/bubble
+        syntax: true //语法检测
       }
     };
   },
@@ -388,8 +387,6 @@ export default {
           sheetUuid: this.sheetUuid
         }
       );
-      console.log(res);
-
       this.single = res.rows;
     },
     // 排序
@@ -428,7 +425,7 @@ export default {
         open: false,
         mustChecked: true,
         id: this.singleid++,
-        quesContent: this.singletitle + (this.singleid - 1),
+        quesMedia: this.singletitle + (this.singleid - 1),
         quesType: this.listtype,
         option: changelist
       });
@@ -443,7 +440,7 @@ export default {
         open: false,
         mustChecked: true,
         id: this.singleid++,
-        quesContent: this.singletitle + (this.singleid - 1),
+        quesMedia: this.singletitle + (this.singleid - 1),
         quesType: this.listtype,
         option: changelist
       });
@@ -520,16 +517,14 @@ export default {
     async HandleClickOver(index) {
       // 当前项li
       var info = this.single[index];
-      console.log(info);
-
       // html代码片段转纯文本
-      var txt = info.quesContent
+      var txt = info.quesMedia
         .replace(/<(style|script|iframe)[^>]*?>[\s\S]+?<\/\1\s*>/gi, "")
         .replace(/<[^>]+?>/g, "")
         .replace(/\s+/g, " ")
         .replace(/ /g, " ")
         .replace(/>/g, " ");
-
+      var str = txt.replace(/&nbsp;/gi, "");
       var list = info.option;
       var Arr = [];
       for (var i = 0; i < list.length; i++) {
@@ -549,7 +544,7 @@ export default {
           quesTips: info.quesTips,
           quesIsAnswer: info.mustChecked,
           quesType: info.quesType,
-          quesContent: txt,
+          quesContent: str,
           quesMedia: info.quesMedia,
           option: Arr
         }
@@ -561,7 +556,7 @@ export default {
     },
     // 添加图片
     handleClickImg(info) {
-      // this.editDialogVisible = true;
+      this.ImgDialogVisible = true;
     },
     // 添加选项说明
     handleClickInstr(item) {
@@ -588,11 +583,31 @@ export default {
     clsbatchDia() {
       this.batchAddDialogVisible = false;
       this.sheetQuesList();
+    },
+    // 上传照片
+    handleAvatarSuccess(res, file) {
+      if (res.code != 200) return this.$message.error("上传失败");
+      this.tipUrl = res.data;
+    },
+    uploadVideoProcess(event, file, fileList) {
+      // this.percentageFile = parseInt(file.percentage);
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === "image/jpeg";
+      const isGIF = file.type === "image/gif";
+      const isPNG = file.type === "image/png";
+      const isBMP = file.type === "image/bmp";
+      const isLt10M = file.size / 1024 / 1024 < 10;
+
+      if (!isJPG && !isGIF && !isPNG && !isBMP) {
+        this.$message.error("上传图片必须是JPG/GIF/PNG/BMP 格式!");
+      }
+      if (!isLt10M) {
+        this.$message.error("上传图片大小不能超过 10MB!");
+      }
+      return (isJPG || isBMP || isGIF || isPNG) && isLt10M;
     }
   }
-  // onEditorBlur(){},
-  // onEditorFocus(){},
-  // onEditorChange(){},
 };
 </script>
 <style lang='less'>
@@ -871,6 +886,31 @@ ul {
 .batchAddCla {
   border-bottom: 3px solid #409eff;
   color: #000;
+}
+.CONTENT .avatar-uploader {
+  padding-left: 23%;
+}
+.CONTENT .avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  background-color: #f7f8f9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.CONTENT .avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 400px;
+  height: 400px;
+  line-height: 400px;
+  text-align: center;
+}
+.CONTENT .avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
 }
 .editor {
   line-height: normal !important;

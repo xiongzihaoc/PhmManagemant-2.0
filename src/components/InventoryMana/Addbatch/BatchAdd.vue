@@ -25,13 +25,12 @@ export default {
     async enterBtn() {
       if (this.content.trim() == "") {
         return this.$message.error("请输入内容");
-      } else {
+      } else {  
         let obj = [];
         // 去除空行的空格  暂时还没开发
         var quesArrs = this.content.split("\n\n");
         for (var i = 0; i < quesArrs.length; i++) {
           var ques = quesArrs[i].split("\n");
-
           var question = {};
           var quesContent = ques[0];
           var quesType = 1;
@@ -50,7 +49,7 @@ export default {
             }
           }
           question = {
-            quesContent: quesContent,
+            quesMedia: quesContent,
             option: option,
             quesType: quesType,
             sheetUuid: sheetUuid

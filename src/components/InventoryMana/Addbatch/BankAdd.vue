@@ -116,9 +116,6 @@ export default {
       this.sheetQuesList = res.rows;
     },
     chooseItem(info, index) {
-      console.log(info);
-      console.log(index);
-
       if (info.index) {
         var question = {};
         var options = [];
@@ -131,7 +128,7 @@ export default {
           options.push(temp_option);
         }
         question = {
-          quesContent: info.quesContent,
+          quesMedia: info.quesContent,
           option: options,
           quesType: info.quesType,
           sheetUuid: this.sheetUuid
