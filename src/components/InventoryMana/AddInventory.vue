@@ -231,8 +231,25 @@
         </div>
       </div>
     </el-card>
-    <!-- 添加图片和添加说明的弹框 -->
+    <!-- 添加说明的弹框 -->
     <el-dialog title="题目说明" :visible.sync="editDialogVisible" width="40%" v-dialogDrag>
+      <el-form
+        ref="loginFormRef"
+        :model="editAddForm"
+        label-width="80px"
+        @closed="editDialogClosed"
+      >
+        <el-form-item label="题目说明" prop="instrValue">
+          <el-input v-model="editAddForm.instrValue"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editPageEnter">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 添加图片的弹框 -->
+    <el-dialog title="上传图片" :visible.sync="ImgDialogVisible" width="40%" v-dialogDrag>
       <el-form
         ref="loginFormRef"
         :model="editAddForm"
@@ -261,13 +278,7 @@
           >{{item.name}}</li>
         </ul>
         <span slot="footer" class="dialog-footer">
-
-            <component
-              :is="currentView"
-              :sheetUuid="sheetUuid"
-              v-on:openOrCls="clsbatchDia($event)"
-            ></component>
-
+          <component :is="currentView" :sheetUuid="sheetUuid" v-on:openOrCls="clsbatchDia($event)"></component>
         </span>
       </el-dialog>
     </div>

@@ -52,11 +52,7 @@
                 </div>
               </div>
               <div class="posCheckInner">
-                <el-checkbox
-                  v-model="item.index"
-                  class="posCheck"
-                  @change="chooseItem(item,item.index)"
-                ></el-checkbox>
+                <el-checkbox v-model="item.id" class="posCheck" @change="chooseItem"></el-checkbox>
               </div>
             </li>
           </ul>
@@ -72,12 +68,12 @@
         <a href="###">查看已选题目</a>
       </span>
       <el-button type="primary" size="mini" class="enterBack" @click="enterCheked">确定</el-button>
-      <el-button type="info" size="mini" class="enterBack" plain>返回</el-button>
     </div>
   </div>
 </template>
 <script>
 export default {
+  // 接收父组件传来的量表Uuid
   props: { sheetUuid: String },
   data() {
     return {
@@ -86,7 +82,8 @@ export default {
       sheetQuesList: [],
       isIndeterminate: true,
       checkAll: false,
-      question: {}
+      question: {},
+      checkedCities: []
     };
   },
   created() {
@@ -107,7 +104,7 @@ export default {
     },
     // 获取点击量表的题目列表
     async searchContent(info) {
-      this.sheetUuid = info.uuid;
+      // this.sheetUuid = info.uuid;
       const { data: res } = await this.$http.post(
         this.$ajax + "sheetQues/list",
         {
@@ -116,28 +113,30 @@ export default {
       );
       this.sheetQuesList = res.rows;
     },
-    chooseItem(info, check) {
-      if (check) {
-        var question = {};
-        var arr = [];
-        var options = [];
-        var repe_option = info.option;
-        for (var i = 0; i < repe_option.length; i++) {
-          var temp_option = {
-            optContent: repe_option[i].optContent,
-            optScore: repe_option[i].optScore
-          };
-          options.push(temp_option);
-        }
-        question = {
-          quesContent: info.quesContent,
-          option: options,
-          quesType: info.quesType,
-          sheetUuid: this.sheetUuid
-        };
-        arr.push(question);
-        this.Array = arr;
-      }
+    chooseItem(val) {
+      console.log(val);
+      
+      // if (check) {
+      //   var question = {};
+      //   var arr = [];
+      //   var options = [];
+      //   var repe_option = info.option;
+      //   for (var i = 0; i < repe_option.length; i++) {
+      //     var temp_option = {
+      //       optContent: repe_option[i].optContent,
+      //       optScore: repe_option[i].optScore
+      //     };
+      //     options.push(temp_option);
+      //   }
+      //   question = {
+      //     quesContent: info.quesContent,
+      //     option: options,
+      //     quesType: info.quesType,
+      //     sheetUuid: this.sheetUuid
+      //   };
+      //   arr.push(question);
+      //   this.Array = arr;
+      // }
     },
     async enterCheked() {
       const { data: res } = await this.$http.post(
@@ -146,6 +145,7 @@ export default {
           questions: this.Array
         }
       );
+      this.$emit("openOrCls");
     }
   }
 };
@@ -168,7 +168,7 @@ export default {
   float: left;
   width: 60%;
   box-sizing: border-box;
-  padding: 15px 20px 0;
+  padding: 15px 0 0 20px;
   height: 500px;
 }
 .sheet_footer {
@@ -237,6 +237,7 @@ export default {
 }
 .sheetTitle {
   height: 40px;
+  padding-right: 20px;
   box-sizing: border-box;
 }
 .chooseQues {
@@ -252,10 +253,12 @@ export default {
   overflow: hidden;
   overflow: auto;
 }
+
 .sheetContent li {
   position: relative;
-  width: 88%;
-  padding: 20px;
+  box-sizing: border-box;
+  width: 470px;
+  padding: 20px 40px 20px 20px;
   font-size: 14px;
   margin-bottom: 20px;
   background-color: #f7f9fc;

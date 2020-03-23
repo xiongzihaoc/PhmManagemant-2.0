@@ -2,7 +2,7 @@
   <div class="CONTENT">
     <div class="title">
       <p>1. 题目与题目之间需空一行，题目可以不加题号，题干中间不得换行</p>
-      <p>2. 题干与选项，及各选项之间需回车换行，选项不得以数字开头（会被识别为题干）</p>
+      <p>2. 题干与选项，及各选项之间需回车换行，题干必须是一行(长度不限)</p>
       <p>3. 题目无选项直接空一行，会默认识别为单选题目</p>
       <el-button type="info" plain class="titleBtn" size="small" @click="clearTxt">清空文本框</el-button>
     </div>
@@ -67,7 +67,7 @@ export default {
         );
         if (res.code != 200) return this.$message.error("批量添加失败");
         this.$message.success("批量添加成功");
-        this.$emit("openOrCls", false);
+        this.$emit("openOrCls");
         this.content = "";
       }
     },
