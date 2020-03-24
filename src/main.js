@@ -44,6 +44,7 @@ Vue.prototype.$http = axios
 Vue.prototype.$ajax = 'http://test.phmzykj.com/zhuoya-sheet/'
 // 文件上传地址
 Vue.prototype.UPLOAD_IMG = 'http://test.phmzykj.com/zhuoya_manager/oss/fileUpload.do'
+// Vue.prototype.SHEET_IMG = 'http://test.phmzykj.com/zhuoya-sheet/upload'
 
 Vue.config.productionTip = false
 

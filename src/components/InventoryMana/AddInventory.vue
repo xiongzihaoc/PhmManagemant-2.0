@@ -100,6 +100,7 @@
                 </div>
                 <!-- 编辑框 -->
                 <div class="bgDv" v-show="item.open">
+                  <!-- 弹框三角 -->
                   <div class="posImg"></div>
                   <quill-editor
                     class="editor"
@@ -162,13 +163,21 @@
                       class="quesPosDel"
                       @click.prevent.stop="quesPosDel(index,i)"
                     ></span>
-                    <span
-                      style="margin-left:100px;"
-                      class="quesImg"
-                      @click.prevent.stop="handleClickImg(subItem)"
-                    >
-                      <img style="height: 18px;width: 20px;" :src="tipUrl" />
-                    </span>
+                    <!-- 图片上传 -->
+                    <div style="display:inline-block" @click="ccc(item)">
+                      <el-upload
+                        class="avatar-uploader quesImg"
+                        action="http://test.phmzykj.com/zhuoya-sheet/upload"
+                        :show-file-list="false"
+                        :on-success="handleAvatarSuccess"
+                        :on-progress="uploadVideoProcess"
+                        :before-upload="beforeAvatarUpload"
+                      >
+                        <img v-if="photoUrl" :src="photoUrl" class="avatar" />
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                      </el-upload>
+                    </div>
+
                     <span style="margin-left:51px;" class="quesInstr"></span>
                     <el-input
                       v-if="item.quesType == 4"
@@ -251,19 +260,9 @@
       </span>
     </el-dialog>
     <!-- 添加图片的弹框 -->
-    <el-dialog title="上传图片" :visible.sync="ImgDialogVisible" width="40%" v-dialogDrag>
-      <el-upload
-        class="avatar-uploader"
-        :action="this.UPLOAD_IMG"
-        :show-file-list="false"
-        :on-success="handleAvatarSuccess"
-        :on-progress="uploadVideoProcess"
-        :before-upload="beforeAvatarUpload"
-      >
-        <img v-if="editAddForm.photoUrl" :src="editAddForm.photoUrl" class="avatar" />
-        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-      </el-upload>
-    </el-dialog>
+    <!-- <el-dialog title="上传图片" :visible.sync="ImgDialogVisible" width="40%" v-dialogDrag>
+
+    </el-dialog>-->
     <!-- 批量增加题目的弹框 -->
     <div class="batchAddDialog">
       <el-dialog :visible.sync="batchAddDialogVisible" width="45%" v-dialogDrag>
@@ -341,6 +340,7 @@ export default {
         }
       ],
       i: null,
+      photoUrl: "",
       editAddForm: {
         instrValue: ""
       },
@@ -586,8 +586,12 @@ export default {
     },
     // 上传照片
     handleAvatarSuccess(res, file) {
+      this.photoUrl = res.data;
       if (res.code != 200) return this.$message.error("上传失败");
-      this.tipUrl = res.data;
+    },
+    ccc(info) {
+      console.log(this.photoUrl);
+      
     },
     uploadVideoProcess(event, file, fileList) {
       // this.percentageFile = parseInt(file.percentage);
@@ -741,20 +745,21 @@ ul {
 }
 .quesImg {
   cursor: pointer;
-  background-position: -52px -221px;
-  height: 18px;
+  /*  background-position: -52px -221px;
+  background-image: url("../../assets/images/icoall.png"); 
+  background-repeat: no-repeat;
+    overflow: hidden;
+  */
+  height: 20px;
   width: 20px;
   vertical-align: middle;
-  background-image: url("../../assets/images/icoall.png");
-  background-repeat: no-repeat;
   display: inline-block;
-  overflow: hidden;
 }
 .quesInstr {
   cursor: pointer;
   background-position: -91px -220px;
   height: 20px;
-  width: 18px;
+  width: 20px;
   vertical-align: middle;
   background-image: url("../../assets/images/icoall.png");
   background-repeat: no-repeat;
@@ -888,28 +893,26 @@ ul {
   color: #000;
 }
 .CONTENT .avatar-uploader {
-  padding-left: 23%;
+  margin-left: 100px;
 }
 .CONTENT .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   background-color: #f7f8f9;
-  border-radius: 6px;
   cursor: pointer;
   position: relative;
-  overflow: hidden;
 }
 
 .CONTENT .avatar-uploader-icon {
-  font-size: 28px;
+  font-size: 12;
   color: #8c939d;
-  width: 400px;
-  height: 400px;
-  line-height: 400px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
   text-align: center;
 }
 .CONTENT .avatar {
-  width: 178px;
-  height: 178px;
+  width: 20px;
+  height: 20px;
   display: block;
 }
 .editor {
