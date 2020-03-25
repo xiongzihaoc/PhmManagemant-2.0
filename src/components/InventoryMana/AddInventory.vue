@@ -79,9 +79,13 @@
                     <!-- 判断type类型 -->
                     <div v-if="item.quesType==1">
                       <el-radio :label="1">{{list.optContent}}</el-radio>
+                      <img v-if="list.optMedia==null" class="chooseImages" v-show="false" />
+                      <img v-else :src="list.optMedia" class="chooseImages" />
                     </div>
                     <div class="listlabel" v-else-if="item.quesType==2">
                       <el-checkbox>{{list.optContent}}</el-checkbox>
+                      <img v-if="list.optMedia==null" class="chooseImages" v-show="false" />
+                      <img v-else :src="list.optMedia" class="chooseImages" />
                     </div>
                     <div v-else-if="item.quesType==3">
                       <el-input
@@ -91,10 +95,14 @@
                         style="width:400px;"
                         v-model="list.optContent"
                       ></el-input>
+                      <img v-if="list.optMedia==null" class="chooseImages" v-show="false" />
+                      <img v-else :src="list.optMedia" class="chooseImages" />
                     </div>
                     <div v-if="item.quesType==4">
                       <el-radio :label="2" style="margin-right:10px;">{{list.optContent}}</el-radio>
                       <span style="color:orange;font-size:14px;">( 分值：{{list.optScore}} )</span>
+                      <img v-if="list.optMedia==null" class="chooseImages" v-show="false" />
+                      <img v-else :src="list.optMedia" class="chooseImages chooseImagesScore" />
                     </div>
                   </div>
                 </div>
@@ -132,7 +140,7 @@
                       <a
                         href="###"
                         style="color: #666666;text-decoration: underline;"
-                        @click.prevent.stop="handleClickInstr(item)"
+                        @click.prevent.stop="handleClickInstr(index)"
                       >填写提示</a>
                     </span>
                   </div>
@@ -163,11 +171,11 @@
                       class="quesPosDel"
                       @click.prevent.stop="quesPosDel(index,i)"
                     ></span>
-                    <!-- 图片上传 -->
-                    <!-- <div style="display:inline-block" @click="ccc(item)"> -->
+
+                    <!-- 选项图片上传 -->
                     <el-upload
                       class="avatar-uploader quesImg"
-                      action="http://test.phmzykj.com/zhuoya-sheet/upload"
+                      :action="SHEET_IMG"
                       :show-file-list="false"
                       :on-success="handleAvatarSuccess"
                       :on-progress="uploadVideoProcess"
@@ -308,7 +316,8 @@ export default {
       selValue: "",
       sheetUuid: "",
       inveName: "",
-      instrValue: "",
+      // instrValue: "",
+      instrIndex: null,
       num1: null,
       num2: null,
       options: [
@@ -360,10 +369,10 @@ export default {
             // [{ script: "sub" }, { script: "super" }], // 上标/下标
             // [{ indent: "-1" }, { indent: "+1" }], // 缩进
             // [{'direction': 'rtl'}],                         // 文本方向
-            // [{ size: ["small", false, "large", "huge"] }], // 字体大小
+            [{ size: ["small", false, "large", "huge"] }], // 字体大小
             // [{ header: [1, 2, 3, 4, 5, 6, false] }], // 标题
             [{ color: [] }, { background: [] }], // 字体颜色、字体背景颜色
-            [{ font: [] }], // 字体种类
+            // [{ font: [] }], // 字体种类
             [{ align: [] }], // 对齐方式
             ["clean"], // 清除文本格式
             ["link", "image", "video"] // 链接、图片、视频
@@ -495,7 +504,7 @@ export default {
     },
     // 显示隐藏编辑框
     getOneInfo(item, index) {
-      console.log(item);
+      console.log(this.single[index].mustChecked);
 
       this.$set(this.single[index], "open", !this.single[index].open);
     },
@@ -595,26 +604,24 @@ export default {
       this.ImgDialogVisible = true;
     },
     // 添加题目说明
-    handleClickInstr(item) {
-      console.log(item);
-
+    handleClickInstr(index) {
+      // 获取当前li的索引赋值给instrIndex
+      this.instrIndex = index;
       this.editDialogVisible = true;
     },
-    // 确定
+    // 添加题目说明确定
     editPageEnter() {
+      this.single[this.instrIndex].quesTips = this.editAddForm.instrValue;
       this.editDialogVisible = false;
-      this.instrValue = this.editAddForm.instrValue;
+      // this.instrValue = this.editAddForm.instrValue;
     },
-    // dialog关闭
+    // 添加题目dialog关闭
     editDialogClosed() {
       this.$refs.loginFormRef.resetFields();
     },
     // 批量增加题目
     batchAddQues() {
       this.batchAddDialogVisible = true;
-    },
-    batchEnter(e) {
-      // console.log(e);
     },
     batchAddCon(index, v) {
       this.Cla = index;
@@ -630,12 +637,10 @@ export default {
       this.num2 = i;
     },
     handleAvatarSuccess(res, file) {
+      console.log(res);
+
       if (res.code != 200) return this.$message.error("上传失败");
       this.single[this.num1].option[this.num2].optMedia = res.data;
-
-      console.log(this.single[this.num1].option[this.num2].optMedia);
-
-      // this.single[this.num1].option[this.num2].optMedia = res.data;
     },
     uploadVideoProcess(event, file, fileList) {},
     beforeAvatarUpload(file) {
@@ -644,7 +649,6 @@ export default {
       const isPNG = file.type === "image/png";
       const isBMP = file.type === "image/bmp";
       const isLt10M = file.size / 1024 / 1024 < 10;
-
       if (!isJPG && !isGIF && !isPNG && !isBMP) {
         this.$message.error("上传图片必须是JPG/GIF/PNG/BMP 格式!");
       }
@@ -759,7 +763,12 @@ ul {
   cursor: move;
   margin-left: 60px;
 }
-
+.chooseImages {
+  width: 20px;
+  height: 20px;
+  margin-left: 20px;
+  vertical-align: middle;
+}
 .bgDv {
   width: 100%;
   position: relative;
@@ -787,11 +796,6 @@ ul {
 }
 .quesImg {
   cursor: pointer;
-  /*  background-position: -52px -221px;
-  background-image: url("../../assets/images/icoall.png"); 
-  background-repeat: no-repeat;
-    overflow: hidden;
-  */
   height: 20px;
   width: 20px;
   vertical-align: middle;
@@ -980,6 +984,9 @@ ul {
 .ql-snow .ql-picker.ql-size .ql-picker-label::before,
 .ql-snow .ql-picker.ql-size .ql-picker-item::before {
   content: "14px";
+}
+.ql-toolbar.ql-snow .ql-picker.ql-expanded .ql-picker-options {
+  z-index: 999;
 }
 .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="small"]::before,
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="small"]::before {
