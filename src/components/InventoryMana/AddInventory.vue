@@ -55,7 +55,7 @@
                   @click.prevent.stop="getOneInfo(item,index)"
                   v-html="item.quesMedia"
                 ></p>
-                <p style="margin:10px 0 0 80px;font-size:12px;color:#999;">{{instrValue}}</p>
+                <p style="margin:10px 0 0 80px;font-size:12px;color:#999;">{{item.quesTips}}</p>
                 <!-- 编辑删除按钮 -->
                 <div class="editDel">
                   <el-button
@@ -243,7 +243,7 @@
         </div>
       </div>
     </el-card>
-    <!-- 添加说明的弹框 -->
+    <!-- 添加题目说明的弹框 -->
     <el-dialog title="题目说明" :visible.sync="editDialogVisible" width="40%" v-dialogDrag>
       <el-form
         ref="loginFormRef"
@@ -260,10 +260,6 @@
         <el-button type="primary" @click="editPageEnter">确 定</el-button>
       </span>
     </el-dialog>
-    <!-- 添加图片的弹框 -->
-    <!-- <el-dialog title="上传图片" :visible.sync="ImgDialogVisible" width="40%" v-dialogDrag>
-
-    </el-dialog>-->
     <!-- 批量增加题目的弹框 -->
     <div class="batchAddDialog">
       <el-dialog :visible.sync="batchAddDialogVisible" width="45%" v-dialogDrag>
@@ -277,14 +273,19 @@
           >{{item.name}}</li>
         </ul>
         <span slot="footer" class="dialog-footer">
-          <component :is="currentView" :sheetUuid="sheetUuid" v-on:openOrCls="clsbatchDia($event)"></component>
+          <keep-alive>
+            <component
+              :is="currentView"
+              :sheetUuid="sheetUuid"
+              v-on:openOrCls="clsbatchDia($event)"
+            ></component>
+          </keep-alive>
         </span>
       </el-dialog>
     </div>
   </div>
 </template>
 <script>
-import E from "wangeditor";
 import vuedraggable from "vuedraggable";
 import BatchAdd from "./Addbatch/BatchAdd";
 import BankAdd from "./Addbatch/BankAdd";
@@ -460,7 +461,12 @@ export default {
     CreateChangeTextareaList() {
       this.sorted();
       let changelist = [
-        { textareavalue: "", necessary: this.checked, textprompt: false }
+        {
+          textareavalue: "",
+          necessary: this.checked,
+          optMedia: "",
+          textprompt: false
+        }
       ];
       this.single.push({
         open: false,
@@ -468,6 +474,7 @@ export default {
         id: this.singleid++,
         quesMedia: this.singletitle + (this.singleid - 1),
         quesType: this.listtype,
+
         option: changelist
       });
     },
@@ -587,8 +594,10 @@ export default {
     handleClickImg(info) {
       this.ImgDialogVisible = true;
     },
-    // 添加选项说明
+    // 添加题目说明
     handleClickInstr(item) {
+      console.log(item);
+
       this.editDialogVisible = true;
     },
     // 确定
@@ -597,7 +606,9 @@ export default {
       this.instrValue = this.editAddForm.instrValue;
     },
     // dialog关闭
-    editDialogClosed() {},
+    editDialogClosed() {
+      this.$refs.loginFormRef.resetFields();
+    },
     // 批量增加题目
     batchAddQues() {
       this.batchAddDialogVisible = true;
@@ -619,8 +630,6 @@ export default {
       this.num2 = i;
     },
     handleAvatarSuccess(res, file) {
-      console.log(res);
-      
       if (res.code != 200) return this.$message.error("上传失败");
       this.single[this.num1].option[this.num2].optMedia = res.data;
 
@@ -909,7 +918,6 @@ ul {
 .batchAddDialog .el-dialog__footer {
   padding: 0 !important;
   text-align: left;
-
   border-top: 1px solid #e8e8e8;
 }
 .batchAddCon {
@@ -929,7 +937,7 @@ ul {
   margin-left: 100px;
 }
 .CONTENT .avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
+  border: 1px solid #d9d9d9;
   background-color: #f7f8f9;
   cursor: pointer;
   position: relative;

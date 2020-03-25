@@ -301,7 +301,7 @@ export default {
       this.editAddForm.title = info.title.split(",");
     },
     editDialogClosed() {
-      this.$refs.editFormRef.resetFields();
+      this.$refs.loginFormRef.resetFields();
     },
     // 添加用户
     addUsers() {

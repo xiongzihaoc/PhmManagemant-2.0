@@ -460,7 +460,9 @@ export default {
     deptAdd() {
       this.addDeptDialogVisible = true;
     },
-    addDeptDialogClosed() {},
+    addDeptDialogClosed() {
+      this.$refs.deptAddFormRef.resetFields();
+    },
     addDeptEnter() {
       this.addEditValue = this.tranMidName;
       this.addDeptDialogVisible = false;

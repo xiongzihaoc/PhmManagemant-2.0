@@ -95,7 +95,7 @@ export default {
   margin-top: 20px;
   margin-bottom: 20px;
 }
-.CONTENT .el-dialog__footer .el-button--primary {
+.batchAddDialog .el-dialog__footer .el-button--primary {
   background-color: #409eff !important;
   border-color: #409eff !important;
 }
@@ -104,7 +104,7 @@ export default {
   bottom: 10px;
   right: 10px;
 }
-.CONTENT .el-icon-close:before {
+.batchAddDialog .el-icon-close:before {
   color: #ccc;
 }
 </style>
