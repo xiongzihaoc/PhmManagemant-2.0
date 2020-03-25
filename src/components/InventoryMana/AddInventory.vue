@@ -1,5 +1,5 @@
 <template>
-  <div class="CONTENT" style="position: relative;width:1000px;height:500px;margin:0 auto;">
+  <div class="CONTENT">
     <el-card class="main_left">
       <p class="queschoose">题型选择</p>
       <div class="changeBtn">
@@ -8,7 +8,6 @@
           size="mini"
           type="info"
           plain
-          style="border:none"
           icon="el-icon-s-opportunity"
           @click.prevent.stop="changetype"
         >单选</el-button>
@@ -17,7 +16,6 @@
           size="mini"
           type="info"
           plain
-          style="border:none;"
           icon="el-icon-s-help"
           @click.prevent.stop="changetype"
         >评分</el-button>
@@ -26,7 +24,6 @@
           size="mini"
           type="info"
           plain
-          style="border:none;"
           icon="el-icon-finished"
           @click.prevent.stop="changetype"
         >多选</el-button>
@@ -35,14 +32,14 @@
           size="mini"
           type="info"
           plain
-          style="border:none;"
           icon="el-icon-tickets"
           @click.prevent.stop="changetype"
         >文本</el-button>
       </div>
     </el-card>
     <el-card class="main_right">
-      <h3 style="text-align: center;margin-bottom:40px;">{{inveName}}</h3>
+      <!-- 量表名称 -->
+      <h3>{{inveName}}</h3>
       <div class="list_box">
         <!-- 拖拽模块 -->
         <vuedraggable v-model="single">
@@ -51,11 +48,12 @@
             <ul v-for="(item,index) in single" :key="index">
               <li>
                 <p
-                  style="margin:25px 0 0 40px;font-weight:700;font-size:16px;"
+                  class="quesTitle"
                   @click.prevent.stop="getOneInfo(item,index)"
                   v-html="item.quesMedia"
                 ></p>
-                <p style="margin:10px 0 0 80px;font-size:12px;color:#999;">{{item.quesTips}}</p>
+                <!-- 题目说明 -->
+                <p class="quesTips">{{item.quesTips}}</p>
                 <!-- 编辑删除按钮 -->
                 <div class="editDel">
                   <el-button
@@ -79,13 +77,17 @@
                     <!-- 判断type类型 -->
                     <div v-if="item.quesType==1">
                       <el-radio :label="1">{{list.optContent}}</el-radio>
-                      <img v-if="list.optMedia==null" class="chooseImages" v-show="false" />
-                      <img v-else :src="list.optMedia" class="chooseImages" />
+                      <span v-if="list.optMedia==''"></span>
+                      <span v-else>
+                        <img class="chooseImages" :src="list.optMedia" />
+                      </span>
                     </div>
                     <div class="listlabel" v-else-if="item.quesType==2">
                       <el-checkbox>{{list.optContent}}</el-checkbox>
-                      <img v-if="list.optMedia==null" class="chooseImages" v-show="false" />
-                      <img v-else :src="list.optMedia" class="chooseImages" />
+                      <span v-if="list.optMedia==''"></span>
+                      <span v-else>
+                        <img class="chooseImages" :src="list.optMedia" />
+                      </span>
                     </div>
                     <div v-else-if="item.quesType==3">
                       <el-input
@@ -95,28 +97,34 @@
                         style="width:400px;"
                         v-model="list.optContent"
                       ></el-input>
-                      <img v-if="list.optMedia==null" class="chooseImages" v-show="false" />
-                      <img v-else :src="list.optMedia" class="chooseImages" />
+                      <span v-if="list.optMedia==''"></span>
+                      <span v-else>
+                        <img class="chooseImages" :src="list.optMedia" />
+                      </span>
                     </div>
                     <div v-if="item.quesType==4">
                       <el-radio :label="2" style="margin-right:10px;">{{list.optContent}}</el-radio>
-                      <span style="color:orange;font-size:14px;">( 分值：{{list.optScore}} )</span>
-                      <img v-if="list.optMedia==null" class="chooseImages" v-show="false" />
-                      <img v-else :src="list.optMedia" class="chooseImages chooseImagesScore" />
+                      <span class="listOptscore">( 分值：{{list.optScore}} )</span>
+                      <span v-if="list.optMedia==''"></span>
+                      <span v-else>
+                        <img class="chooseImages" :src="list.optMedia" />
+                      </span>
                     </div>
                   </div>
                 </div>
                 <!-- 编辑框 -->
                 <div class="bgDv" v-show="item.open">
-                  <!-- 弹框三角 -->
+                  <!-- 编辑框的三角 -->
                   <div class="posImg"></div>
+                  <!-- 富文本编辑器 -->
                   <quill-editor
                     class="editor"
                     ref="myTextEditor"
                     v-model="item.quesMedia"
                     :options="editorOption"
                   ></quill-editor>
-                  <div style="margin-bottom:10px;width:95%;">
+                  <!-- 选择题目类型 -->
+                  <div class="selectOpt">
                     <el-select
                       size="mini"
                       v-model="item.quesType"
@@ -130,23 +138,20 @@
                         :value="asItem.value"
                       ></el-option>
                     </el-select>
+                    <!-- 必答 -->
                     <el-checkbox
                       class="mustChecked"
                       v-model="item.mustChecked"
                       true-label="1"
                       false-label="0"
                     >必答</el-checkbox>
-                    <span style="font-size:14px;color:#6A6A6A;margin-left:80px;">
-                      <a
-                        href="###"
-                        style="color: #666666;text-decoration: underline;"
-                        @click.prevent.stop="handleClickInstr(index)"
-                      >填写提示</a>
+                    <!-- 填写提示 -->
+                    <span class="writeTips">
+                      <a href="###" @click.prevent.stop="handleClickInstr(index)">填写提示</a>
                     </span>
                   </div>
-                  <div
-                    style="margin-bottom:10px;width:95%;height:30px;background:#e8e8e8;font-size:14px;line-height:30px;"
-                  >
+                  <!-- 选项文字 图片 说明 分数 上移下移 -->
+                  <div class="selImgTips">
                     <span style="margin-left:20px;">选项文字</span>
                     <span style="margin-left:288px;">图片</span>
                     <span style="margin-left:40px;">说明</span>
@@ -155,12 +160,7 @@
                     <span v-else style="margin-left:80px;">上移下移</span>
                   </div>
                   <div v-for="(subItem,i) in item.option" :key="i">
-                    <el-input
-                      size="mini"
-                      class="conContent"
-                      v-model="subItem.optContent"
-                      style="width:220px;display:inline-block;"
-                    ></el-input>
+                    <el-input size="mini" class="conContent" v-model="subItem.optContent" style></el-input>
                     <span
                       style="margin-left:5px;"
                       class="quesPosAdd"
@@ -185,15 +185,13 @@
                       <img v-if="subItem.optMedia" :src="subItem.optMedia" class="avatar" />
                       <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
-                    <!-- </div> -->
-
                     <span style="margin-left:51px;" class="quesInstr"></span>
                     <el-input
                       v-if="item.quesType == 4"
                       v-show="true"
                       size="mini"
                       v-model="subItem.optScore"
-                      style="width:40px;display:inline-block;margin-left:34px;padding:5px;text-align:center;"
+                      class="inpOptScore"
                     ></el-input>
                     <span
                       v-if="item.quesType == 4"
@@ -217,21 +215,20 @@
                   <el-button
                     @click.prevent.stop="HandleClickAddList(item.option,index)"
                     size="mini"
-                    style="border:none;background:#f5f5f5;color:#0095ff!important;margin-bottom:5px;"
+                    class="addOption"
                     icon="el-icon-circle-plus-outline"
                   >添加选项</el-button>
-                  <div
-                    style="border:1px dashed #ccc;margin-bottom:10px;width:95%;background:#e8e8e8;font-size:14px;height:40px;line-height:42px;"
-                  >
+                  <!-- 逻辑设置： -->
+                  <div class="logicSetting">
                     <span style="margin-left:20px;">逻辑设置：</span>
                     <span style="margin-left:40px;">
-                      <a href="###" style="color: #666666;text-decoration: underline;">题目关联</a>
+                      <a href="###">题目关联</a>
                     </span>
                     <span style="margin-left:40px;">
-                      <a href="###" style="color: #666666;text-decoration: underline;">跳题逻辑</a>
+                      <a href="###">跳题逻辑</a>
                     </span>
                     <span style="margin-left:40px;">
-                      <a href="###" style="color: #666666;text-decoration: underline;">选项关联</a>
+                      <a href="###">选项关联</a>
                     </span>
                   </div>
                   <!-- 完成编辑按钮 -->
@@ -308,15 +305,12 @@ export default {
       listtype: "",
       singleid: 1,
       singletitle: "题目",
-      timer: null,
       infolistid: 2,
       score: 5,
       infolistval: "选项",
       checked: "",
-      selValue: "",
       sheetUuid: "",
       inveName: "",
-      // instrValue: "",
       instrIndex: null,
       num1: null,
       num2: null,
@@ -504,8 +498,6 @@ export default {
     },
     // 显示隐藏编辑框
     getOneInfo(item, index) {
-      console.log(this.single[index].mustChecked);
-
       this.$set(this.single[index], "open", !this.single[index].open);
     },
     // 删除题目
@@ -613,7 +605,6 @@ export default {
     editPageEnter() {
       this.single[this.instrIndex].quesTips = this.editAddForm.instrValue;
       this.editDialogVisible = false;
-      // this.instrValue = this.editAddForm.instrValue;
     },
     // 添加题目dialog关闭
     editDialogClosed() {
@@ -627,6 +618,7 @@ export default {
       this.Cla = index;
       this.currentView = v;
     },
+    // 子组件绑定的方法关闭dialog
     clsbatchDia() {
       this.batchAddDialogVisible = false;
       this.sheetQuesList();
@@ -637,8 +629,6 @@ export default {
       this.num2 = i;
     },
     handleAvatarSuccess(res, file) {
-      console.log(res);
-
       if (res.code != 200) return this.$message.error("上传失败");
       this.single[this.num1].option[this.num2].optMedia = res.data;
     },
@@ -668,6 +658,12 @@ export default {
 ul {
   list-style: none;
 }
+.CONTENT {
+  position: relative;
+  width: 1000px;
+  height: 500px;
+  margin: 0 auto;
+}
 .main_left {
   position: fixed;
   z-index: 100;
@@ -688,6 +684,15 @@ ul {
   height: 850px;
   width: 50%;
 }
+h3 {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.quesTips {
+  margin: 10px 0 0 80px;
+  font-size: 12px;
+  color: #999;
+}
 .queschoose {
   text-align: center;
   font-weight: 700;
@@ -700,6 +705,7 @@ ul {
 .chooseType {
   display: block;
   margin-bottom: 10px;
+  border: none;
 }
 .changeBtn .el-button + .el-button {
   margin-left: 0px;
@@ -734,6 +740,10 @@ ul {
 .list_box li:hover .editDel {
   display: block;
 }
+.listOptscore {
+  color: orange;
+  font-size: 14px;
+}
 .delBtn.is-plain:focus,
 .delBtn.is-plain:hover {
   background: #fff;
@@ -753,6 +763,19 @@ ul {
   border-color: #1ea0fa;
   color: #1ea0fa;
 }
+.quesTitle {
+  margin: 25px 0 0 40px;
+  font-weight: 700;
+  font-size: 16px;
+}
+.quesTitle img {
+  width: 80px;
+  height: 80px;
+}
+.ql-editor img {
+  width: 80px;
+  height: 80px;
+}
 .listiconshow {
   padding-top: 10px;
 }
@@ -763,6 +786,7 @@ ul {
   cursor: move;
   margin-left: 60px;
 }
+
 .chooseImages {
   width: 20px;
   height: 20px;
@@ -781,8 +805,56 @@ ul {
   margin-bottom: 10px;
 }
 .conContent {
-  display: block;
+  width: 220px;
+  display: inline-block;
   margin-bottom: 10px;
+}
+.selectOpt {
+  margin-bottom: 10px;
+  width: 95%;
+}
+.writeTips {
+  font-size: 14px;
+  color: #6a6a6a;
+  margin-left: 80px;
+}
+.writeTips a {
+  color: #666666;
+  text-decoration: underline;
+}
+.selImgTips {
+  margin-bottom: 10px;
+  width: 95%;
+  height: 30px;
+  background: #e8e8e8;
+  font-size: 14px;
+  line-height: 30px;
+}
+.inpOptScore {
+  width: 40px;
+  display: inline-block;
+  margin-left: 34px;
+  padding: 5px;
+  text-align: center;
+}
+.addOption {
+  border: none;
+  background: #f5f5f5;
+  color: #0095ff !important;
+  margin-bottom: 5px;
+}
+.logicSetting {
+  border: 1px dashed #ccc;
+  margin-bottom: 10px;
+  width: 95%;
+  background: #e8e8e8;
+  font-size: 14px;
+  height: 40px;
+  line-height: 42px;
+}
+.logicSetting a {
+  color: #666666;
+  text-decoration: underline;
 }
 .posImg {
   cursor: pointer;
