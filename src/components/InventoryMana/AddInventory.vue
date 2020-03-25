@@ -164,19 +164,20 @@
                       @click.prevent.stop="quesPosDel(index,i)"
                     ></span>
                     <!-- 图片上传 -->
-                    <div style="display:inline-block" @click="ccc(item)">
-                      <el-upload
-                        class="avatar-uploader quesImg"
-                        action="http://test.phmzykj.com/zhuoya-sheet/upload"
-                        :show-file-list="false"
-                        :on-success="handleAvatarSuccess"
-                        :on-progress="uploadVideoProcess"
-                        :before-upload="beforeAvatarUpload"
-                      >
-                        <img v-if="photoUrl" :src="photoUrl" class="avatar" />
-                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                      </el-upload>
-                    </div>
+                    <!-- <div style="display:inline-block" @click="ccc(item)"> -->
+                    <el-upload
+                      class="avatar-uploader quesImg"
+                      action="http://test.phmzykj.com/zhuoya-sheet/upload"
+                      :show-file-list="false"
+                      :on-success="handleAvatarSuccess"
+                      :on-progress="uploadVideoProcess"
+                      :before-upload="beforeAvatarUpload"
+                      :on-change="(file, fileList) => {handleChange(file, fileList, index,i)}"
+                    >
+                      <img v-if="subItem.optMedia" :src="subItem.optMedia" class="avatar" />
+                      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                    <!-- </div> -->
 
                     <span style="margin-left:51px;" class="quesInstr"></span>
                     <el-input
@@ -307,7 +308,8 @@ export default {
       sheetUuid: "",
       inveName: "",
       instrValue: "",
-      tipUrl: "",
+      num1: null,
+      num2: null,
       options: [
         {
           value: "1",
@@ -416,10 +418,34 @@ export default {
     CreateChangeSingleList() {
       this.sorted();
       let changelist = [
-        { inid: "1", optContent: "选项1", optScore: "1", check: false },
-        { inid: "2", optContent: "选项2", optScore: "2", check: false },
-        { inid: "3", optContent: "选项3", optScore: "3", check: false },
-        { inid: "4", optContent: "选项4", optScore: "4", check: false }
+        {
+          inid: "1",
+          optContent: "选项1",
+          optScore: "1",
+          optMedia: "",
+          check: false
+        },
+        {
+          inid: "2",
+          optContent: "选项2",
+          optScore: "2",
+          optMedia: "",
+          check: false
+        },
+        {
+          inid: "3",
+          optContent: "选项3",
+          optScore: "3",
+          optMedia: "",
+          check: false
+        },
+        {
+          inid: "4",
+          optContent: "选项4",
+          optScore: "4",
+          optMedia: "",
+          check: false
+        }
       ];
       this.single.push({
         open: false,
@@ -462,6 +488,8 @@ export default {
     },
     // 显示隐藏编辑框
     getOneInfo(item, index) {
+      console.log(item);
+
       this.$set(this.single[index], "open", !this.single[index].open);
     },
     // 删除题目
@@ -530,7 +558,8 @@ export default {
       for (var i = 0; i < list.length; i++) {
         var optObj = {
           optContent: list[i].optContent,
-          optScore: list[i].optScore
+          optScore: list[i].optScore,
+          optMedia: list[i].optMedia
         };
         Arr.push(optObj);
       }
@@ -574,7 +603,7 @@ export default {
       this.batchAddDialogVisible = true;
     },
     batchEnter(e) {
-      console.log(e);
+      // console.log(e);
     },
     batchAddCon(index, v) {
       this.Cla = index;
@@ -585,17 +614,21 @@ export default {
       this.sheetQuesList();
     },
     // 上传照片
+    handleChange(file, fileList, index, i) {
+      this.num1 = index;
+      this.num2 = i;
+    },
     handleAvatarSuccess(res, file) {
-      this.photoUrl = res.data;
-      if (res.code != 200) return this.$message.error("上传失败");
-    },
-    ccc(info) {
-      console.log(this.photoUrl);
+      console.log(res);
       
+      if (res.code != 200) return this.$message.error("上传失败");
+      this.single[this.num1].option[this.num2].optMedia = res.data;
+
+      console.log(this.single[this.num1].option[this.num2].optMedia);
+
+      // this.single[this.num1].option[this.num2].optMedia = res.data;
     },
-    uploadVideoProcess(event, file, fileList) {
-      // this.percentageFile = parseInt(file.percentage);
-    },
+    uploadVideoProcess(event, file, fileList) {},
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg";
       const isGIF = file.type === "image/gif";
