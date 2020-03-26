@@ -177,6 +177,14 @@ const routes = [{
           title: '量表分析'
         }
       },
+      {
+        path: '/sheet/suggestion',
+        name: '建议库',
+        component: () => import('@/components/InventoryMana/Suggestion.vue'),
+        meta: {
+          title: '建议库'
+        }
+      },
     ]
   },
 ]
