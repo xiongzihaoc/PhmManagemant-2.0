@@ -141,7 +141,7 @@
                     <!-- 必答 -->
                     <el-checkbox
                       class="mustChecked"
-                      v-model="item.mustChecked"
+                      v-model="item.quesIsAnswer"
                       true-label="1"
                       false-label="0"
                     >必答</el-checkbox>
@@ -453,7 +453,7 @@ export default {
       ];
       this.single.push({
         open: false,
-        mustChecked: true,
+        quesIsAnswer: 1,
         id: this.singleid++,
         quesMedia: this.singletitle + (this.singleid - 1),
         quesType: this.listtype,
@@ -473,7 +473,7 @@ export default {
       ];
       this.single.push({
         open: false,
-        mustChecked: true,
+        quesIsAnswer: 1,
         id: this.singleid++,
         quesMedia: this.singletitle + (this.singleid - 1),
         quesType: this.listtype,
@@ -553,6 +553,8 @@ export default {
     async HandleClickOver(index) {
       // 当前项li
       var info = this.single[index];
+      console.log(info);
+
       // html代码片段转纯文本
       var txt = info.quesMedia
         .replace(/<(style|script|iframe)[^>]*?>[\s\S]+?<\/\1\s*>/gi, "")
@@ -579,7 +581,7 @@ export default {
           sheetUuid: this.sheetUuid,
           quesUuid: info.quesUuid,
           quesTips: info.quesTips,
-          quesIsAnswer: info.mustChecked,
+          quesIsAnswer: info.quesIsAnswer,
           quesType: info.quesType,
           quesContent: str,
           quesMedia: info.quesMedia,

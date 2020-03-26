@@ -151,7 +151,7 @@ export default {
 <style lang='less'>
 .sheet_box {
   width: 100%;
-  height: 539px;
+  height: 530px;
   overflow: hidden;
 }
 .sheet_box_left {
