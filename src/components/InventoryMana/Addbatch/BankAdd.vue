@@ -116,6 +116,8 @@ export default {
       this.sheetQuesList = res.rows;
     },
     chooseItem(info, index) {
+      console.log(info.index);
+
       if (info.index) {
         var question = {};
         var options = [];

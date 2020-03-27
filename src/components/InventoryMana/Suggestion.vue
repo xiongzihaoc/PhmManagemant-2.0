@@ -39,12 +39,12 @@
               icon="el-icon-edit"
             >编辑</el-button>
             <!-- 修改按钮 -->
-            <!-- <el-button
+            <el-button
               size="mini"
-              @click="cloneDialog(scope.row)"
-              type="warning"
+              @click="deleteBtn(scope.row)"
+              type="danger"
               icon="el-icon-document-copy"
-            >删除</el-button>-->
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -103,6 +103,7 @@ export default {
       pageNum: 1,
       total: 0,
       infoTitle: "",
+      showEditId: null,
       editDialogVisible: false,
       editAddForm: {
         advKind: "",
@@ -136,7 +137,6 @@ export default {
     },
     // 修改
     showEditdialog(info) {
-      console.log(info);
       this.editAddForm = JSON.parse(JSON.stringify(info));
       this.infoTitle = "修改信息";
       this.editDialogVisible = true;
@@ -186,14 +186,13 @@ export default {
         this.editDialogVisible = false;
       });
     },
-    // 复用克隆此量表
-    cloneDialog(info) {
-      console.log(info);
-
-      this.editAddForm = JSON.parse(JSON.stringify(info));
-      this.infoTitle = "克隆量表";
-      this.editDialogVisible = true;
-      this.cloneEditId = info.uuid;
+    // 删除建议
+    async deleteBtn(info) {
+      const { data: res } = await this.$http.post(this.$ajax + "sheetAdv/del", {
+        id: info.id
+      });
+      if (res.code != 200) return this.$message.error("删除失败");
+      this.getScaleList();
     },
     // 搜索
     systemSearch() {

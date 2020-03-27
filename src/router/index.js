@@ -37,7 +37,8 @@ const routes = [{
         name: '系统帐户',
         component: () => import('@/components/SystemMana/SystemAccount.vue'),
         meta: {
-          title: '系统帐户'
+          title: '系统帐户',
+          keepAlive: true
         }
       },
       {
@@ -69,7 +70,8 @@ const routes = [{
         name: '权限管理',
         component: () => import('@/components/SystemMana/RoleMana.vue'),
         meta: {
-          title: '权限管理'
+          title: '权限管理',
+          keepAlive: true,
         }
       },
       {

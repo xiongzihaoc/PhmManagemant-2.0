@@ -35,6 +35,13 @@
           icon="el-icon-tickets"
           @click.prevent.stop="changetype"
         >文本</el-button>
+        <span style="font-size:14px;color:#909399">
+          题目数:
+          <a
+            href="###"
+            style="font-size:14px;color:#1ea0fa;margin-left:5px;text-decoration:none;"
+          >{{quesName}}</a>
+        </span>
       </div>
     </el-card>
     <el-card class="main_right">
@@ -350,6 +357,7 @@ export default {
       editAddForm: {
         instrValue: ""
       },
+      quesName: null,
       editDialogVisible: false,
       batchAddDialogVisible: false,
       ImgDialogVisible: false,
@@ -394,6 +402,7 @@ export default {
         }
       );
       this.single = res.rows;
+      this.quesName = res.rows.length;
     },
     // 排序
     sorted() {
@@ -489,6 +498,7 @@ export default {
       if (list.length < 10) {
         list.push({
           score: this.score++,
+          optMedia: "",
           id: this.infolistid++,
           optContent: this.infolistval + this.infolistid
         });
@@ -526,11 +536,14 @@ export default {
     },
     // 插入选项
     quesPosAdd(list, index, i) {
-      list.push({
+      console.log(index, i);
+      let obj = {
         optScore: this.score++,
+        optMedia: "",
         id: this.infolistid++,
         optContent: this.infolistval + this.infolistid
-      });
+      };
+      list.push(obj);
     },
     // 调整选项位置
     quesPosTop(index, i) {
@@ -1041,6 +1054,9 @@ h3 {
 }
 .ql-toolbar.ql-snow {
   background-color: #f0f0ee;
+}
+.ql-snow .ql-tooltip {
+  z-index: 999;
 }
 .ql-snow .ql-tooltip[data-mode="link"]::before {
   content: "请输入链接地址:";

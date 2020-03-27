@@ -1,20 +1,14 @@
 <template>
   <div>
-    <div id="editor" class="editor"></div>
+    <h1>服务监控</h1>
   </div>
 </template>
 <script>
-import E from "wangeditor";
 export default {
-  name: "editor",
   data() {
     return {};
   },
-  methods: {},
-  mounted() {
-    var editor = new E("#editor");
-    editor.create();
-  }
+  methods: {}
 };
 </script>
 <style lang='less' scoped>
