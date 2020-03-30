@@ -45,7 +45,10 @@
   </div>
 </template>
 <script>
+import EleTable from "../commonModule/table";
+import EleDialog from "../commonModule/dialog";
 export default {
+  components: { EleTable, EleDialog },
   data() {
     return {
       input: "",
