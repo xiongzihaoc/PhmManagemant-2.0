@@ -22,11 +22,7 @@
         :header-cell-style="{background:'#f5f5f5'}"
         style="width: 100%"
       >
-        <!-- <el-table-column align="center" type="selection" width="60"></el-table-column> -->
         <el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
-        <el-table-column align="center" prop="name" label="姓名"></el-table-column>
-        <el-table-column align="center" prop="gender" label="性别"></el-table-column>
-        <el-table-column align="center" prop="phone" label="手机号" width="110"></el-table-column>
         <el-table-column align="center" prop="birthday" label="出生日期">
           <template slot-scope="scope">
             <div>{{timesChangeDate(scope.row.birthday)}}</div>
@@ -40,7 +36,10 @@
         <el-table-column align="center" prop="address" label="家庭住址" show-overflow-tooltip></el-table-column>
         <el-table-column align="center" prop="appStatus" label="激活app" :formatter="ifendcase">
           <template slot-scope="scope">
-            <span style="color:#13ce66;font-weight:700;" v-if="scope.row.appStatus == '1'">{{ ifendcase(scope.row) }}</span>
+            <span
+              style="color:#13ce66;font-weight:700;"
+              v-if="scope.row.appStatus == '1'"
+            >{{ ifendcase(scope.row) }}</span>
             <span v-else style="color:#ff4949;font-weight:700;">{{ ifendcase(scope.row) }}</span>
           </template>
         </el-table-column>
@@ -166,7 +165,9 @@
   </div>
 </template>
 <script>
+import EleTable from "../commonModule/table";
 export default {
+  components: { EleTable },
   data() {
     var checkEmaile = (rule, value, cb) => {
       const regEmail = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;
@@ -185,6 +186,17 @@ export default {
     return {
       input: "",
       userList: [],
+      tableHeaderBig: [
+        { prop: "name", label: "姓名" },
+        { prop: "gender", label: "性别" },
+        { prop: "phone", label: "手机号" ,width:"120"},
+        { prop: "height", label: "身高(cm)" },
+        { prop: "weight", label: "体重(kg)" },
+        { prop: "culture", label: "文化程度" },
+        { prop: "job", label: "职业" },
+        { prop: "marriage", label: "婚姻状况" },
+        { prop: "address", label: "家庭住址" },
+      ],
       // 获取用户列表的参数对象
       pageSize: 10,
       pageNum: 1,
@@ -256,7 +268,6 @@ export default {
   },
   created() {
     this.getUserList();
-    // this.getHosMenuList();
   },
 
   methods: {

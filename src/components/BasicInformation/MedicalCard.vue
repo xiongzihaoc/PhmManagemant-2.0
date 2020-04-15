@@ -174,7 +174,7 @@ export default {
       if (res.code != 200) return this.$message.error("数获取失败");
       this.userList = res.rows;
       this.total = res.total;
-      console.log(res);
+      console.log(res.rows);
     },
     // 获取部门列表
     async getHosMenuList() {

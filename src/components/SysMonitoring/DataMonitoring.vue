@@ -58,10 +58,11 @@
       </EleTable>
       <!-- 调用公用封装弹框组件 -->
       <EleDialog
-        :dialogFormVisible.sync="dialogFormVisible"
-        @getCancel="handleCancel"
-        @getConfirm="handleConfirm==='update'?createData():updateData()"
-        @closeBindWarnStandard="AddEditDialogClosed"
+        title="'111'"
+        @closeDialog="alldetailsDialog = false"
+        :visible.sync="alldetailsDialog"
+        :showTit="false"
+        :width="'760px'"
       ></EleDialog>
     </el-card>
   </div>
@@ -81,7 +82,7 @@ export default {
         { prop: "dictSort", label: "排序号" }
       ],
       input: "",
-      dialogFormVisible: false
+      alldetailsDialog:false
     };
   },
   created() {
@@ -96,7 +97,7 @@ export default {
       this.menuList = res.data;
     },
     showEditdialog() {
-      this.dialogFormVisible = true
+      this.alldetailsDialog = true;
     },
     jumpDictionarybtn() {},
     deleteBtn() {},
@@ -104,8 +105,6 @@ export default {
       this.DialogVisible = true;
     },
     dicSearch() {},
-    AddEditDialogClosed() {},
-    handleCancel(){},
     // 状态判断
     ifendcase(val) {
       if (val.isEnable == "1") {

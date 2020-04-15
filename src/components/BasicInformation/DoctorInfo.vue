@@ -13,32 +13,21 @@
           <el-button type="primary" @click="addUsers">新增医生信息</el-button>
         </el-col>
       </el-row>
-      <!-- 表格 -->
-      <el-table
-        tooltip-effect="dark"
-        stripe
-        ref="singleTable"
-        :data="userList"
-        :header-cell-style="{background:'#f5f5f5'}"
-        style="width: 100%"
-      >
-        <!-- <el-table-column align="center" type="selection" width="60"></el-table-column> -->
-        <el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
-        <el-table-column align="center" prop="name" label="姓名"></el-table-column>
-        <el-table-column align="center" prop="gender" label="性别"></el-table-column>
-        <el-table-column align="center" prop="title" label="职称" show-overflow-tooltip></el-table-column>
-        <el-table-column align="center" prop="hospital" label="医院"></el-table-column>
-        <el-table-column align="center" prop="office" label="科室"></el-table-column>
-        <el-table-column align="center" prop="phone" label="手机号"></el-table-column>
-        <el-table-column align="center" prop="photoUrl" label="照片">
+      <!-- 调用公用表格组件 -->
+      <EleTable :data="userList" :header="tableHeaderBig" row-key="id">
+        <el-table-column align="center" slot="fixed" fixed="right" prop="photoUrl" label="照片">
           <template slot-scope="scope">
             <img id="img" v-if="scope.row.photoUrl != null " :src="scope.row.photoUrl" />
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="userName" label="登录名"></el-table-column>
-        <el-table-column align="center" prop="introduction" label="简介" show-overflow-tooltip></el-table-column>
-
-        <el-table-column align="center" prop="appStatus" label="激活app" :formatter="ifendcaseApp">
+        <el-table-column
+          align="center"
+          slot="fixed"
+          fixed="right"
+          prop="appStatus"
+          label="激活app"
+          :formatter="ifendcaseApp"
+        >
           <template slot-scope="scope">
             <span
               style="color:#13ce66;font-weight:700;"
@@ -47,8 +36,14 @@
             <span v-else style="color:#ff4949;font-weight:700;">{{ ifendcaseApp(scope.row) }}</span>
           </template>
         </el-table-column>
-
-        <el-table-column align="center" prop="status" label="状态" :formatter="ifendcase">
+        <el-table-column
+          align="center"
+          slot="fixed"
+          fixed="right"
+          prop="isEnable"
+          label="状态"
+          :formatter="ifendcase"
+        >
           <template slot-scope="scope">
             <span
               style="color:#13ce66;font-weight:700;"
@@ -57,8 +52,7 @@
             <span v-else style="color:#ff4949;font-weight:700;">{{ ifendcase(scope.row) }}</span>
           </template>
         </el-table-column>
-
-        <el-table-column align="center" prop="operate" label="操作" width="100">
+        <el-table-column align="center" slot="fixed" fixed="right" label="操作" width="100">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
             <el-button
@@ -67,9 +61,10 @@
               type="primary"
               icon="el-icon-edit"
             >编辑</el-button>
+            <!-- 跳转按钮 -->
           </template>
         </el-table-column>
-      </el-table>
+      </EleTable>
       <!-- 分页区域 -->
       <el-pagination
         @size-change="handleSizeChange"
@@ -191,7 +186,9 @@
   </div>
 </template>
 <script>
+import EleTable from "../commonModule/table";
 export default {
+  components: { EleTable },
   data() {
     var checkMobile = (rule, value, cb) => {
       const regMoblie = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
@@ -202,6 +199,17 @@ export default {
     };
     return {
       input: "",
+      tableHeaderBig: [
+        { prop: "name", label: "姓名" },
+        { prop: "gender", label: "性别" },
+        { prop: "title", label: "职称" },
+        { prop: "hospital", label: "医院" },
+        { prop: "office", label: "科室" },
+        { prop: "phone", label: "手机号" },
+        { prop: "office", label: "科室" },
+        { prop: "userName", label: "登录名" },
+        { prop: "introduction", label: "简介" }
+      ],
       userList: [],
       // 获取用户列表的参数对象
       pageSize: 10,
@@ -238,8 +246,8 @@ export default {
         children: "child"
       },
       addEditValue: "",
-      showEditId:null,
-      cloneEditId:null,
+      showEditId: null,
+      cloneEditId: null,
       RoleList: [],
       hosMenuList: [],
       loginRules: {
@@ -287,7 +295,7 @@ export default {
       const { data: res } = await this.$http.post("dept/list", {});
       this.hosMenuList = res.data;
       console.log(res);
-      
+
       this.idArr.push(res.data[0].id);
     },
     // 修改
