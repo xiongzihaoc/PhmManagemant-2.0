@@ -13,37 +13,37 @@
           <el-button type="primary" @click="addUsers">新增患者信息</el-button>
         </el-col>
       </el-row>
-      <!-- 表格 -->
-      <el-table
-        stripe
-        ref="singleTable"
-        tooltip-effect="dark"
-        :data="userList"
-        :header-cell-style="{background:'#f5f5f5'}"
-        style="width: 100%"
-      >
-        <el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
-        <el-table-column align="center" prop="birthday" label="出生日期">
+      <!-- 调用公用表格组件 -->
+      <EleTable :data="userList" :header="tableHeaderBig" row-key="id">
+        <el-table-column
+          align="center"
+          slot="fixed"
+          fixed="right"
+          prop="birthday"
+          label="激活app"
+          :formatter="ifendcase"
+        >
           <template slot-scope="scope">
             <div>{{timesChangeDate(scope.row.birthday)}}</div>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="height" label="身高(cm)"></el-table-column>
-        <el-table-column align="center" prop="weight" label="体重(kg)"></el-table-column>
-        <el-table-column align="center" prop="culture" label="文化程度"></el-table-column>
-        <el-table-column align="center" prop="job" label="职业"></el-table-column>
-        <el-table-column align="center" prop="marriage" label="婚姻状况"></el-table-column>
-        <el-table-column align="center" prop="address" label="家庭住址" show-overflow-tooltip></el-table-column>
-        <el-table-column align="center" prop="appStatus" label="激活app" :formatter="ifendcase">
+        <el-table-column
+          align="center"
+          slot="fixed"
+          fixed="right"
+          prop="appStatus"
+          label="出生日期"
+          :formatter="ifendcase"
+        >
           <template slot-scope="scope">
             <span
               style="color:#13ce66;font-weight:700;"
-              v-if="scope.row.appStatus == '1'"
+              v-if="scope.row.appStatus=== '1'"
             >{{ ifendcase(scope.row) }}</span>
             <span v-else style="color:#ff4949;font-weight:700;">{{ ifendcase(scope.row) }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="operate" label="操作" width="180">
+        <el-table-column align="center" slot="fixed" fixed="right" label="操作" width="180">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
             <el-button
@@ -61,7 +61,7 @@
             >删除</el-button>
           </template>
         </el-table-column>
-      </el-table>
+      </EleTable>
       <!-- 分页区域 -->
       <el-pagination
         @size-change="handleSizeChange"
@@ -189,13 +189,13 @@ export default {
       tableHeaderBig: [
         { prop: "name", label: "姓名" },
         { prop: "gender", label: "性别" },
-        { prop: "phone", label: "手机号" ,width:"120"},
+        { prop: "phone", label: "手机号", width: "120" },
         { prop: "height", label: "身高(cm)" },
         { prop: "weight", label: "体重(kg)" },
         { prop: "culture", label: "文化程度" },
         { prop: "job", label: "职业" },
         { prop: "marriage", label: "婚姻状况" },
-        { prop: "address", label: "家庭住址" },
+        { prop: "address", label: "家庭住址" }
       ],
       // 获取用户列表的参数对象
       pageSize: 10,

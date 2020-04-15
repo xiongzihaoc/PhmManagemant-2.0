@@ -14,7 +14,33 @@
         </el-col>
       </el-row>
       <!-- 表格 -->
-      <el-table
+      <EleTable :data="userList" :header="tableHeaderBig" row-key="id">
+        <!-- 测试情况 -->
+        <el-table-column
+          align="center"
+          slot="fixed"
+          fixed="right"
+          label="状态"
+          prop="status"
+          width="100"
+          :formatter="ifendcase"
+        >
+          <template slot-scope="scope">
+            <span
+              style="color:#13ce66;font-weight:700;"
+              v-if="scope.row.status=== '1'"
+            >{{ ifendcase(scope.row) }}</span>
+            <span v-else style="color:#ff4949;font-weight:700;">{{ ifendcase(scope.row) }}</span>
+          </template>
+        </el-table-column>
+        <!-- 操作 -->
+        <el-table-column align="center" slot="fixed" fixed="right" label="操作" width="100">
+          <template slot-scope="scope">
+            <el-button type="primary" size="mini" @click.prevent.stop="showEditdialog(scope.row)">查看</el-button>
+          </template>
+        </el-table-column>
+      </EleTable>
+      <!-- <el-table
         stripe
         ref="singleTable"
         tooltip-effect="dark"
@@ -27,7 +53,6 @@
         <el-table-column align="center" prop="userName" label="用户名"></el-table-column>
         <el-table-column align="center" prop="loginName" label="登录名"></el-table-column>
         <el-table-column align="center" prop="roleName" label="角色"></el-table-column>
-        <!-- <el-table-column align="center" prop="deptName" label="部门"></el-table-column> -->
         <el-table-column align="center" prop="email" label="邮箱" show-overflow-tooltip></el-table-column>
         <el-table-column align="center" prop="loginIp" label="IP"></el-table-column>
         <el-table-column align="center" prop="userPhone" label="手机号"></el-table-column>
@@ -41,16 +66,16 @@
           </template>
         </el-table-column>
         <el-table-column align="center" prop="operate" label="操作" width="180">
-          <template slot-scope="scope">
-            <!-- 修改按钮 -->
-            <el-button
+      <template slot-scope="scope">-->
+      <!-- 修改按钮 -->
+      <!-- <el-button
               size="mini"
               @click="showEditdialog(scope.row)"
               type="primary"
               icon="el-icon-edit"
-            >编辑</el-button>
-            <!-- 删除按钮 -->
-            <el-button
+      >编辑</el-button>-->
+      <!-- 删除按钮 -->
+      <!-- <el-button
               size="mini"
               @click="removeUserById(scope.row.acId)"
               type="danger"
@@ -58,7 +83,7 @@
             >删除</el-button>
           </template>
         </el-table-column>
-      </el-table>
+      </el-table>-->
       <!-- 分页区域 -->
       <el-pagination
         @size-change="handleSizeChange"
@@ -216,7 +241,9 @@
   </div>
 </template>
 <script>
+import EleTable from "../commonModule/table";
 export default {
+  components: { EleTable },
   data() {
     var checkEmaile = (rule, value, cb) => {
       const regEmail = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;
@@ -234,6 +261,16 @@ export default {
     };
     return {
       input: "",
+      tableHeaderBig: [
+        { prop: "userId", label: "序号", width: "60" },
+        { prop: "userName", label: "用户名" },
+        { prop: "loginName", label: "登录名" },
+        { prop: "roleName", label: "角色" },
+        { prop: "email", label: "邮箱" },
+        { prop: "loginIp", label: "IP" },
+        { prop: "userPhone", label: "手机号" },
+        { prop: "userPhone", label: "手机号" }
+      ],
       userList: [],
       // 获取用户列表的参数对象
       pageSize: 10,
