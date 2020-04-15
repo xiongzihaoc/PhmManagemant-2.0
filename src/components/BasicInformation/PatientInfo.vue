@@ -15,14 +15,7 @@
       </el-row>
       <!-- 调用公用表格组件 -->
       <EleTable :data="userList" :header="tableHeaderBig" row-key="id">
-        <el-table-column
-          align="center"
-          slot="fixed"
-          fixed="right"
-          prop="birthday"
-          label="激活app"
-          :formatter="ifendcase"
-        >
+        <el-table-column align="center" slot="fixed" fixed="right" prop="birthday" label="出生日期">
           <template slot-scope="scope">
             <div>{{timesChangeDate(scope.row.birthday)}}</div>
           </template>
@@ -32,7 +25,7 @@
           slot="fixed"
           fixed="right"
           prop="appStatus"
-          label="出生日期"
+          label="激活app"
           :formatter="ifendcase"
         >
           <template slot-scope="scope">
