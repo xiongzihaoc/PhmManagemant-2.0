@@ -13,20 +13,16 @@
           <el-button type="primary" @click="addDictionary">新增套餐模板</el-button>
         </el-col>
       </el-row>
-      <el-table
-        :data="menuList"
-        :lazy="true"
-        style="width: 100%;margin-bottom: 20px;"
-        :header-cell-style="{background:'#f5f5f5'}"
-        row-key="id"
-        ref="singleTable"
-      >
-        <el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
-        <el-table-column align="center" prop="name" label="套餐名称"></el-table-column>
-        <el-table-column align="center" prop="officeType" label="科室标签"></el-table-column>
-        <el-table-column align="center" prop="price" label="价格"></el-table-column>
-        <el-table-column align="center" prop="describes" label="套餐描述" show-overflow-tooltip></el-table-column>
-        <el-table-column align="center" prop="status" label="状态" :formatter="ifendcase">
+      <!-- 公用表格组件 -->
+      <EleTable :data="menuList" :header="tableHeaderBig" row-key="id">
+        <el-table-column
+          align="center"
+          slot="fixed"
+          fixed="right"
+          prop="status"
+          label="状态"
+          :formatter="ifendcase"
+        >
           <template slot-scope="scope">
             <span
               style="color:#13ce66;font-weight:700;"
@@ -35,7 +31,7 @@
             <span v-else style="color:#ff4949;font-weight:700;">{{ ifendcase(scope.row) }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="operate" label="操作" width="260">
+        <el-table-column align="center" slot="fixed" fixed="right" label="操作" width="260">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
             <el-button
@@ -60,7 +56,7 @@
             >删除</el-button>
           </template>
         </el-table-column>
-      </el-table>
+      </EleTable>
     </el-card>
     <!-- 修改添加提示框 -->
     <el-dialog
@@ -71,11 +67,23 @@
       v-dialogDrag
     >
       <el-form ref="addFormRef" :model="addEditForm" label-width="80px">
-        <el-form-item label="套餐名称">
+        <el-form-item label="套餐名称" prop="name">
           <el-input v-model="addEditForm.name"></el-input>
         </el-form-item>
-        <el-form-item label="科室标签">
-          <el-select v-model="addEditForm.officeType" placeholder="请选择">
+        <el-form-item label="套餐类别" prop="type">
+          <el-input v-model="addEditForm.type"></el-input>
+        </el-form-item>
+        <el-form-item label="选择科室" prop="officeCode">
+          <el-cascader
+            v-model="addEditForm.officeCode"
+            :options="eleNameList"
+            @change="handleChange"
+            :show-all-levels="false"
+            :props="optionProps"
+          ></el-cascader>
+        </el-form-item>
+        <el-form-item label="量表选择" prop="sheets">
+          <el-select v-model="addEditForm.sheets" placeholder="请选择">
             <el-option
               v-for="item in eleNameList"
               :key="item.id"
@@ -105,18 +113,34 @@
   </div>
 </template>
 <script>
+import EleTable from "../commonModule/table";
 export default {
+  components: { EleTable },
   data() {
     return {
       input: "",
+      tableHeaderBig: [
+        { label: "序号", type: "index", width: 60 },
+        { prop: "name", label: "套餐名称" },
+        { prop: "officeName", label: "科室名称" },
+        { prop: "type", label: "套餐类别" },
+        { prop: "price", label: "价格" },
+        { prop: "describes", label: "套餐描述" }
+      ],
       menuList: [],
       eleNameList: [],
+      optionProps: {
+        value: "code",
+        label: "deptName",
+        children: "child"
+      },
       addEditForm: {
         name: "",
-        officeType: "",
+        type: "",
         price: "",
         describes: "",
-        status: ""
+        status: "",
+        sheets:[],
       },
       selfId: null,
       DialogVisible: false,
@@ -127,24 +151,33 @@ export default {
     };
   },
   created() {
+    this.getScaleList();
     this.getDictionaryList();
     this.getDictionaryEleList();
   },
   methods: {
     async getDictionaryList() {
       const { data: res } = await this.$http.post(
-        this.$ajax + "packageTemplate/getPackageTemplateList",
+        this.$ajax + "office_package/list1",
         {
           name: this.input
         }
       );
+      console.log(res);
+
       this.menuList = res.rows;
+    },
+    // 获取量表列表
+    async getScaleList() {
+      const { data: res } = await this.$http.post(this.$ajax + "sheet/list", {
+        name: this.input
+      });
+      if (res.code != 200) return this.$message.error("数获取失败");
+      this.userList = res.rows;
     },
     // 数据字典科室列表
     async getDictionaryEleList() {
-      const { data: res } = await this.$http.post("dict/getPreviewData", {
-        dictValue: "officeType"
-      });
+      const { data: res } = await this.$http.post("dept/list", {});
       this.eleNameList = res.data;
     },
     // 确定修改或添加
@@ -223,10 +256,14 @@ export default {
     },
     // 添加按钮
     addDictionary() {
-      this.dialogTitle = "新增字典";
+      this.dialogTitle = "新增套餐模板";
       this.disabled = false;
       this.addEditForm = {};
       this.DialogVisible = true;
+    },
+    // 科室选择
+    handleChange(val) {
+      this.addEditForm.officeCode = val[val.length - 1];
     },
     // 跳转下一级
     jumpDictionarybtn(info) {

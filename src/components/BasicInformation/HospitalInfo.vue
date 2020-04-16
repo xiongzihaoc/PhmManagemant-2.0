@@ -329,6 +329,8 @@ export default {
     };
   },
   created() {
+    console.log(regionData);
+    
     this.getUserList();
     this.getHosMenuList();
     this.getDictionaryEleListOne();
