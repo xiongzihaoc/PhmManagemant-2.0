@@ -167,8 +167,8 @@
                     <span v-else style="margin-left:80px;">上移下移</span>
                   </div>
                   <div v-for="(subItem,i) in item.option" :key="i">
-                    <el-input size="mini" class="conContent" v-model="subItem.optContent" style></el-input>
-                    <el-input size="mini" class="conContent" v-model="subItem.optContent" style></el-input>
+                    <el-input v-if="item.quesType == 3" size="mini" class="conContent" v-model="subItem.optContent" style v-show="false"></el-input>
+                    <el-input v-else size="mini" class="conContent" v-model="subItem.optContent" style></el-input>
                     <span
                       style="margin-left:5px;"
                       class="quesPosAdd"
@@ -638,6 +638,7 @@ export default {
     clsbatchDia() {
       this.batchAddDialogVisible = false;
       this.sheetQuesList();
+      window.location.reload(true);
     },
     // 上传照片
     handleChange(file, fileList, index, i) {

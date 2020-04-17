@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="sheet_box">
+    <div class="sheet_box" v-show="searchCheck">
       <div class="sheet_box_left">
         <!-- 搜索框 -->
         <div class="search_box">
@@ -22,7 +22,12 @@
       <div class="sheet_box_right">
         <div class="sheetTitle">
           <span class="chooseQues">请选择题目</span>
-          <el-checkbox v-model="checkAll" class="checkAll" :indeterminate="isIndeterminate">全选</el-checkbox>
+          <el-checkbox
+            v-model="checkAll"
+            class="checkAll"
+            :indeterminate="isIndeterminate"
+            @change="handleCheckAllChange"
+          >全选</el-checkbox>
         </div>
         <div class="sheetContent">
           <ul>
@@ -52,22 +57,68 @@
                 </div>
               </div>
               <div class="posCheckInner">
-                <el-checkbox v-model="item.index" class="posCheck" @change="chooseItem(item,index)"></el-checkbox>
+                <el-checkbox-group class="checkGroup" v-model="checkList" @change="chooseItem">
+                  <el-checkbox class="posCheck" :label="item" ><i style="color:#F7F9FC"></i></el-checkbox>
+                </el-checkbox-group>
               </div>
             </li>
           </ul>
         </div>
       </div>
     </div>
+    <!-- 查看已选题目区域 -->
+    <div class="sheet_box_select" v-show="lookCheck">
+      <div class="sheetTitle">
+        <span class="chooseQues">已选题目</span>
+      </div>
+      <div class="sheetContent_select">
+        <ul>
+          <li v-for="(item,index) in this.checkList" :key="index">
+            <p>{{item.quesContent}}</p>
+            <!-- 循环生成选项 -->
+            <div class="listiconshow" v-for="(list,i) in item.option" :key="i">
+              <!-- 判断type类型 -->
+              <div v-if="item.quesType==1">
+                <el-radio :label="1">{{list.optContent}}</el-radio>
+              </div>
+              <div class="listlabel" v-else-if="item.quesType==2">
+                <el-checkbox>{{list.optContent}}</el-checkbox>
+              </div>
+              <div v-else-if="item.quesType==3">
+                <el-input
+                  type="textarea"
+                  :rows="2"
+                  placeholder="请输入内容"
+                  style="width:400px;"
+                  v-model="list.optContent"
+                ></el-input>
+              </div>
+              <div v-if="item.quesType==4">
+                <el-radio :label="2" style="margin-right:10px;">{{list.optContent}}</el-radio>
+                <span style="color:orange;font-size:14px;">( 分值：{{list.optScore}} )</span>
+              </div>
+            </div>
+            <div class="posCheckInner_select el-icon-delete"></div>
+          </li>
+        </ul>
+      </div>
+    </div>
     <div class="sheet_footer">
       <span class="selected">
         已选
-        <i>0</i> 题
+        <i>{{this.checkList.length}}</i> 题
       </span>
       <span class="selectedQues">
-        <a href="###">查看已选题目</a>
+        <a href="###" @click.prevent.stop="Viewselected" v-show="tosele">查看已选题目</a>
       </span>
-      <el-button type="primary" size="mini" class="enterBack" @click="enterCheked">确定</el-button>
+      <el-button
+        type="info"
+        size="mini"
+        class="enterBack"
+        @click.prevent.stop="Backselected"
+        v-show="back"
+      >返回继续选题</el-button>
+      <el-button type="primary" size="mini" class="enterBack" @click.prevent.stop="enterCheked">确定</el-button>
     </div>
   </div>
 </template>
@@ -83,9 +134,11 @@ export default {
       radio: [],
       isIndeterminate: true,
       checkAll: false,
-      question: {},
-      checkedCities: [],
-      Array: []
+      checkList: [],
+      searchCheck: true,
+      lookCheck: false,
+      back: false,
+      tosele: true
     };
   },
   created() {
@@ -99,6 +152,8 @@ export default {
       });
       if (res.code != 200) return this.$message.error("数获取失败");
       this.sheetList = res.rows;
+      console.log(res);
+      
     },
     // 搜索按钮
     systemSearch() {
@@ -106,7 +161,6 @@ export default {
     },
     // 获取点击量表的题目列表
     async searchContent(info) {
-      // this.sheetUuid = info.uuid;
       const { data: res } = await this.$http.post(
         this.$ajax + "sheetQues/list",
         {
@@ -115,37 +169,58 @@ export default {
       );
       this.sheetQuesList = res.rows;
     },
-    chooseItem(info, index) {
-      console.log(info.index);
-
-      if (info.index) {
-        var question = {};
-        var options = [];
-        var repe_option = info.option;
-        for (var i = 0; i < repe_option.length; i++) {
-          var temp_option = {
-            optContent: repe_option[i].optContent,
-            optScore: repe_option[i].optScore
-          };
-          options.push(temp_option);
-        }
+    // 选择题目进行添加
+    async enterCheked() {
+      var arr = this.checkList;
+      var Arr = [];
+      var question = {};
+      this.checkList.forEach(item => {
         question = {
-          quesMedia: info.quesContent,
-          option: options,
-          quesType: info.quesType,
+          quesMedia: item.quesMedia,
+          option: item.option,
+          quesType: item.quesType,
           sheetUuid: this.sheetUuid
         };
-        this.Array.push(question);
-      }
-    },
-    async enterCheked() {
+        Arr.push(question);
+      });
       const { data: res } = await this.$http.post(
         this.$ajax + "sheetQues/batchAdd",
         {
-          questions: this.Array
+          questions: Arr
         }
       );
+      if (res.code != 200) return this.$message.error("添加失败");
+      question = {};
+      Arr = [];
+      this.checkList = [];
+      
       this.$emit("openOrCls");
+    },
+    // 全选
+    handleCheckAllChange(val) {
+      this.checkList = val ? this.sheetQuesList : [];
+      this.isIndeterminate = false;
+    },
+    chooseItem(val) {
+      let checkedCount = val.length;
+      this.checkAll = checkedCount === this.checkList.length;
+      this.isIndeterminate = checkedCount > 0 && checkedCount < this.checkList.length;
+    },
+    // 查看已选题目
+    Viewselected() {
+      if (this.checkList.length < 1)
+        return this.$message.error("请至少选择一题");
+      this.lookCheck = true;
+      this.searchCheck = false;
+      this.back = true;
+      this.tosele = false;
+    },
+    // 返回继续选题
+    Backselected() {
+      this.lookCheck = false;
+      this.searchCheck = true;
+      this.back = false;
+      this.tosele = true;
     }
   }
 };
@@ -267,9 +342,41 @@ export default {
 .sheet_box .listiconshow .el-checkbox {
   color: #999;
 }
-.posCheck {
-  position: absolute;
-  top: 18px;
-  right: 20px;
+.sheet_box_select {
+  padding-top: 30px;
+  box-sizing: border-box;
+  width: 80%;
+  margin: 0 auto;
 }
+.sheetContent_select {
+  height: 460px;
+  overflow: hidden;
+  overflow: auto;
+}
+.sheetContent_select li {
+  position: relative;
+
+  box-sizing: border-box;
+  padding: 20px 40px 20px 20px;
+  font-size: 14px;
+  margin-bottom: 20px;
+  background-color: #f7f9fc;
+}
+.posCheckInner_select {
+  position: absolute;
+  right: 20px;
+  top: 18px;
+  font-size: 20px;
+  color: #ccc;
+  cursor: pointer;
+}
+.posCheckInner_select:hover {
+  color: red;
+}
+.checkGroup {
+  position: absolute;
+  right: 20px;
+  top: 18px;
+}
+
 </style>
