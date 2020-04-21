@@ -63,7 +63,7 @@ export default {
             // [{ font: [] }], // 字体种类
             [{ align: [] }], // 对齐方式
             ["clean"], // 清除文本格式
-            ["link", "image", "video"] // 链接、图片、视频
+            ["link", "image", ] // 链接、图片、视频
           ] //工具菜单栏配置
         },
         readyOnly: false, //是否只读
