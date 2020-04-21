@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="set_box">
-      <div class="set_box_left">
+      <el-card class="set_box_left animated bounceInLeft">
         <ul>
           <li
             v-for="(item,index) in list"
@@ -12,25 +12,27 @@
             <span>{{item.name}}</span>
           </li>
         </ul>
-      </div>
-      <div class="set_box_right">
+      </el-card>
+      <el-card class="set_box_right animated bounceInRight">
         <keep-alive>
           <component :is="currentView"></component>
         </keep-alive>
-      </div>
+      </el-card>
     </div>
   </div>
 </template>
 <script>
 import basicsSet from "./BasicsSet";
 import divisor from "./DivisorSet";
+import CommentsSuggestions from "./CommentsSuggestions";
 export default {
-  components: { basicsSet, divisor },
+  components: { basicsSet, divisor, CommentsSuggestions },
   data() {
     return {
       list: [
         { name: "基础设置", view: "basicsSet" },
-        { name: "因子设置", view: "divisor" }
+        { name: "因子设置", view: "divisor" },
+        { name: "评语建议", view: "CommentsSuggestions" }
       ],
       currentView: "basicsSet",
       i: 0
@@ -51,16 +53,13 @@ ul {
 }
 .set_box {
   overflow: hidden;
-  width: 1000px;
-  height: 870px;
-  margin: 0 auto;
 }
 .set_box_left {
   float: left;
+  margin-left: 15%;
   box-sizing: border-box;
-  width: 260px;
-  height: 460px;
-  border: 1px solid #ccc;
+  width: 15%;
+  height: 400px;
   border-radius: 5px;
   overflow: hidden;
   background-color: #fff;
@@ -78,8 +77,10 @@ ul {
   background-color: #afdd22;
 }
 .set_box_right {
-  float: right;
-  width: 700px;
+  float: left;
+  margin-left: 2%;
+  width: 50%;
+  height: 800px;
   background-color: #fff;
 }
 .blue {

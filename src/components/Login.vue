@@ -4,7 +4,7 @@
       ref="loginFormRef"
       :model="loginForm"
       :rules="loginRules"
-      class="login-form"
+      class="login-form animated slideInLeft"
       auto-complete="on"
       label-position="left"
     >

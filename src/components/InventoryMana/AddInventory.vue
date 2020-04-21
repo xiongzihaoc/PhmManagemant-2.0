@@ -167,8 +167,21 @@
                     <span v-else style="margin-left:80px;">上移下移</span>
                   </div>
                   <div v-for="(subItem,i) in item.option" :key="i">
-                    <el-input v-if="item.quesType == 3" size="mini" class="conContent" v-model="subItem.optContent" style v-show="false"></el-input>
-                    <el-input v-else size="mini" class="conContent" v-model="subItem.optContent" style></el-input>
+                    <el-input
+                      v-if="item.quesType == 3"
+                      size="mini"
+                      class="conContent"
+                      v-model="subItem.optContent"
+                      style
+                      v-show="false"
+                    ></el-input>
+                    <el-input
+                      v-else
+                      size="mini"
+                      class="conContent"
+                      v-model="subItem.optContent"
+                      style
+                    ></el-input>
                     <span
                       style="margin-left:5px;"
                       class="quesPosAdd"
@@ -701,7 +714,7 @@ ul {
   height: 850px;
   width: 50%;
 }
-h3 {
+.CONTENT h3 {
   text-align: center;
   margin-bottom: 40px;
 }
@@ -789,6 +802,7 @@ h3 {
   width: 80px;
   height: 80px;
 }
+
 .ql-editor img {
   width: 80px;
   height: 80px;

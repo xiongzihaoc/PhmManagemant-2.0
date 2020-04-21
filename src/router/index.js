@@ -172,6 +172,22 @@ const routes = [{
         }
       },
       {
+        path: '/addAdvice',
+        name: '新增建议评语',
+        component: () => import('@/components/InventoryMana/InvenSet/AddAdivice.vue'),
+        meta: {
+          title: '新增建议评语'
+        }
+      },
+      {
+        path: '/editAdvice',
+        name: '修改建议评语',
+        component: () => import('@/components/InventoryMana/InvenSet/EditAdive.vue'),
+        meta: {
+          title: '修改建议评语'
+        }
+      },
+      {
         path: '/InvenAnalyze',
         name: '量表分析',
         component: () => import('@/components/InventoryMana/InvenAnalyze.vue'),

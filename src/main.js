@@ -20,7 +20,9 @@ import md5 from 'js-md5';
 Vue.prototype.$md5 = md5;
 // 导入axios
 import axios from 'axios'
+import animated from 'animate.css' // npm install animate.css --save安装，在引入
 
+Vue.use(animated)
 // // 配置axios
 axios.defaults.baseURL = 'http://192.168.0.142:8080/zhuoya-web/'
 // axios请求拦截器

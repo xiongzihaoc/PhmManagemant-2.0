@@ -83,12 +83,12 @@
           ></el-cascader>
         </el-form-item>
         <el-form-item label="量表选择" prop="sheets">
-          <el-select v-model="addEditForm.sheets" placeholder="请选择">
+          <el-select @change="handleChoose" multiple v-model="addEditForm.sheets" placeholder="请选择">
             <el-option
-              v-for="item in eleNameList"
+              v-for="item in userList"
               :key="item.id"
               :label="item.name"
-              :value="item.name"
+              :value="item.uuid"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -129,6 +129,7 @@ export default {
       ],
       menuList: [],
       eleNameList: [],
+      userList: [],
       optionProps: {
         value: "code",
         label: "deptName",
@@ -140,13 +141,13 @@ export default {
         price: "",
         describes: "",
         status: "",
-        sheets:[],
+        sheets: [],
+        officeCode: 100
       },
       selfId: null,
       DialogVisible: false,
       dialogTitle: "",
       goBack: "",
-      disabled: false,
       labelTitle: ""
     };
   },
@@ -163,8 +164,6 @@ export default {
           name: this.input
         }
       );
-      console.log(res);
-
       this.menuList = res.rows;
     },
     // 获取量表列表
@@ -175,7 +174,7 @@ export default {
       if (res.code != 200) return this.$message.error("数获取失败");
       this.userList = res.rows;
     },
-    // 数据字典科室列表
+    // 获取科室列表
     async getDictionaryEleList() {
       const { data: res } = await this.$http.post("dept/list", {});
       this.eleNameList = res.data;
@@ -191,17 +190,21 @@ export default {
           parm = {
             id: this.selfId,
             name: this.addEditForm.name,
-            officeType: this.addEditForm.officeType,
+            officeCode: this.addEditForm.officeCode,
+            type: this.addEditForm.type,
             price: this.addEditForm.price,
+            sheets: this.addEditForm.sheets.toString(),
             describes: this.addEditForm.describes,
             status: this.addEditForm.status
           };
         } else {
-          httpUrl = "packageTemplate/savePackageTemplate";
+          httpUrl = "office_package/insert";
           parm = {
             name: this.addEditForm.name,
-            officeType: this.addEditForm.officeType,
+            officeCode: this.addEditForm.officeCode,
+            type: this.addEditForm.type,
             price: this.addEditForm.price,
+            sheets: this.addEditForm.sheets.toString(),
             describes: this.addEditForm.describes,
             status: this.addEditForm.status
           };
@@ -216,9 +219,14 @@ export default {
     // 修改
     showEditdialog(info) {
       this.selfId = info.id;
-      this.disabled = true;
       this.dialogTitle = "修改信息";
       this.addEditForm = JSON.parse(JSON.stringify(info));
+      this.DialogVisible = true;
+    },
+    // 添加按钮
+    addDictionary() {
+      this.dialogTitle = "新增套餐模板";
+      this.addEditForm = {};
       this.DialogVisible = true;
     },
     // 重置
@@ -254,12 +262,8 @@ export default {
         return;
       }
     },
-    // 添加按钮
-    addDictionary() {
-      this.dialogTitle = "新增套餐模板";
-      this.disabled = false;
-      this.addEditForm = {};
-      this.DialogVisible = true;
+    handleChoose(val) {
+      this.addEditForm.sheets = val;
     },
     // 科室选择
     handleChange(val) {

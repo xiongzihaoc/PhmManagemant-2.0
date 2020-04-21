@@ -2,21 +2,18 @@
   <div>
     <el-row :gutter="24">
       <!-- 添加用户按钮 -->
-      <el-col :span="4">
+      <div :span="4" style="text-align:right">
         <el-button
           type="primary"
-          @click="addDivisor"
+          @click.prevent.stop="addDivisor"
           icon="el-icon-circle-plus-outline"
           size="mini"
         >新增因子</el-button>
-      </el-col>
+      </div>
     </el-row>
-    <el-table stripe ref="singleTable" :data="userList" style="width: 100%">
-      <el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
-      <el-table-column align="center" prop="facName" label="因子名称"></el-table-column>
-      <el-table-column align="center" prop="facQues" label="关联题目"></el-table-column>
-      <el-table-column align="center" prop="facCalc" label="计分方式"></el-table-column>
-      <el-table-column align="center" prop="align" label="操作" width="180">
+    <!-- 调用公用表格组件 -->
+    <EleTable :data="userList" :header="tableHeaderBig" row-key="id">
+      <el-table-column align="center" slot="fixed" fixed="right" label="操作" width="180">
         <template slot-scope="scope">
           <!-- 修改按钮 -->
           <el-button
@@ -25,15 +22,17 @@
             type="primary"
             icon="el-icon-edit"
           >编辑</el-button>
+          <!-- 修改按钮 -->
           <el-button
             size="mini"
             @click="delEditdialog(scope.row)"
             type="danger"
             icon="el-icon-edit"
           >删除</el-button>
+          <!-- 跳转按钮 -->
         </template>
       </el-table-column>
-    </el-table>
+    </EleTable>
     <!-- 增改页面 -->
     <el-dialog
       :title="infoTitle"
@@ -61,9 +60,17 @@
   </div>
 </template>
 <script>
+import EleTable from "../../commonModule/table";
 export default {
+  components: { EleTable },
   data() {
     return {
+      tableHeaderBig: [
+        { label: "序号", type: "index", width: 60 },
+        { prop: "facName", label: "因子名称" },
+        { prop: "facQues", label: "关联题目" },
+        { prop: "facCalc", label: "计分方式" }
+      ],
       userList: [],
       sheetUuid: "",
       infoTitle: "",
