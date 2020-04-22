@@ -10,99 +10,83 @@
           <h3>评语</h3>
           <!-- 富文本编辑器 -->
           <quill-editor
-            class="editor"
             ref="myTextEditor"
             v-model="commentInfo"
-            :options="editorOption"
-            style="margin:10px 0 20px"
+            :options="quillOption"
+            @change="change"
           ></quill-editor>
         </li>
         <li class="adviceditor">
           <h3>建议</h3>
           <!-- 富文本编辑器 -->
-          <quill-editor
+          <!-- <quill-editor
             class="editor"
             ref="myTextEditor"
             v-model="adviceInfo"
             :options="editorOption"
             style="margin:10px 0 20px;height:40%;"
-          ></quill-editor>
+          ></quill-editor>-->
         </li>
       </ul>
       <!-- 完成编辑按钮 -->
-      <el-button
-        @click.prevent.stop="HandleClickOver"
-        type="primary"
-        class="endEdit"
-        size="medium "
-      >完成编辑</el-button>
+      <el-button @click.prevent.stop="HandleClickOver" type="primary" size="medium ">完成编辑</el-button>
+      <div v-html="this.commentInfo" style="margin-top:20px"></div>
     </el-card>
   </div>
 </template>
 <script>
+import { Quill } from "vue-quill-editor";
+import quillConfig from "@/assets/js/quill-config";
 export default {
+  mounted() {
+    quillConfig.register(Quill);
+    quillConfig.initButton();
+  },
   data() {
     return {
+      quillOption: quillConfig,
       sheetUuid: "",
       score: "",
       commentInfo: "",
-      adviceInfo: "",
-      editorOption: {
-        modules: {
-          toolbar: [
-            ["bold", "italic", "underline", "strike"], // 加粗 斜体 下划线 删除线
-            // ["blockquote", "code-block"], // 引用  代码块
-            // [{ header: 1 }, { header: 2 }], // 1、2 级标题
-            // [{ list: "ordered" }, { list: "bullet" }], // 有序、无序列表
-            // [{ script: "sub" }, { script: "super" }], // 上标/下标
-            // [{ indent: "-1" }, { indent: "+1" }], // 缩进
-            // [{'direction': 'rtl'}],                         // 文本方向
-            [{ size: ["small", false, "large", "huge"] }], // 字体大小
-            // [{ header: [1, 2, 3, 4, 5, 6, false] }], // 标题
-            [{ color: [] }, { background: [] }], // 字体颜色、字体背景颜色
-            // [{ font: [] }], // 字体种类
-            [{ align: [] }], // 对齐方式
-            ["clean"], // 清除文本格式
-            ["link", "image", ] // 链接、图片、视频
-          ] //工具菜单栏配置
-        },
-        readyOnly: false, //是否只读
-        theme: "snow", //主题 snow/bubble
-        syntax: true //语法检测
-      }
+      adviceInfo: ""
+      // mess: "<div style='border:1px dashed #007AFF;padding:10px'>111</div>"
     };
   },
   created() {
     this.sheetUuid = window.localStorage.getItem("sheetUuid");
   },
   methods: {
-    // 确认添加
-    async HandleClickOver() {
-      // console.log(this.score);
+    change() {
       // console.log(this.commentInfo);
-      // console.log(this.adviceInfo);
-      if (
-        this.score.trim() == "" ||
-        this.commentInfo.trim() == "" ||
-        this.adviceInfo.trim() == ""
-      ) {
-        return this.$message.error("请输入有效内容");
-      } else {
-        const { data: res } = await this.$http.post(
-          this.$ajax + "sheet/addAdviceComment",
-          {
-            sheetUuid: this.sheetUuid,
-            comment: this.commentInfo,
-            advice: this.adviceInfo,
-            scoreCron: this.score
-          }
-        );
-        console.log(res);
-      }
+    },
+    // 确认添加
+    HandleClickOver() {
+      console.log(this.commentInfo);
+      // if (
+      //   this.score.trim() == "" ||
+      //   this.commentInfo.trim() == "" ||
+      //   this.adviceInfo.trim() == ""
+      // ) {
+      //   return this.$message.error("请输入有效内容");
+      // } else {
+      //   const { data: res } = await this.$http.post(
+      //     this.$ajax + "sheet/addAdviceComment",
+      //     {
+      //       sheetUuid: this.sheetUuid,
+      //       comment: this.commentInfo,
+      //       advice: this.adviceInfo,
+      //       scoreCron: this.score
+      //     }
+      //   );
+      //   if (res.code != 200) return this.$message.error("添加失败");
+      //   this.$message.success("添加成功");
+      //   this.$router.push("InvenSet");
+      // }
     }
   }
 };
 </script>
+
 <style lang='less'>
 ul {
   list-style: none;

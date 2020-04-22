@@ -20,7 +20,6 @@ const routes = [{
         component: () => import('@/components/Index.vue'),
         meta: {
           title: '首页',
-          keepAlive: true
         }
       },
       {
@@ -29,7 +28,6 @@ const routes = [{
         component: () => import('@/components/SystemMana/MenuManag.vue'),
         meta: {
           title: '菜单管理',
-          keepAlive: true
         }
       },
       {
@@ -38,7 +36,6 @@ const routes = [{
         component: () => import('@/components/SystemMana/SystemAccount.vue'),
         meta: {
           title: '系统帐户',
-          keepAlive: true
         }
       },
       {
@@ -71,7 +68,6 @@ const routes = [{
         component: () => import('@/components/SystemMana/RoleMana.vue'),
         meta: {
           title: '权限管理',
-          keepAlive: true,
         }
       },
       {
@@ -136,7 +132,6 @@ const routes = [{
         component: () => import('@/components/BasicInformation/MedicalCard.vue'),
         meta: {
           title: '体检卡信息',
-          keepAlive: true,
         }
       },
       {

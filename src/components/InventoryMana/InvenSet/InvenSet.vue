@@ -14,9 +14,7 @@
         </ul>
       </el-card>
       <el-card class="set_box_right animated bounceInRight">
-        <keep-alive>
-          <component :is="currentView"></component>
-        </keep-alive>
+        <component :is="currentView"></component>
       </el-card>
     </div>
   </div>

@@ -13,6 +13,9 @@
     </el-row>
     <!-- 调用公用表格组件 -->
     <EleTable :data="userList" :header="tableHeaderBig" row-key="id">
+      <el-table-column align="center" slot="fixed" fixed="right" prop="advice" label="建议">
+        <template slot-scope="scope">{{(scope.row.advice).slice(0,5)}}</template>
+      </el-table-column>
       <el-table-column align="center" slot="fixed" fixed="right" label="操作" width="180">
         <template slot-scope="scope">
           <!-- 修改按钮 -->
@@ -44,7 +47,6 @@ export default {
     return {
       tableHeaderBig: [
         { prop: "comment", label: "评语" },
-        { prop: "advice", label: "建议", width: 100 },
         { prop: "scoreCron", label: "分数表达式" }
       ],
       sheetUuid: "",
@@ -64,26 +66,44 @@ export default {
           sheetUuid: this.sheetUuid
         }
       );
-      var obj = {};
-      res.rows.forEach(item => {
-        obj = {
-          comment: item.comment,
-          advice: item.advice.slice(0, 50),
-          scoreCron: item.scoreCron
-        };
-        this.userList.push(obj);
-      });
+      this.userList = res.rows;
     },
     // 编辑
-    Editdialog() {
-      this.$router.push({ path: "editAdvice" });
+    Editdialog(info) {
+      console.log(info);
+      this.$router.push({
+        path: "editAdvice",
+        query: { info: JSON.stringify(info) }
+      });
     },
     // 新增
     jumpSuss() {
       this.$router.push({ path: "addAdvice" });
     },
     // 删除
-    delEditdialog() {}
+    async delEditdialog(info) {
+      const confirmResult = await this.$confirm(
+        "你确定要执行此操作, 是否继续?",
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }
+      ).catch(err => console.log(err));
+      if (confirmResult != "confirm") {
+        return this.$message.info("取消删除");
+      }
+      const { data: res } = await this.$http.post(
+        this.$ajax + "sheet/delAdviceComment",
+        {
+          id: info.id
+        }
+      );
+      if (res.code != 200) return this.$message.error("删除失败");
+      this.$message.success("删除成功");
+      this.getInfoList();
+    }
   }
 };
 </script>
