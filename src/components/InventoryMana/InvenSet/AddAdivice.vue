@@ -10,58 +10,61 @@
           <h3>评语</h3>
           <!-- 富文本编辑器 -->
           <quill-editor
+            class="editor"
             ref="myTextEditor"
             v-model="commentInfo"
             :options="quillOption"
-            @change="change"
+            style="margin:10px 0 20px;height:40%;"
           ></quill-editor>
         </li>
-        <li class="adviceditor">
-          <h3>建议</h3>
-          <!-- 富文本编辑器 -->
-          <!-- <quill-editor
-            class="editor"
-            ref="myTextEditor"
-            v-model="adviceInfo"
-            :options="editorOption"
-            style="margin:10px 0 20px;height:40%;"
-          ></quill-editor>-->
+        <li>
+          <h3 class="adviceditor">建议</h3>
+          <vue-ueditor-wrap v-model="adviceInfo" :config="myConfig"></vue-ueditor-wrap>
         </li>
       </ul>
       <!-- 完成编辑按钮 -->
       <el-button @click.prevent.stop="HandleClickOver" type="primary" size="medium ">完成编辑</el-button>
-      <div v-html="this.commentInfo" style="margin-top:20px"></div>
     </el-card>
   </div>
 </template>
 <script>
-import { Quill } from "vue-quill-editor";
-import quillConfig from "@/assets/js/quill-config";
+import quillConfig from "../../../assets/js/quill-config";
+import "../../../../public/UEditor/themes/default/css/ueditor.css";
+import "../../../../public/UEditor/themes/default/css/ueditor.min.css";
+import VueUeditorWrap from "vue-ueditor-wrap";
 export default {
-  mounted() {
-    quillConfig.register(Quill);
-    quillConfig.initButton();
+  components: {
+    VueUeditorWrap
   },
   data() {
     return {
-      quillOption: quillConfig,
       sheetUuid: "",
       score: "",
       commentInfo: "",
-      adviceInfo: ""
-      // mess: "<div style='border:1px dashed #007AFF;padding:10px'>111</div>"
+      adviceInfo: "",
+      quillOption: quillConfig,
+      myConfig: {
+        // 编辑器不自动被内容撑高
+        autoHeightEnabled: true,
+        // 初始容器高度
+        initialFrameHeight: 240,
+        // 初始容器宽度
+        initialFrameWidth: "100%",
+        // 上传文件接口（这个地址是我为了方便各位体验文件上传功能搭建的临时接口，请勿在生产环境使用！！！）
+        // serverUrl: this.UPLOAD_IMG,
+        // UEditor 资源文件的存放路径，如果你使用的是 vue-cli 生成的项目，通常不需要设置该选项，vue-ueditor-wrap 会自动处理常见的情况，如果需要特殊配置，参考下方的常见问题2
+        UEDITOR_HOME_URL: "/UEditor/"
+      }
     };
   },
   created() {
     this.sheetUuid = window.localStorage.getItem("sheetUuid");
   },
   methods: {
-    change() {
-      // console.log(this.commentInfo);
-    },
     // 确认添加
     HandleClickOver() {
       console.log(this.commentInfo);
+      console.log(this.adviceInfo);
       // if (
       //   this.score.trim() == "" ||
       //   this.commentInfo.trim() == "" ||
@@ -99,14 +102,13 @@ ul {
   width: 50%;
   background-color: #ffab1a;
 }
-
+.adviceditor {
+  margin-bottom: 10px;
+}
 .CONNECT .el-button--primary {
   color: #fff;
   background-color: #ffab1a;
   border-color: #ffab1a;
-}
-.adviceditor .ql-editor {
-  height: 420px;
 }
 /* 汉化 */
 .ql-toolbar.ql-snow {
@@ -175,18 +177,5 @@ ul {
 .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="6"]::before,
 .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="6"]::before {
   content: "标题6";
-}
-
-.ql-snow .ql-picker.ql-font .ql-picker-label::before,
-.ql-snow .ql-picker.ql-font .ql-picker-item::before {
-  content: "标准字体";
-}
-.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="serif"]::before,
-.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="serif"]::before {
-  content: "衬线字体";
-}
-.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="monospace"]::before,
-.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="monospace"]::before {
-  content: "等宽字体";
 }
 </style>

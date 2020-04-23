@@ -8,6 +8,6 @@ module.exports = {
     '@vue/cli-plugin-babel/preset'
   ],
   plugins: [
-    ...prodPlugins
+    ...prodPlugins,
   ]
 }

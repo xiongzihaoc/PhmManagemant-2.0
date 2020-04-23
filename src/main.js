@@ -15,6 +15,12 @@ import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 Vue.use(VueQuillEditor);
+import '../public/UEditor/ueditor.config.js'
+import '../public/UEditor/ueditor.all.js'
+import '../public/UEditor/lang/zh-cn/zh-cn.js'
+import '../public/UEditor/ueditor.parse'
+import '../public/UEditor/themes/default/css/ueditor.css'
+import '../public/UEditor/themes/default/css/ueditor.min.css'
 // 引入md5加密
 import md5 from 'js-md5';
 Vue.prototype.$md5 = md5;
