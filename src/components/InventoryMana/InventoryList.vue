@@ -24,7 +24,7 @@
       >
         <el-table-column align="center" type="selection" width="60"></el-table-column>
         <el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
-        <el-table-column align="center" prop="name" label="量表名称"></el-table-column>
+        <el-table-column align="center" prop="name" label="量表名称" show-overflow-tooltip></el-table-column>
         <el-table-column align="center" prop="type" label="量表类型"></el-table-column>
         <el-table-column align="center" prop="price" label="量表价格(元)" show-overflow-tooltip></el-table-column>
         <el-table-column align="center" prop="state" label="状态" :formatter="ifendcase">
@@ -174,29 +174,27 @@ export default {
     },
     // 跳转到题目列表
     addDictionarybtn(info) {
+      window.localStorage.setItem("sheetUuid", JSON.stringify(info));
       this.$router.push({
-        path: "/addsheet",
-        query: { uuid: info.uuid, inveName: info.name }
+        path: "/addsheet"
       });
     },
     // 跳转到量表设置
     invenSet(info) {
-      window.localStorage.setItem("sheetUuid", info.uuid);
+      window.localStorage.setItem("sheetUuid", JSON.stringify(info));
       this.$router.push({
-        path: "/InvenSet",
-        query: { uuid: info.uuid }
+        path: "/InvenSet"
       });
     },
     // 跳转到量表分析
     invenAnalyze(info) {
+      window.localStorage.setItem("sheetUuid", JSON.stringify(info));
       this.$router.push({
-        path: "/InvenAnalyze",
-        query: { uuid: info.uuid }
+        path: "/InvenAnalyze"
       });
     },
     // 修改
     showEditdialog(info) {
-      console.log(info);
       this.editAddForm = JSON.parse(JSON.stringify(info));
       this.infoTitle = "修改信息";
       this.editDialogVisible = true;
@@ -254,7 +252,7 @@ export default {
     // 复用克隆此量表
     cloneDialog(info) {
       console.log(info);
-      
+
       this.editAddForm = JSON.parse(JSON.stringify(info));
       this.infoTitle = "克隆量表";
       this.editDialogVisible = true;

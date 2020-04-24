@@ -12,21 +12,14 @@
           <quill-editor
             class="editor"
             ref="myTextEditor"
-            v-model="infoForm.comment"
-            :options="editorOption"
-            style="margin:10px 0 20px"
-          ></quill-editor>
-        </li>
-        <li class="adviceditor">
-          <h3>建议</h3>
-          <!-- 富文本编辑器 -->
-          <quill-editor
-            class="editor"
-            ref="myTextEditor"
-            v-model="infoForm.advice"
-            :options="editorOption"
+            v-model="infoForm.commentInfo"
+            :options="quillOption"
             style="margin:10px 0 20px;height:40%;"
           ></quill-editor>
+        </li>
+        <li>
+          <h3 class="adviceditor">建议</h3>
+          <vue-ueditor-wrap v-model="infoForm.adviceInfo" :config="myConfig"></vue-ueditor-wrap>
         </li>
       </ul>
       <!-- 完成编辑按钮 -->
@@ -40,13 +33,31 @@
   </div>
 </template>
 <script>
-import {quillConfig } from '../../../assets/js/quill-config'
+import quillConfig from "../../../assets/js/quill-config";
+import "../../../../public/UEditor/themes/default/css/ueditor.css";
+import "../../../../public/UEditor/themes/default/css/ueditor.min.css";
+import VueUeditorWrap from "vue-ueditor-wrap";
 export default {
+  components: {
+    VueUeditorWrap
+  },
   data() {
     return {
       infoForm: {},
       sheetUuid: "",
-      editorOption: quillConfig
+      quillOption: quillConfig,
+      myConfig: {
+        // 编辑器不自动被内容撑高
+        autoHeightEnabled: true,
+        // 初始容器高度
+        initialFrameHeight: 240,
+        // 初始容器宽度
+        initialFrameWidth: "100%",
+        // 上传文件接口（这个地址是我为了方便各位体验文件上传功能搭建的临时接口，请勿在生产环境使用！！！）
+        // serverUrl: this.UPLOAD_IMG,
+        // UEditor 资源文件的存放路径，如果你使用的是 vue-cli 生成的项目，通常不需要设置该选项，vue-ueditor-wrap 会自动处理常见的情况，如果需要特殊配置，参考下方的常见问题2
+        UEDITOR_HOME_URL: "/UEditor/"
+      }
     };
   },
   created() {
@@ -56,33 +67,31 @@ export default {
   methods: {
     // 确认添加
     async HandleClickOver() {
-        console.log(this.infoForm.comment);
-        
-    //   if (
-    //     this.infoForm.scoreCron.trim() == "" ||
-    //     this.infoForm.advice.trim() == "" ||
-    //     this.infoForm.comment.trim() == ""
-    //   ) {
-    //     return this.$message.error("请输入有效内容");
-    //   } else {
-    //     const { data: res } = await this.$http.post(
-    //       this.$ajax + "sheet/updateAdviceComment",
-    //       {
-    //         id: this.infoForm.id,
-    //         comment: this.infoForm.comment,
-    //         advice: this.infoForm.advice,
-    //         scoreCron: this.infoForm.scoreCron
-    //       }
-    //     );
-    //     if (res.code != 200) return this.$message.error("修改失败");
-    //     this.$message.success("修改成功");
-    //     this.$router.push("InvenSet");
-    //   }
+      if (
+        this.infoForm.scoreCron.trim() == "" ||
+        this.infoForm.advice.trim() == "" ||
+        this.infoForm.comment.trim() == ""
+      ) {
+        return this.$message.error("请输入有效内容");
+      } else {
+        const { data: res } = await this.$http.post(
+          this.$ajax + "sheet/updateAdviceComment",
+          {
+            id: this.infoForm.id,
+            comment: this.infoForm.comment,
+            advice: this.infoForm.advice,
+            scoreCron: this.infoForm.scoreCron
+          }
+        );
+        if (res.code != 200) return this.$message.error("修改失败");
+        this.$message.success("修改成功");
+        this.$router.push("InvenSet");
+      }
     }
   },
-  mounted(){
-      quillConfig.initButton();
-  },
+  mounted() {
+    quillConfig.initButton();
+  }
 };
 </script>
 <style lang='less'>
@@ -103,8 +112,8 @@ ul {
   background-color: #ffab1a;
   border-color: #ffab1a;
 }
-.adviceditor .ql-editor {
-  height: 420px;
+.adviceditor {
+  margin-bottom: 10px;
 }
 /* 汉化 */
 .ql-toolbar.ql-snow {

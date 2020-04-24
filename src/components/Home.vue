@@ -129,6 +129,7 @@ export default {
       const { data: res } = await this.$http.get("user/signOut", {});
       if (res.code != 200) return this.$message.error("退出失败");
       window.sessionStorage.clear();
+      window.localStorage.clear();
       this.$router.push("/login");
     },
     // 获取菜单栏数据

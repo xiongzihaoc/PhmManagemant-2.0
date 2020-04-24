@@ -58,7 +58,9 @@
               </div>
               <div class="posCheckInner">
                 <el-checkbox-group class="checkGroup" v-model="checkList" @change="chooseItem">
-                  <el-checkbox class="posCheck" :label="item" ><i style="color:#F7F9FC"></i></el-checkbox>
+                  <el-checkbox class="posCheck" :label="item">
+                    <i style="color:#F7F9FC"></i>
+                  </el-checkbox>
                 </el-checkbox-group>
               </div>
             </li>
@@ -98,7 +100,10 @@
                 <span style="color:orange;font-size:14px;">( 分值：{{list.optScore}} )</span>
               </div>
             </div>
-            <div class="posCheckInner_select el-icon-delete"></div>
+            <div
+              class="posCheckInner_select el-icon-delete"
+              @click.prevent.stop="delChoose(item,index)"
+            ></div>
           </li>
         </ul>
       </div>
@@ -153,7 +158,6 @@ export default {
       if (res.code != 200) return this.$message.error("数获取失败");
       this.sheetList = res.rows;
       console.log(res);
-      
     },
     // 搜索按钮
     systemSearch() {
@@ -193,7 +197,7 @@ export default {
       question = {};
       Arr = [];
       this.checkList = [];
-      
+
       this.$emit("openOrCls");
     },
     // 全选
@@ -204,7 +208,8 @@ export default {
     chooseItem(val) {
       let checkedCount = val.length;
       this.checkAll = checkedCount === this.checkList.length;
-      this.isIndeterminate = checkedCount > 0 && checkedCount < this.checkList.length;
+      this.isIndeterminate =
+        checkedCount > 0 && checkedCount < this.checkList.length;
     },
     // 查看已选题目
     Viewselected() {
@@ -221,6 +226,10 @@ export default {
       this.searchCheck = true;
       this.back = false;
       this.tosele = true;
+    },
+    // 删除已选
+    delChoose(info, index) {
+      this.checkList.splice(index, 1);
     }
   }
 };
@@ -378,5 +387,4 @@ export default {
   right: 20px;
   top: 18px;
 }
-
 </style>

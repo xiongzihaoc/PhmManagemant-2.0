@@ -84,8 +84,7 @@ export default {
     };
   },
   created() {
-    var Uuid = window.localStorage.getItem("sheetUuid");
-    this.sheetUuid = Uuid;
+    this.sheetUuid = JSON.parse(window.localStorage.getItem("sheetUuid")).uuid;
     this.getFactorList();
   },
   methods: {

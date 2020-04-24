@@ -62,29 +62,27 @@ export default {
   },
   methods: {
     // 确认添加
-    HandleClickOver() {
-      console.log(this.commentInfo);
-      console.log(this.adviceInfo);
-      // if (
-      //   this.score.trim() == "" ||
-      //   this.commentInfo.trim() == "" ||
-      //   this.adviceInfo.trim() == ""
-      // ) {
-      //   return this.$message.error("请输入有效内容");
-      // } else {
-      //   const { data: res } = await this.$http.post(
-      //     this.$ajax + "sheet/addAdviceComment",
-      //     {
-      //       sheetUuid: this.sheetUuid,
-      //       comment: this.commentInfo,
-      //       advice: this.adviceInfo,
-      //       scoreCron: this.score
-      //     }
-      //   );
-      //   if (res.code != 200) return this.$message.error("添加失败");
-      //   this.$message.success("添加成功");
-      //   this.$router.push("InvenSet");
-      // }
+    async HandleClickOver() {
+      if (
+        this.score.trim() == "" ||
+        this.commentInfo.trim() == "" ||
+        this.adviceInfo.trim() == ""
+      ) {
+        return this.$message.error("请输入有效内容");
+      } else {
+        const { data: res } = await this.$http.post(
+          this.$ajax + "sheet/addAdviceComment",
+          {
+            sheetUuid: this.sheetUuid,
+            comment: this.commentInfo,
+            advice: this.adviceInfo,
+            scoreCron: this.score
+          }
+        );
+        if (res.code != 200) return this.$message.error("添加失败");
+        this.$message.success("添加成功");
+        this.$router.push("InvenSet");
+      }
     }
   }
 };

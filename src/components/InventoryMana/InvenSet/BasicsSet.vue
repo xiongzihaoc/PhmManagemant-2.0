@@ -1,8 +1,14 @@
 <template>
   <div style="padding:30px;overflow:hidden;">
     <el-form ref="loginFormRef" :model="editAddForm" label-width="90px">
-      <el-form-item label="计分方式" prop="facName">
-        <el-select v-model="editAddForm.facName" placeholder="请选择" style="width:20%;">
+      <el-form-item label="建议类型" prop="adviceType">
+        <el-select v-model="editAddForm.adviceType" placeholder="请选择" style="width:20%;">
+          <el-option label="普通式" value="0"></el-option>
+          <el-option label="参与整合式" value="1"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="计分方式">
+        <el-select v-model="choose" placeholder="请选择" style="width:20%;">
           <el-option
             v-for="asItem in options"
             :key="asItem.value"
@@ -11,37 +17,42 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="指导语" prop="facQues">
-        <el-input v-model="editAddForm.facQues"></el-input>
+      <el-form-item label="自定义" prop="sumCron" v-if="this.choose == '自定义'" v-show="true">
+        <el-input v-model="editAddForm.sumCron"></el-input>
       </el-form-item>
-      <el-form-item label="最小预警值" prop="bfacCalc">
-        <el-input v-model="editAddForm.bfacCalc"></el-input>
+      <el-form-item label="指导语" prop="instruction">
+        <el-input v-model="editAddForm.instruction"></el-input>
       </el-form-item>
-      <el-form-item label="最大预警值" prop="facCalc">
-        <el-input v-model="editAddForm.facCalc"></el-input>
+      <el-form-item label="预警表达式" prop="warnCorn">
+        <el-input v-model="editAddForm.warnCorn"></el-input>
+      </el-form-item>
+      <el-form-item label="备注" prop="memo">
+        <el-input v-model="editAddForm.memo"></el-input>
       </el-form-item>
     </el-form>
-    <el-button type="primary" @click="editPageEnter" class="saveBtn">保 存</el-button>
+    <el-button type="primary" @click.prevent.stop="editPageEnter" class="saveBtn">保 存</el-button>
   </div>
 </template>
 <script>
 export default {
   data() {
     return {
+      choose: "",
       editAddForm: {
-        facName: "",
-        facQues: "",
-        bfacCalc: "",
-        facCalc: ""
+        sumCron: "",
+        instruction: "",
+        warnCorn: "",
+        adviceType: "",
+        memo: ""
       },
       editDialogVisible: false,
       options: [
         {
-          value: "总分",
+          value: "sum",
           lable: "总分"
         },
         {
-          value: "平均",
+          value: "avg",
           lable: "平均"
         },
         {
@@ -51,8 +62,44 @@ export default {
       ]
     };
   },
+  created() {
+    this.sheetUuid = JSON.parse(window.localStorage.getItem("sheetUuid")).uuid;
+    this.editAddForm = JSON.parse(window.localStorage.getItem("sheetUuid"));
+  },
   methods: {
-    editPageEnter() {}
+    async editPageEnter() {
+      if (this.choose != "自定义") {
+        const { data: res } = await this.$http.post(
+          this.$ajax + "sheet/update",
+          {
+            uuid: this.sheetUuid,
+            sumCron: this.choose,
+            instruction: this.editAddForm.instruction,
+            warnCorn: this.editAddForm.warnCorn,
+            adviceType: this.editAddForm.adviceType,
+            memo: this.editAddForm.memo
+          }
+        );
+        if (res.code != 200) return this.$message.error("保存失败");
+        this.$message.success("保存成功");
+        this.$router.push("sheet/list");
+      } else {
+        const { data: res } = await this.$http.post(
+          this.$ajax + "sheet/update",
+          {
+            uuid: this.sheetUuid,
+            sumCron: this.editAddForm.sumCron,
+            instruction: this.editAddForm.instruction,
+            warnCorn: this.editAddForm.warnCorn,
+            adviceType: this.editAddForm.adviceType,
+            memo: this.editAddForm.memo
+          }
+        );
+        if (res.code != 200) return this.$message.error("保存失败");
+        this.$message.success("保存成功");
+        this.$router.push("sheet/list");
+      }
+    }
   }
 };
 </script>

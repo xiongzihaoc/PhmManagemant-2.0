@@ -401,8 +401,10 @@ export default {
     };
   },
   created() {
-    this.sheetUuid = this.$route.query.uuid;
-    this.inveName = this.$route.query.inveName;
+    this.sheetUuid = JSON.parse(window.localStorage.getItem("sheetUuid")).uuid;
+    this.inveName = JSON.parse(
+      window.localStorage.getItem("sheetUuid")
+    ).inveName;
     this.sheetQuesList();
   },
 
@@ -550,7 +552,6 @@ export default {
     },
     // 插入选项
     quesPosAdd(list, index, i) {
-      console.log(index, i);
       let obj = {
         optScore: this.score++,
         optMedia: "",
@@ -580,8 +581,6 @@ export default {
     async HandleClickOver(index) {
       // 当前项li
       var info = this.single[index];
-      console.log(info);
-
       // html代码片段转纯文本
       var txt = info.quesMedia
         .replace(/<(style|script|iframe)[^>]*?>[\s\S]+?<\/\1\s*>/gi, "")
@@ -600,7 +599,6 @@ export default {
         };
         Arr.push(optObj);
       }
-
       // 新增编辑题目接口
       const { data: res } = await this.$http.post(
         this.$ajax + "sheetQues/add",
@@ -619,6 +617,7 @@ export default {
       if (res.code != 200) return this.$message.error("操作失败");
       this.$message.success("操作成功");
       info.open = false;
+      this.sheetQuesList();
     },
     // 添加图片
     handleClickImg(info) {

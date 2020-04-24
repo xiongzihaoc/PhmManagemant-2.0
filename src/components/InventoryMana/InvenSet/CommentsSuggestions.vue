@@ -54,7 +54,7 @@ export default {
     };
   },
   created() {
-    this.sheetUuid = window.localStorage.getItem("sheetUuid");
+    this.sheetUuid = JSON.parse(window.localStorage.getItem("sheetUuid")).uuid;
     this.getInfoList();
   },
   methods: {
