@@ -12,14 +12,14 @@
           <quill-editor
             class="editor"
             ref="myTextEditor"
-            v-model="infoForm.commentInfo"
+            v-model="infoForm.comment"
             :options="quillOption"
             style="margin:10px 0 20px;height:40%;"
           ></quill-editor>
         </li>
         <li>
           <h3 class="adviceditor">建议</h3>
-          <vue-ueditor-wrap v-model="infoForm.adviceInfo" :config="myConfig"></vue-ueditor-wrap>
+          <vue-ueditor-wrap v-model="infoForm.advice" :config="myConfig"></vue-ueditor-wrap>
         </li>
       </ul>
       <!-- 完成编辑按钮 -->
@@ -44,7 +44,6 @@ export default {
   data() {
     return {
       infoForm: {},
-      sheetUuid: "",
       quillOption: quillConfig,
       myConfig: {
         // 编辑器不自动被内容撑高
@@ -61,8 +60,9 @@ export default {
     };
   },
   created() {
+    console.log(JSON.parse(this.$route.query.info));
+
     this.infoForm = JSON.parse(this.$route.query.info);
-    console.log(this.infoForm);
   },
   methods: {
     // 确认添加

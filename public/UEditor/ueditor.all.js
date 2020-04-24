@@ -14935,7 +14935,7 @@
     });
     me.commands['redo'] = me.commands['undo'] = {
       execCommand: function (cmdName) {
-        this.undoManger[cmdName]();
+        // this.undoManger[cmdName]();
       },
       queryCommandState: function (cmdName) {
         return this.undoManger['has' + (cmdName.toLowerCase() == 'undo' ? 'Undo' : 'Redo')] ? 0 : -1;

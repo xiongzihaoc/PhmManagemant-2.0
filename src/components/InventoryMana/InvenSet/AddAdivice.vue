@@ -23,7 +23,7 @@
         </li>
       </ul>
       <!-- 完成编辑按钮 -->
-      <el-button @click.prevent.stop="HandleClickOver" type="primary" size="medium ">完成编辑</el-button>
+      <el-button @click.prevent.stop="HandleClickOver" type="primary" size="medium " class="endEdit">完成编辑</el-button>
     </el-card>
   </div>
 </template>
@@ -58,7 +58,7 @@ export default {
     };
   },
   created() {
-    this.sheetUuid = window.localStorage.getItem("sheetUuid");
+    this.sheetUuid = window.localStorage.getItem("sheetUuid").uuid;
   },
   methods: {
     // 确认添加

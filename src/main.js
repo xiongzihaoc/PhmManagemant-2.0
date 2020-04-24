@@ -14,16 +14,17 @@ import VueQuillEditor from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
-Vue.use(VueQuillEditor);
+Vue.use(VueQuillEditor)
 import '../public/UEditor/ueditor.config.js'
 import '../public/UEditor/ueditor.all.js'
+// import '../public/UEditor/ueditor.all.min.js'
 import '../public/UEditor/lang/zh-cn/zh-cn.js'
 import '../public/UEditor/ueditor.parse'
 import '../public/UEditor/themes/default/css/ueditor.css'
 import '../public/UEditor/themes/default/css/ueditor.min.css'
 // 引入md5加密
-import md5 from 'js-md5';
-Vue.prototype.$md5 = md5;
+import md5 from 'js-md5'
+Vue.prototype.$md5 = md5
 // 导入axios
 import axios from 'axios'
 import animated from 'animate.css' // npm install animate.css --save安装，在引入
@@ -43,7 +44,7 @@ axios.interceptors.request.use(function (config) {
 axios.interceptors.response.use(function (config) {
   if (config.status != 200) return this.$message.error('服务器异常')
   Nprogress.done()
-  return config;
+  return config
 }, function (error) {
   console.log(error)
 })
