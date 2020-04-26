@@ -100,6 +100,7 @@ export default {
     },
     //   添加因子
     addDivisor() {
+      this.editAddForm = {};
       this.editDialogVisible = true;
       this.infoTitle = "新增因子";
     },

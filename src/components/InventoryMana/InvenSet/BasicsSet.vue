@@ -40,8 +40,6 @@ export default {
     };
   },
   created() {
-    
-    
     this.sheetUuid = JSON.parse(window.localStorage.getItem("sheetUuid")).uuid;
     this.editAddForm = JSON.parse(window.localStorage.getItem("sheetUuid"));
     console.log(this.editAddForm);

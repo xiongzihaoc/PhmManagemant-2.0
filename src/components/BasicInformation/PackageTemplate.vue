@@ -77,7 +77,6 @@
           <el-cascader
             v-model="addEditForm.officeCode"
             :options="eleNameList"
-            @change="handleChange"
             :show-all-levels="false"
             :props="optionProps"
           ></el-cascader>
@@ -86,7 +85,7 @@
           <el-select @change="handleChoose" multiple v-model="addEditForm.sheets" placeholder="请选择">
             <el-option
               v-for="item in userList"
-              :key="item.id"
+              :key="item.uuid"
               :label="item.name"
               :value="item.uuid"
             ></el-option>
@@ -141,7 +140,7 @@ export default {
         price: "",
         describes: "",
         status: "",
-        sheets: [],
+        sheets: "",
         officeCode: 100
       },
       selfId: null,
@@ -190,7 +189,7 @@ export default {
           parm = {
             id: this.selfId,
             name: this.addEditForm.name,
-            officeCode: this.addEditForm.officeCode,
+            officeCode: this.addEditForm.officeCode.pop(),
             type: this.addEditForm.type,
             price: this.addEditForm.price,
             sheets: this.addEditForm.sheets.toString(),
@@ -201,7 +200,7 @@ export default {
           httpUrl = "office_package/insert";
           parm = {
             name: this.addEditForm.name,
-            officeCode: this.addEditForm.officeCode,
+            officeCode: this.addEditForm.officeCode.pop(),
             type: this.addEditForm.type,
             price: this.addEditForm.price,
             sheets: this.addEditForm.sheets.toString(),
@@ -218,9 +217,12 @@ export default {
     },
     // 修改
     showEditdialog(info) {
+      console.log(info);
+
       this.selfId = info.id;
       this.dialogTitle = "修改信息";
       this.addEditForm = JSON.parse(JSON.stringify(info));
+      // this.addEditForm.sheets = info.title.split(",");
       this.DialogVisible = true;
     },
     // 添加按钮
@@ -262,13 +264,10 @@ export default {
         return;
       }
     },
-    handleChoose(val) {
-      this.addEditForm.sheets = val;
-    },
-    // 科室选择
-    handleChange(val) {
-      this.addEditForm.officeCode = val[val.length - 1];
-    },
+    // handleChoose(val) {
+    //   console.log(val);
+    //   this.addEditForm.sheets = val;
+    // },
     // 跳转下一级
     jumpDictionarybtn(info) {
       this.$router.push({

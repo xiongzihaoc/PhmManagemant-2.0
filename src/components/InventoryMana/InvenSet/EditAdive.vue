@@ -60,8 +60,6 @@ export default {
     };
   },
   created() {
-    console.log(JSON.parse(this.$route.query.info));
-
     this.infoForm = JSON.parse(this.$route.query.info);
   },
   methods: {
@@ -89,9 +87,6 @@ export default {
       }
     }
   },
-  mounted() {
-    quillConfig.initButton();
-  }
 };
 </script>
 <style lang='less'>

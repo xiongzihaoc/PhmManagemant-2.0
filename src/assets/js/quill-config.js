@@ -50,7 +50,7 @@ const toolOptions = [
     'clean': '源码编辑'
   }],
   ['link', 'image'],
-  ['sourceEditor', 'addBorder'] //新添加的工具
+  // ['sourceEditor', 'addBorder'] //新添加的工具
 ];
 
 const handlers = {
@@ -95,16 +95,16 @@ export default {
       handlers: handlers // 事件重写
     }
   },
-  initButton: function () {
-    const sourceEditorButton = document.querySelector('.ql-sourceEditor');
-    sourceEditorButton.style.cssText = "width:80px; border:1px solid #ccc; border-radius:5px;";
-    sourceEditorButton.innerText = "源码编辑";
-  },
-  borderButton: function () {
-    const borderBtn = document.querySelector('.ql-addBorder');
-    borderBtn.style.cssText = "width:80px; border:1px solid #ccc; border-radius:5px;margin-left:10px";
-    borderBtn.innerText = "添加边框"
-  },
+  // initButton: function () {
+  //   const sourceEditorButton = document.querySelector('.ql-sourceEditor');
+  //   sourceEditorButton.style.cssText = "width:80px; border:1px solid #ccc; border-radius:5px;";
+  //   sourceEditorButton.innerText = "源码编辑";
+  // },
+  // borderButton: function () {
+  //   const borderBtn = document.querySelector('.ql-addBorder');
+  //   borderBtn.style.cssText = "width:80px; border:1px solid #ccc; border-radius:5px;margin-left:10px";
+  //   borderBtn.innerText = "添加边框"
+  // },
   register(q) {
   
     //注册标签(因为在富文本编辑器中是没有div,table等标签的，需要自己去注册自己需要的标签)

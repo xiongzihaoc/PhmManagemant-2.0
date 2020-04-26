@@ -46,6 +46,7 @@ export default {
   data() {
     return {
       tableHeaderBig: [
+        { label: "序号", type: "index" ,width:60},
         { prop: "comment", label: "评语" },
         { prop: "scoreCron", label: "分数表达式" }
       ],
