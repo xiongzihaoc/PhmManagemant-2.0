@@ -37,7 +37,8 @@
     <el-dialog
       :title="infoTitle"
       :visible.sync="editDialogVisible"
-      width="40%"
+      width="50%"
+      :modal="false"
       v-dialogDrag
       @close="editDialogClosed"
     >
@@ -106,7 +107,7 @@ export default {
       let httpUrl = "";
       let parm = {};
       if (this.infoTitle == "修改因子") {
-        httpUrl = "hospital/updateHospitalDetail";
+        httpUrl = "sheet/updateFactor";
         parm = {
           id: this.editId,
           sheetUuid: this.sheetUuid,
@@ -126,23 +127,43 @@ export default {
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return;
         const { data: res } = await this.$http.post(this.$ajax + httpUrl, parm);
-        // if (res.code != 200) return this.$message.error(res.msg);
-        console.log(res);
-
+        if (res.code != 200) return this.$message.error(res.msg);
         this.editDialogVisible = false;
+        this.getFactorList();
       });
     },
     // 编辑因子
     showEditdialog(info) {
+      this.editAddForm = JSON.parse(JSON.stringify(info));
       this.editId = info.id;
       this.infoTitle = "修改因子";
       this.editDialogVisible = true;
     },
     // 删除因子
-    delEditdialog() {},
+    async delEditdialog(info) {
+      const confirmResult = await this.$confirm(
+        "你确定要执行此操作, 是否继续?",
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }
+      ).catch(err => console.log(err));
+      if (confirmResult != "confirm") {
+        return this.$message.info("取消删除");
+      }
+      const { data: res } = await this.$http.post(
+        this.$ajax + "sheet/removeFactor",
+        { id: info.id }
+      );
+      if (res.code != 200) return this.$message.error("删除失败");
+      this.$message.success("删除成功");
+      this.getFactorList();
+    },
     editDialogClosed() {}
   }
 };
 </script>
-<style lang='less'>
+<style lang='less' scoped>
 </style>
