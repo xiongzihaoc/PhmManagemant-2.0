@@ -264,10 +264,10 @@ export default {
         return;
       }
     },
-    // handleChoose(val) {
-    //   console.log(val);
-    //   this.addEditForm.sheets = val;
-    // },
+    handleChoose(val) {
+      console.log(val);
+      // this.addEditForm.sheets = val;
+    },
     // 跳转下一级
     jumpDictionarybtn(info) {
       this.$router.push({
