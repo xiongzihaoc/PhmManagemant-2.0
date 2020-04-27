@@ -4,10 +4,12 @@
       <!-- 添加用户按钮 -->
       <div :span="4" style="text-align:right">
         <el-button
-          type="primary"
+          type="info"
+          plain
           @click.prevent.stop="addDivisor"
           icon="el-icon-circle-plus-outline"
           size="mini"
+          style="margin-right:15px"
         >新增因子</el-button>
       </div>
     </el-row>

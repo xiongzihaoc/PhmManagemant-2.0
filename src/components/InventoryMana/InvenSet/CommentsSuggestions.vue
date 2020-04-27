@@ -4,17 +4,19 @@
       <!-- 添加用户按钮 -->
       <div :span="4" style="text-align:right">
         <el-button
-          type="primary"
+          type="info"
+          plain
           @click.prevent.stop="jumpSuss"
           icon="el-icon-circle-plus-outline"
           size="mini"
+          style="margin-right:15px"
         >新增建议</el-button>
       </div>
     </el-row>
     <!-- 调用公用表格组件 -->
     <EleTable :data="userList" :header="tableHeaderBig" row-key="id">
       <el-table-column align="center" slot="fixed" fixed="right" prop="advice" label="建议">
-        <template slot-scope="scope">{{(scope.row.advice).slice(0,5)}}</template>
+        <template slot-scope="scope">{{(scope.row.advice).slice(0,10)}}</template>
       </el-table-column>
       <el-table-column align="center" slot="fixed" fixed="right" label="操作" width="180">
         <template slot-scope="scope">
@@ -46,7 +48,7 @@ export default {
   data() {
     return {
       tableHeaderBig: [
-        { label: "序号", type: "index" ,width:60},
+        { label: "序号", type: "index", width: 60 },
         { prop: "comment", label: "评语" },
         { prop: "scoreCron", label: "分数表达式" }
       ],

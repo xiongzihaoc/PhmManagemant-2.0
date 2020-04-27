@@ -278,6 +278,7 @@ export default {
   overflow: auto;
 }
 .search-content li {
+  min-width: 250px;
   overflow: hidden;
   padding: 11px 0 10px 8px;
 }
