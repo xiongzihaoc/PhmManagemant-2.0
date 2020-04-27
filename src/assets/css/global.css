@@ -114,3 +114,8 @@
     content: "\E7a2";
     font-size: 16px;
 }
+
+.ql-editor img {
+    width: 80px;
+    height: 80px;
+}

@@ -86,7 +86,7 @@ export default {
         this.$router.push("InvenSet");
       }
     }
-  },
+  }
 };
 </script>
 <style lang='less'>
