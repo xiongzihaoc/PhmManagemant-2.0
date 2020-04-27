@@ -802,6 +802,8 @@ div.edui-box {
 .edui-default  .edui-for-pagebreak .edui-icon {
     background-position: -460px -40px;
 }
+.edui-container *{-webkit-box-sizing: content-box;-moz-box-sizing: content-box;box-sizing: content-box;}
+.edui-container *:before,.edui-container *:after {-webkit-box-sizing: content-box;-moz-box-sizing: content-box;box-sizing: content-box}
 
 .edui-default  .edui-for-imagenone .edui-icon {
     background-position: -480px -40px;

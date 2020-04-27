@@ -31,7 +31,7 @@
             <span v-else style="color:#ff4949;font-weight:700;">{{ ifendcase(scope.row) }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" slot="fixed" fixed="right" label="操作" width="260">
+        <el-table-column align="center" slot="fixed" fixed="right" label="操作" width="180">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
             <el-button
@@ -40,13 +40,6 @@
               type="primary"
               icon="el-icon-edit"
             >编辑</el-button>
-            <!-- 跳转按钮 -->
-            <el-button
-              size="mini"
-              @click="jumpDictionarybtn(scope.row)"
-              type="success"
-              icon="el-icon-s-unfold"
-            >详情</el-button>
             <!-- 删除按钮 -->
             <el-button
               size="mini"
@@ -82,7 +75,7 @@
           ></el-cascader>
         </el-form-item>
         <el-form-item label="量表选择" prop="sheets">
-          <el-select @change="handleChoose" multiple v-model="addEditForm.sheets" placeholder="请选择">
+          <el-select multiple v-model="addEditForm.sheets" placeholder="请选择">
             <el-option
               v-for="item in userList"
               :key="item.uuid"
@@ -124,6 +117,7 @@ export default {
         { prop: "officeName", label: "科室名称" },
         { prop: "type", label: "套餐类别" },
         { prop: "price", label: "价格" },
+        { prop: "sheetNames", label: "套餐量表" },
         { prop: "describes", label: "套餐描述" }
       ],
       menuList: [],
@@ -147,7 +141,8 @@ export default {
       DialogVisible: false,
       dialogTitle: "",
       goBack: "",
-      labelTitle: ""
+      labelTitle: "",
+      uuid:""
     };
   },
   created() {
@@ -164,13 +159,15 @@ export default {
         }
       );
       this.menuList = res.rows;
+      console.log(this.menuList);
+      
     },
     // 获取量表列表
     async getScaleList() {
       const { data: res } = await this.$http.post(this.$ajax + "sheet/list", {
         name: this.input
       });
-      if (res.code != 200) return this.$message.error("数获取失败");
+      if (res.code != 200) return this.$message.error("数据获取失败");
       this.userList = res.rows;
     },
     // 获取科室列表
@@ -185,7 +182,7 @@ export default {
         let httpUrl = "";
         let parm = {};
         if (this.dialogTitle == "修改信息") {
-          httpUrl = "dict/update";
+          httpUrl = "office_package/update";
           parm = {
             id: this.selfId,
             name: this.addEditForm.name,
@@ -194,6 +191,7 @@ export default {
             price: this.addEditForm.price,
             sheets: this.addEditForm.sheets.toString(),
             describes: this.addEditForm.describes,
+            uuid: this.uuid,
             status: this.addEditForm.status
           };
         } else {
@@ -205,24 +203,24 @@ export default {
             price: this.addEditForm.price,
             sheets: this.addEditForm.sheets.toString(),
             describes: this.addEditForm.describes,
+            uuid: this.uuid,
             status: this.addEditForm.status
           };
         }
         const { data: res } = await this.$http.post(this.$ajax + httpUrl, parm);
         if (res.code != 200) return this.$message.error(res.msg);
-        this.$message.success(res.msg);
+        this.$message.success("操作成功");
         this.getDictionaryList();
         this.DialogVisible = false;
       });
     },
     // 修改
     showEditdialog(info) {
-      console.log(info);
-
       this.selfId = info.id;
+      this.uuid = info.uuid;
       this.dialogTitle = "修改信息";
       this.addEditForm = JSON.parse(JSON.stringify(info));
-      // this.addEditForm.sheets = info.title.split(",");
+      this.addEditForm.sheets = info.sheets.split(",");
       this.DialogVisible = true;
     },
     // 添加按钮
@@ -253,7 +251,7 @@ export default {
       if (confirmResult != "confirm") {
         return this.$message.info("取消删除");
       }
-      const { data: res } = await this.$http.post("sys/dict/delSysDict.do", {
+      const { data: res } = await this.$http.post("office_package/remove", {
         id: info.id
       });
       if (res.code == 200) {
