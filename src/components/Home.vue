@@ -108,7 +108,7 @@ export default {
     return {
       menuList: [],
       isCollapse: false,
-      activePath: "",
+      activePath: "/index",
       loginName: "",
       isClass: false,
       iswidth: false,
@@ -117,7 +117,7 @@ export default {
   },
   created() {
     this.getMenuList();
-    // this.activePath = window.sessionStorage.getItem("activePath");
+
     this.loginName = window.localStorage.getItem("loginName");
   },
   methods: {
