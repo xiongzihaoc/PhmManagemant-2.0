@@ -129,8 +129,6 @@ export default {
           name: this.input
         }
       );
-      console.log(res);
-
       if (res.code != 200) return this.$message.error("数获取失败");
       this.infoList = res.rows;
       this.total = res.total;

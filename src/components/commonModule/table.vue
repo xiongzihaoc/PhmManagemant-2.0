@@ -9,6 +9,7 @@
       @row-dblclick="rowDblClick"
       @select="rowSelect"
       @select-all="selectAll"
+                highlight-current-row
       :header-cell-style="{ background:'#f5f5f5' }"
       :border="option.border"
       :max-height="option.maxHeight"

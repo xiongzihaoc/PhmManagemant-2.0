@@ -3,45 +3,53 @@
     <el-card class="main_left">
       <p class="queschoose">题型选择</p>
       <div class="changeBtn">
-        <el-button
-          class="chooseType"
-          size="mini"
-          type="info"
-          plain
-          icon="el-icon-s-opportunity"
-          @click.prevent.stop="changetype"
-        >单选</el-button>
-        <el-button
-          class="chooseType"
-          size="mini"
-          type="info"
-          plain
-          icon="el-icon-s-help"
-          @click.prevent.stop="changetype"
-        >评分</el-button>
-        <el-button
-          class="chooseType"
-          size="mini"
-          type="info"
-          plain
-          icon="el-icon-finished"
-          @click.prevent.stop="changetype"
-        >多选</el-button>
-        <el-button
-          class="chooseType"
-          size="mini"
-          type="info"
-          plain
-          icon="el-icon-tickets"
-          @click.prevent.stop="changetype"
-        >文本</el-button>
-        <span style="font-size:14px;color:#909399">
-          题目数:
-          <a
-            href="###"
-            style="font-size:14px;color:#1ea0fa;margin-left:5px;text-decoration:none;"
-          >{{quesName}}</a>
-        </span>
+        <li style="display:flex;justify-content: center;">
+          <el-button
+            class="chooseType"
+            size="mini"
+            type="info"
+            plain
+            icon="el-icon-s-opportunity"
+            @click.prevent.stop="changetype"
+            style="margin-right:10px"
+          >单选</el-button>
+          <el-button
+            class="chooseType"
+            size="mini"
+            type="info"
+            plain
+            icon="el-icon-s-help"
+            @click.prevent.stop="changetype"
+          >评分</el-button>
+        </li>
+        <li style="display:flex;justify-content: center;">
+          <el-button
+            class="chooseType"
+            size="mini"
+            type="info"
+            plain
+            icon="el-icon-finished"
+            @click.prevent.stop="changetype"
+            style="margin-right:10px"
+          >多选</el-button>
+          <el-button
+            class="chooseType"
+            size="mini"
+            type="info"
+            plain
+            icon="el-icon-tickets"
+            @click.prevent.stop="changetype"
+          >文本</el-button>
+        </li>
+        <li style="display:flex;justify-content: center;">
+          <span style="font-size:14px;color:#909399">
+            题目数:
+            <a
+              href="###"
+              style="font-size:14px;color:#1ea0fa;margin-left:5px;text-decoration:none;"
+            >{{quesName}}</a>
+          </span>
+        </li>
       </div>
     </el-card>
     <el-card class="main_right">
@@ -82,33 +90,33 @@
                   <!-- 循环生成选项 -->
                   <div class="listiconshow" v-for="(list,index) in item.option" :key="index">
                     <!-- 判断type类型 -->
+                    <!-- 单选题 -->
                     <div v-if="item.quesType==1">
                       <el-radio :label="1">{{list.optContent}}</el-radio>
                       <span v-if="list.optMedia==''"></span>
                       <span v-else>
                         <img class="chooseImages" :src="list.optMedia" />
                       </span>
+                      <span style="display:none">{{list.advId }}</span>
                     </div>
+                    <!-- 多选题 -->
                     <div class="listlabel" v-else-if="item.quesType==2">
                       <el-checkbox>{{list.optContent}}</el-checkbox>
                       <span v-if="list.optMedia==''"></span>
                       <span v-else>
                         <img class="chooseImages" :src="list.optMedia" />
                       </span>
+                      <span style="display:none">{{list.advId }}</span>
                     </div>
+                    <!-- 文本题 -->
                     <div v-else-if="item.quesType==3">
-                      <!-- <el-input
-                        type="textarea"
-                        :rows="2"
-                        placeholder="请输入内容"
-                        style="width:400px;"
-                        v-model="list.optContent"
-                      ></el-input>-->
                       <span v-if="list.optMedia==''"></span>
                       <span v-else>
                         <img class="chooseImages" :src="list.optMedia" />
                       </span>
+                      <span style="display:none">{{list.advId }}</span>
                     </div>
+                    <!-- 分数题 -->
                     <div v-if="item.quesType==4">
                       <el-radio :label="2" style="margin-right:10px;">{{list.optContent}}</el-radio>
                       <span class="listOptscore">( 分值：{{list.optScore}} )</span>
@@ -116,6 +124,7 @@
                       <span v-else>
                         <img class="chooseImages" :src="list.optMedia" />
                       </span>
+                      <span style="display:none">{{list.advId }}</span>
                     </div>
                   </div>
                 </div>
@@ -157,88 +166,104 @@
                       <a href="###" @click.prevent.stop="handleClickInstr(index)">填写提示</a>
                     </span>
                   </div>
-                  <!-- 选项文字 图片 说明 分数 上移下移 -->
-                  <div class="selImgTips">
-                    <span style="margin-left:20px;">选项文字</span>
-                    <span style="margin-left:288px;">图片</span>
-                    <span style="margin-left:40px;">说明</span>
-                    <span style="margin-left:40px;" v-if="item.quesType == 4" v-show="true">分数</span>
-                    <span v-if="item.quesType == 4" style="margin-left:80px;">上移下移</span>
-                    <span v-else style="margin-left:80px;">上移下移</span>
+                  <div v-if="item.quesType != 3" v-show="true">
+                    <!-- 选项文字 图片 说明 分数 上移下移 -->
+                    <div class="selImgTips">
+                      <span style="margin-left:20px;">选项文字</span>
+                      <span style="margin-left:230px;">图片</span>
+                      <span style="margin-left:40px;">说明</span>
+                      <span style="margin-left:40px;" v-if="item.quesType == 4" v-show="true">分数</span>
+                      <span v-if="item.quesType == 4" style="margin-left:100px;">建议</span>
+                      <span v-else style="margin-left:80px;">建议</span>
+                      <span v-if="item.quesType == 4" style="margin-left:120px;">上移下移</span>
+                      <span v-else style="margin-left:160px;">上移下移</span>
+                    </div>
+                    <div v-for="(subItem,i) in item.option" :key="i" style="display:flex">
+                      <!-- 题目输入框 -->
+                      <el-input
+                        v-if="item.quesType == 3"
+                        size="mini"
+                        class="conContent"
+                        v-model="subItem.optContent"
+                        style
+                        v-show="false"
+                      ></el-input>
+                      <el-input
+                        v-else
+                        size="mini"
+                        class="conContent"
+                        v-model="subItem.optContent"
+                        style
+                      ></el-input>
+                      <!--  + - 添加题目删除题目 -->
+                      <span
+                        style="margin-left:5px;"
+                        class="quesPosAdd"
+                        @click.prevent.stop="quesPosAdd(item.option,index,i)"
+                      ></span>
+                      <span
+                        style="margin-left:3px;"
+                        class="quesPosDel"
+                        @click.prevent.stop="quesPosDel(index,i)"
+                      ></span>
+                      <!-- 选项图片上传 -->
+                      <el-upload
+                        class="avatar-uploader quesImg"
+                        :action="SHEET_IMG"
+                        :show-file-list="false"
+                        :on-success="handleAvatarSuccess"
+                        :on-progress="uploadVideoProcess"
+                        :before-upload="beforeAvatarUpload"
+                        :on-change="(file, fileList) => {handleChange(file, fileList, index,i)}"
+                      >
+                        <img v-if="subItem.optMedia" :src="subItem.optMedia" class="avatar" />
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                      </el-upload>
+                      <!-- 选项说明 -->
+                      <span style="margin-left:51px;" class="quesInstr"></span>
+                      <!-- 分数 -->
+                      <el-input
+                        v-if="item.quesType == 4"
+                        v-show="true"
+                        size="mini"
+                        v-model="subItem.optScore"
+                        class="inpOptScore"
+                      ></el-input>
+                      <!-- 建议 -->
+                      <el-input
+                        size="mini"
+                        class="conContent"
+                        v-model="subItem.advId "
+                        @focus="chooseAdvice(index,i)"
+                        style="margin-left:30px;"
+                      ></el-input>
+                      <!-- 上移下移箭头 -->
+                      <span
+                        v-if="item.quesType == 4"
+                        style="margin-left:50px;"
+                        class="quesPosTop"
+                        @click.prevent.stop="quesPosTop(index,i)"
+                      ></span>
+                      <span
+                        v-else
+                        style="margin-left:93px;"
+                        class="quesPosTop"
+                        @click.prevent.stop="quesPosTop(index,i)"
+                      ></span>
+                      <span
+                        style="margin-left:7px;"
+                        class="quesPosBottom"
+                        @click.prevent.stop="quesPosBottom(index,i)"
+                      ></span>
+                    </div>
+                    <!-- 添加选项按钮 -->
+                    <el-button
+                      @click.prevent.stop="HandleClickAddList(item.option,index)"
+                      size="mini"
+                      class="addOption"
+                      icon="el-icon-circle-plus-outline"
+                    >添加选项</el-button>
                   </div>
-                  <div v-for="(subItem,i) in item.option" :key="i">
-                    <el-input
-                      v-if="item.quesType == 3"
-                      size="mini"
-                      class="conContent"
-                      v-model="subItem.optContent"
-                      style
-                      v-show="false"
-                    ></el-input>
-                    <el-input
-                      v-else
-                      size="mini"
-                      class="conContent"
-                      v-model="subItem.optContent"
-                      style
-                    ></el-input>
-                    <span
-                      style="margin-left:5px;"
-                      class="quesPosAdd"
-                      @click.prevent.stop="quesPosAdd(item.option,index,i)"
-                    ></span>
-                    <span
-                      style="margin-left:3px;"
-                      class="quesPosDel"
-                      @click.prevent.stop="quesPosDel(index,i)"
-                    ></span>
-
-                    <!-- 选项图片上传 -->
-                    <el-upload
-                      class="avatar-uploader quesImg"
-                      :action="SHEET_IMG"
-                      :show-file-list="false"
-                      :on-success="handleAvatarSuccess"
-                      :on-progress="uploadVideoProcess"
-                      :before-upload="beforeAvatarUpload"
-                      :on-change="(file, fileList) => {handleChange(file, fileList, index,i)}"
-                    >
-                      <img v-if="subItem.optMedia" :src="subItem.optMedia" class="avatar" />
-                      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                    </el-upload>
-                    <span style="margin-left:51px;" class="quesInstr"></span>
-                    <el-input
-                      v-if="item.quesType == 4"
-                      v-show="true"
-                      size="mini"
-                      v-model="subItem.optScore"
-                      class="inpOptScore"
-                    ></el-input>
-                    <span
-                      v-if="item.quesType == 4"
-                      style="margin-left:75px;"
-                      class="quesPosTop"
-                      @click.prevent.stop="quesPosTop(index,i)"
-                    ></span>
-                    <span
-                      v-else
-                      style="margin-left:90px;"
-                      class="quesPosTop"
-                      @click.prevent.stop="quesPosTop(index,i)"
-                    ></span>
-                    <span
-                      style="margin-left:7px;"
-                      class="quesPosBottom"
-                      @click.prevent.stop="quesPosBottom(index,i)"
-                    ></span>
-                  </div>
-                  <!-- 添加选项按钮 -->
-                  <el-button
-                    @click.prevent.stop="HandleClickAddList(item.option,index)"
-                    size="mini"
-                    class="addOption"
-                    icon="el-icon-circle-plus-outline"
-                  >添加选项</el-button>
                   <!-- 逻辑设置： -->
                   <div class="logicSetting">
                     <span style="margin-left:20px;">逻辑设置：</span>
@@ -309,15 +334,54 @@
         </span>
       </el-dialog>
     </div>
+    <!-- 添加建议弹框 -->
+    <div class="addAdvice">
+      <el-dialog
+        title="选择建议"
+        :visible.sync="chooseDialogVisible"
+        width="60%"
+        v-dialogDrag
+        @closed="chooseDialogClosed"
+      >
+        <el-row :gutter="20">
+          <el-col :span="7">
+            <el-input placeholder="请输入关键词或内容" v-model="inputAdvice" @input="systemSearch" clearable></el-input>
+          </el-col>
+        </el-row>
+        <!-- 调用公用表格组件 -->
+        <EleTable :data="adviceList" :header="tableHeaderBig" @row-click="handleCurrentChoose">
+          <el-table-column align="center" slot="fixed" fixed="left" label="选中" width="50">
+            <template slot-scope="scope">
+              <el-radio :label="scope.row.id" v-model="radioId"></el-radio>
+            </template>
+          </el-table-column>
+        </EleTable>
+        <!-- 分页 -->
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChangev"
+          :current-page="pageNum"
+          :page-sizes="[10, 20,50]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+        ></el-pagination>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="chooseDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="chooseEnter">确 定</el-button>
+        </span>
+      </el-dialog>
+    </div>
   </div>
 </template>
 <script>
 import vuedraggable from "vuedraggable";
 import BatchAdd from "./Addbatch/BatchAdd";
 import BankAdd from "./Addbatch/BankAdd";
+import EleTable from "../commonModule/table";
 export default {
   name: "editor",
-  components: { vuedraggable, BatchAdd, BankAdd },
+  components: { vuedraggable, BatchAdd, BankAdd, EleTable },
   data() {
     return {
       checkedCities: [],
@@ -397,15 +461,33 @@ export default {
         readyOnly: false, //是否只读
         theme: "snow", //主题 snow/bubble
         syntax: true //语法检测
-      }
+      },
+      chooseDialogVisible: false,
+      tableHeaderBig: [],
+      tableHeaderBig: [
+        { prop: "advKind", label: "建议库" },
+        { prop: "advFlag", label: "标签名称" },
+        // { prop: "advValue", label: "赋值" },
+        // { prop: "advSelectNum", label: "筛选序号" },
+        { prop: "advKeyWord", label: "关键词" },
+        { prop: "advContent", label: "建议内容" }
+      ],
+      inputAdvice: "",
+      chooseAddForm: {},
+      adviceList: [],
+      pageSize: 10,
+      pageNum: 1,
+      total: 0,
+      radioId: "",
+      advNum1: "",
+      advNum2: ""
     };
   },
   created() {
     this.sheetUuid = JSON.parse(window.localStorage.getItem("sheetUuid")).uuid;
-    this.inveName = JSON.parse(
-      window.localStorage.getItem("sheetUuid")
-    ).inveName;
+    this.inveName = JSON.parse(window.localStorage.getItem("sheetUuid")).name;
     this.sheetQuesList();
+    this.getScaleList();
   },
 
   methods: {
@@ -419,6 +501,20 @@ export default {
       );
       this.single = res.rows;
       this.quesName = res.rows.length;
+    },
+    // 获取建议列表
+    async getScaleList() {
+      const { data: res } = await this.$http.post(
+        this.$ajax + "sheetAdv/list",
+        {
+          pageSize: this.pageSize,
+          pageNum: this.pageNum,
+          advKeyWord: this.inputAdvice
+        }
+      );
+      if (res.code != 200) return this.$message.error("数获取失败");
+      this.adviceList = res.rows;
+      this.total = res.total;
     },
     // 排序
     sorted() {
@@ -452,6 +548,7 @@ export default {
           optContent: "选项1",
           optScore: "1",
           optMedia: "",
+          advId: "",
           check: false
         },
         {
@@ -459,6 +556,7 @@ export default {
           optContent: "选项2",
           optScore: "2",
           optMedia: "",
+          advId: "",
           check: false
         },
         {
@@ -466,6 +564,7 @@ export default {
           optContent: "选项3",
           optScore: "3",
           optMedia: "",
+          advId: "",
           check: false
         },
         {
@@ -473,6 +572,7 @@ export default {
           optContent: "选项4",
           optScore: "4",
           optMedia: "",
+          advId: "",
           check: false
         }
       ];
@@ -502,7 +602,6 @@ export default {
         id: this.singleid++,
         quesMedia: this.singletitle + (this.singleid - 1),
         quesType: this.listtype,
-
         option: changelist
       });
     },
@@ -554,6 +653,7 @@ export default {
     quesPosAdd(list, index, i) {
       let obj = {
         optScore: this.score++,
+        advId: "",
         optMedia: "",
         id: this.infolistid++,
         optContent: this.infolistval + this.infolistid
@@ -595,6 +695,7 @@ export default {
         var optObj = {
           optContent: list[i].optContent,
           optScore: list[i].optScore,
+          advId: list[i].advId,
           optMedia: list[i].optMedia
         };
         Arr.push(optObj);
@@ -610,6 +711,7 @@ export default {
           quesType: info.quesType,
           quesContent: str,
           quesMedia: info.quesMedia,
+          advId: info.advId,
           option: Arr
         }
       );
@@ -652,6 +754,32 @@ export default {
       this.sheetQuesList();
       window.location.reload(true);
     },
+    // 添加建议
+    chooseAdvice(index, i) {
+      this.advNum1 = index;
+      this.advNum2 = i;
+      this.chooseDialogVisible = true;
+    },
+    chooseEnter() {
+      this.single[this.advNum1].option[this.advNum2].advId = this.radioId;
+      this.chooseDialogVisible = false;
+    },
+    chooseDialogClosed() {},
+    handleCurrentChoose(val) {
+      this.radioId = val.id;
+    },
+    // 搜索建议
+    systemSearch() {
+      this.getScaleList();
+    },
+    // 分页
+    handleSizeChange(newSize) {
+      this.pageSize = newSize;
+    },
+    handleCurrentChangev(newPage) {
+      this.pageNum = newPage;
+      this.getScaleList();
+    },
     // 上传照片
     handleChange(file, fileList, index, i) {
       this.num1 = index;
@@ -663,6 +791,8 @@ export default {
     },
     uploadVideoProcess(event, file, fileList) {},
     beforeAvatarUpload(file) {
+      console.log(file);
+
       const isJPG = file.type === "image/jpeg";
       const isGIF = file.type === "image/gif";
       const isPNG = file.type === "image/png";
@@ -835,9 +965,9 @@ ul {
   margin-bottom: 10px;
 }
 .conContent {
-  width: 220px;
-  display: inline-block;
+  width: 160px;
   margin-bottom: 10px;
+  display: inline-block;
 }
 .selectOpt {
   margin-bottom: 10px;
@@ -853,9 +983,9 @@ ul {
   text-decoration: underline;
 }
 .selImgTips {
+  display: flex;
   margin-bottom: 10px;
   width: 95%;
-  height: 30px;
   background: #e8e8e8;
   font-size: 14px;
   line-height: 30px;
@@ -864,7 +994,7 @@ ul {
   width: 40px;
   display: inline-block;
   margin-left: 34px;
-  padding: 5px;
+  padding: 0 5px;
   text-align: center;
 }
 .addOption {
@@ -1066,6 +1196,9 @@ ul {
   line-height: normal !important;
   width: 95%;
   margin-bottom: 15px;
+}
+.addAdvice .el-radio__label {
+  display: none;
 }
 .ql-toolbar.ql-snow {
   background-color: #f0f0ee;
