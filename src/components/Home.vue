@@ -181,6 +181,9 @@ export default {
       }
     }
   },
+  mounted() {
+    this.activePath = this.$route.path;
+  },
   computed: {
     options() {
       return this.$store.state.options;
