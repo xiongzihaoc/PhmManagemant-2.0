@@ -21,7 +21,7 @@
         :collapse="isCollapse"
         :collapse-transition="false"
         router
-        :default-active="$route.path"
+        :default-active="activePath"
       >
         <!-- 一级菜单 -->
         <el-submenu :index="item.id + ''" v-for="item in menuList" :key="item.id">
@@ -117,7 +117,7 @@ export default {
   },
   created() {
     this.getMenuList();
-    this.activePath = window.sessionStorage.getItem("activePath");
+    // this.activePath = window.sessionStorage.getItem("activePath");
     this.loginName = window.localStorage.getItem("loginName");
   },
   methods: {
@@ -151,7 +151,8 @@ export default {
     },
     // 保持连接的激活状态
     saveNavState(activePath) {
-      window.sessionStorage.setItem("activePath", activePath);
+      this.activePath = activePath;
+      // window.sessionStorage.setItem("activePath", activePath);
     },
     handleCommand(command) {},
     // tab切换时，动态的切换路由
@@ -159,9 +160,6 @@ export default {
     tabClick(tab) {
       let path = this.activeIndex;
       this.$router.replace({ path: path });
-    },
-    rightShow() {
-      console.log(1111);
     },
     tabRemove(targetName) {
       // 首页不可删除

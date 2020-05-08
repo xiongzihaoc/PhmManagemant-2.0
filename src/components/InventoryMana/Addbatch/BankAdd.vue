@@ -197,7 +197,6 @@ export default {
       question = {};
       Arr = [];
       this.checkList = [];
-
       this.$emit("openOrCls");
     },
     // 全选

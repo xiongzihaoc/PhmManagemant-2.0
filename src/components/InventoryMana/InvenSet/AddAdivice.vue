@@ -63,7 +63,7 @@ export default {
     };
   },
   created() {
-    this.sheetUuid = JSON.parse(window.localStorage.getItem("sheetUuid")).uuid
+    this.sheetUuid = JSON.parse(window.localStorage.getItem("sheetUuid")).uuid;
   },
   methods: {
     // 确认添加
