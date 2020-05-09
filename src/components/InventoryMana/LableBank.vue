@@ -105,7 +105,7 @@ export default {
     this.getMenuList();
   },
   methods: {
-    // 获取菜单列表
+    // 获取标签列表
     async getMenuList() {
       const { data: res } = await this.$http.post(
         this.$ajax + "lable/list",

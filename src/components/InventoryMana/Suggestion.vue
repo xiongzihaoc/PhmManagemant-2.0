@@ -43,7 +43,7 @@
               size="mini"
               @click="deleteBtn(scope.row)"
               type="danger"
-              icon="el-icon-document-copy"
+              icon="el-icon-delete"
             >删除</el-button>
           </template>
         </el-table-column>
@@ -70,8 +70,14 @@
         <el-form-item label="建议库" prop="advKind">
           <el-input v-model="editAddForm.advKind"></el-input>
         </el-form-item>
-        <el-form-item label="标签名称" prop="advFlag">
-          <el-input v-model="editAddForm.advFlag"></el-input>
+        <el-form-item label="标签名称" prop="lableValue">
+          <el-cascader
+            v-model="editAddForm.lableValue"
+            :options="menuList"
+            :props="optionProps"
+            ref="myCascader"
+            :show-all-levels="false"
+          ></el-cascader>
         </el-form-item>
         <el-form-item label="赋值" prop="advValue">
           <el-input v-model="editAddForm.advValue"></el-input>
@@ -107,16 +113,24 @@ export default {
       editDialogVisible: false,
       editAddForm: {
         advKind: "",
+        lableValue: "",
         advFlag: "",
         advValue: null,
         advSelectNum: null,
         advKeyWord: "",
         advContent: ""
+      },
+      menuList: [],
+      optionProps: {
+        value: "id",
+        label: "name",
+        children: "child"
       }
     };
   },
   created() {
     this.getScaleList();
+    this.getMenuList();
   },
   methods: {
     // 获取量表列表
@@ -130,8 +144,18 @@ export default {
         }
       );
       if (res.code != 200) return this.$message.error("数获取失败");
+      console.log(res);
       this.infoList = res.rows;
       this.total = res.total;
+    },
+    // 获取标签列表
+    async getMenuList() {
+      const { data: res } = await this.$http.post(
+        this.$ajax + "lable/list",
+        {}
+      );
+      console.log(res);
+      this.menuList = res.data;
     },
     // 修改
     showEditdialog(info) {
@@ -158,20 +182,22 @@ export default {
         parm = {
           id: this.showEditId,
           advKind: this.editAddForm.advKind,
-          advFlag: this.editAddForm.advFlag,
+          lableValue: this.editAddForm.lableValue.pop(),
           advValue: this.editAddForm.advValue,
           advSelectNum: this.editAddForm.advSelectNum,
           advKeyWord: this.editAddForm.advKeyWord,
+          advFlag: this.$refs["myCascader"].inputValue,
           advContent: this.editAddForm.advContent
         };
       } else if (this.infoTitle == "新增建议") {
         httpUrl = "sheetAdv/add";
         parm = {
           advKind: this.editAddForm.advKind,
-          advFlag: this.editAddForm.advFlag,
+          lableValue: this.editAddForm.lableValue.pop(),
           advValue: this.editAddForm.advValue,
           advSelectNum: this.editAddForm.advSelectNum,
           advKeyWord: this.editAddForm.advKeyWord,
+          advFlag: this.$refs["myCascader"].inputValue,
           advContent: this.editAddForm.advContent
         };
       }
@@ -196,14 +222,6 @@ export default {
     systemSearch() {
       this.getScaleList();
     },
-    // 状态码数字转中文
-    ifendcase(val) {
-      if (val.state == "1") {
-        return "有效";
-      } else {
-        return "无效";
-      }
-    },
     // 分页
     handleSizeChange(newSize) {
       this.pageSize = newSize;
@@ -213,7 +231,8 @@ export default {
       this.pageNum = newPage;
       this.getScaleList();
     }
-  }
+  },
+  watch: {}
 };
 </script>
 <style lang='less' scoped>
