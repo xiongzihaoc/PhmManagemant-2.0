@@ -499,6 +499,8 @@ export default {
           sheetUuid: this.sheetUuid
         }
       );
+      console.log(res);
+
       this.single = res.rows;
       this.quesName = res.rows.length;
     },
@@ -666,18 +668,17 @@ export default {
     },
     // 调整选项位置
     quesPosTop(item, index, i) {
-      this.single[index].option[i].optOrder = this.single[index].option[i].optOrder - 1
       console.log(item);
-      
+
       var upArr = this.single[index].option;
 
-      // if (i != 0) {
-      //   upArr[i].optOrder -= 1;
-      //   upArr[i - 1].optOrder += 1;
-      //   upArr[i] = upArr.splice(i - 1, 1, upArr[i])[0];
-      // } else {
-      //   return;
-      // }
+      if (i != 0) {
+        upArr[i].optOrder = upArr[i].optOrder - 1;
+        upArr[i - 1].optOrder = upArr[i - 1].optOrder + 1;
+        upArr[i] = upArr.splice(i - 1, 1, upArr[i])[0];
+      } else {
+        return;
+      }
     },
     quesPosBottom(index, i) {
       var downArr = this.single[index].option;
@@ -704,36 +705,39 @@ export default {
       var list = info.option;
       console.log(list);
 
-      // var Arr = [];
-      // for (var i = 0; i < list.length; i++) {
-      //   var optObj = {
-      //     optContent: list[i].optContent,
-      //     optScore: list[i].optScore,
-      //     optOrder: list[i].optOrder,
-      //     optMedia: list[i].optMedia,
-      //     advId: list[i].advId
-      //   };
-      //   Arr.push(optObj);
-      // }
-      // // 新增编辑题目接口
-      // const { data: res } = await this.$http.post(
-      //   this.$ajax + "sheetQues/add",
-      //   {
-      //     sheetUuid: this.sheetUuid,
-      //     quesUuid: info.quesUuid,
-      //     quesTips: info.quesTips,
-      //     quesIsAnswer: info.quesIsAnswer,
-      //     quesType: info.quesType,
-      //     quesContent: str,
-      //     quesMedia: info.quesMedia,
-      //     advId: info.advId,
-      //     option: Arr
-      //   }
-      // );
-      // if (res.code != 200) return this.$message.error("操作失败");
-      // this.$message.success("操作成功");
-      // info.open = false;
-      // this.sheetQuesList();
+      var Arr = [];
+      for (var i = 0; i < list.length; i++) {
+        var optObj = {
+          optContent: list[i].optContent,
+          optScore: list[i].optScore,
+          optOrder: list[i].optOrder,
+          optMedia: list[i].optMedia,
+          advId: list[i].advId
+        };
+        Arr.push(optObj);
+        
+      }
+      // 新增编辑题目接口
+      const { data: res } = await this.$http.post(
+        this.$ajax + "sheetQues/add",
+        {
+          sheetUuid: this.sheetUuid,
+          quesUuid: info.quesUuid,
+          quesTips: info.quesTips,
+          quesIsAnswer: info.quesIsAnswer,
+          quesType: info.quesType,
+          quesContent: str,
+          quesMedia: info.quesMedia,
+          advId: info.advId,
+          option: Arr
+        }
+      );
+      console.log(res);
+      
+      if (res.code != 200) return this.$message.error("操作失败");
+      this.$message.success("操作成功");
+      info.open = false;
+      this.sheetQuesList();
     },
     // 添加图片
     handleClickImg(info) {
