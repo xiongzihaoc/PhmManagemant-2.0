@@ -11,7 +11,7 @@
         :expand-row-keys="['0']"
         style="width: 100%;margin-bottom: 20px;"
       >
-        <el-table-column align="left" prop="name" label="名称" sortable></el-table-column>
+        <el-table-column align="left" prop="name" label="名称" label-class-name="ccc"></el-table-column>
         <el-table-column align="center" prop="orderNum" label="排序号"></el-table-column>
         <el-table-column align="center" prop="remark" label="备注"></el-table-column>
         <el-table-column align="center" prop="status" label="状态" :formatter="ifendcase">
@@ -118,7 +118,7 @@ export default {
     showEditdialog(info) {
       this.editDialogVisible = true;
       this.infoTitle = "修改信息";
-      this.editId = info.id
+      this.editId = info.id;
       this.editForm = JSON.parse(JSON.stringify(info));
     },
     // 新增
@@ -193,5 +193,8 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style>
+.ccc {
+ padding-left: 20px!important;
+}
 </style>
