@@ -197,12 +197,12 @@
                       ></el-input>
                       <!--  + - 添加题目删除题目 -->
                       <span
-                        style="margin-left:5px;"
+                        style="margin:4px 0 0 5px;"
                         class="quesPosAdd"
                         @click.prevent.stop="quesPosAdd(item.option,index,i)"
                       ></span>
                       <span
-                        style="margin-left:3px;"
+                        style="margin: 4px 0 0 3px;"
                         class="quesPosDel"
                         @click.prevent.stop="quesPosDel(index,i)"
                       ></span>
@@ -242,13 +242,13 @@
                         v-if="item.quesType == 4"
                         style="margin-left:50px;"
                         class="quesPosTop"
-                        @click.prevent.stop="quesPosTop(index,i)"
+                        @click.prevent.stop="quesPosTop(subItem,index,i)"
                       ></span>
                       <span
                         v-else
                         style="margin-left:93px;"
                         class="quesPosTop"
-                        @click.prevent.stop="quesPosTop(index,i)"
+                        @click.prevent.stop="quesPosTop(subItem,index,i)"
                       ></span>
                       <span
                         style="margin-left:7px;"
@@ -546,6 +546,7 @@ export default {
         {
           inid: "1",
           optContent: "选项1",
+          optOrder: 1,
           optScore: "1",
           optMedia: "",
           advId: "",
@@ -554,6 +555,7 @@ export default {
         {
           inid: "2",
           optContent: "选项2",
+          optOrder: 2,
           optScore: "2",
           optMedia: "",
           advId: "",
@@ -561,6 +563,7 @@ export default {
         },
         {
           inid: "3",
+          optOrder: 3,
           optContent: "选项3",
           optScore: "3",
           optMedia: "",
@@ -569,6 +572,7 @@ export default {
         },
         {
           inid: "4",
+          optOrder: 4,
           optContent: "选项4",
           optScore: "4",
           optMedia: "",
@@ -661,17 +665,25 @@ export default {
       list.push(obj);
     },
     // 调整选项位置
-    quesPosTop(index, i) {
+    quesPosTop(item, index, i) {
+      this.single[index].option[i].optOrder = this.single[index].option[i].optOrder - 1
+      console.log(item);
+      
       var upArr = this.single[index].option;
-      if (i != 0) {
-        upArr[i] = upArr.splice(i - 1, 1, upArr[i])[0];
-      } else {
-        return;
-      }
+
+      // if (i != 0) {
+      //   upArr[i].optOrder -= 1;
+      //   upArr[i - 1].optOrder += 1;
+      //   upArr[i] = upArr.splice(i - 1, 1, upArr[i])[0];
+      // } else {
+      //   return;
+      // }
     },
     quesPosBottom(index, i) {
       var downArr = this.single[index].option;
       if (i + 1 != downArr.length) {
+        downArr[i].optOrder += 1;
+        downArr[i + 1].optOrder -= 1;
         downArr[i] = downArr.splice(i + 1, 1, downArr[i])[0];
       } else {
         return;
@@ -690,36 +702,38 @@ export default {
         .replace(/>/g, " ");
       var str = txt.replace(/&nbsp;/gi, "");
       var list = info.option;
-      var Arr = [];
-      for (var i = 0; i < list.length; i++) {
-        var optObj = {
-          optContent: list[i].optContent,
-          optScore: list[i].optScore,
-          advId: list[i].advId,
-          optMedia: list[i].optMedia
-        };
-        Arr.push(optObj);
-      }
-      // 新增编辑题目接口
-      const { data: res } = await this.$http.post(
-        this.$ajax + "sheetQues/add",
-        {
-          sheetUuid: this.sheetUuid,
-          quesUuid: info.quesUuid,
-          quesTips: info.quesTips,
-          quesIsAnswer: info.quesIsAnswer,
-          quesType: info.quesType,
-          quesContent: str,
-          quesMedia: info.quesMedia,
-          advId: info.advId,
-          option: Arr
-        }
-      );
+      console.log(list);
 
-      if (res.code != 200) return this.$message.error("操作失败");
-      this.$message.success("操作成功");
-      info.open = false;
-      this.sheetQuesList();
+      // var Arr = [];
+      // for (var i = 0; i < list.length; i++) {
+      //   var optObj = {
+      //     optContent: list[i].optContent,
+      //     optScore: list[i].optScore,
+      //     optOrder: list[i].optOrder,
+      //     optMedia: list[i].optMedia,
+      //     advId: list[i].advId
+      //   };
+      //   Arr.push(optObj);
+      // }
+      // // 新增编辑题目接口
+      // const { data: res } = await this.$http.post(
+      //   this.$ajax + "sheetQues/add",
+      //   {
+      //     sheetUuid: this.sheetUuid,
+      //     quesUuid: info.quesUuid,
+      //     quesTips: info.quesTips,
+      //     quesIsAnswer: info.quesIsAnswer,
+      //     quesType: info.quesType,
+      //     quesContent: str,
+      //     quesMedia: info.quesMedia,
+      //     advId: info.advId,
+      //     option: Arr
+      //   }
+      // );
+      // if (res.code != 200) return this.$message.error("操作失败");
+      // this.$message.success("操作成功");
+      // info.open = false;
+      // this.sheetQuesList();
     },
     // 添加图片
     handleClickImg(info) {

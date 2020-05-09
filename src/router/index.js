@@ -198,6 +198,14 @@ const routes = [{
           title: '建议库'
         }
       },
+      {
+        path: '/sheet/lable',
+        name: '标签库',
+        component: () => import('@/components/InventoryMana/LableBank.vue'),
+        meta: {
+          title: '标签库'
+        }
+      },
     ]
   },
 ]
