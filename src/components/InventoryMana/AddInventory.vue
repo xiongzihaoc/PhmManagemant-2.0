@@ -58,9 +58,9 @@
       <div class="list_box">
         <!-- 拖拽模块 -->
         <vuedraggable v-model="single">
-          <transition-group tag="p">
+          <transition-group>
             <!-- 循环生成各项题目 -->
-            <ul v-for="(item,index) in single" :key="index">
+            <ul v-for="(item,index) in single" :key="item.id">
               <li>
                 <p
                   class="quesTitle"
@@ -499,8 +499,6 @@ export default {
           sheetUuid: this.sheetUuid
         }
       );
-      console.log(res);
-
       this.single = res.rows;
       this.quesName = res.rows.length;
     },
@@ -629,6 +627,8 @@ export default {
     },
     // 显示隐藏编辑框
     getOneInfo(item, index) {
+      console.log(item);
+      
       this.$set(this.single[index], "open", !this.single[index].open);
     },
     // 删除题目
