@@ -71,6 +71,7 @@
             v-model="addEditForm.officeCode"
             :options="eleNameList"
             :show-all-levels="false"
+            @change="handleChange"
             :props="optionProps"
           ></el-cascader>
         </el-form-item>
@@ -142,7 +143,8 @@ export default {
       dialogTitle: "",
       goBack: "",
       labelTitle: "",
-      uuid:""
+      uuid: "",
+      codeSta: ""
     };
   },
   created() {
@@ -159,8 +161,6 @@ export default {
         }
       );
       this.menuList = res.rows;
-      console.log(this.menuList);
-      
     },
     // 获取量表列表
     async getScaleList() {
@@ -186,7 +186,7 @@ export default {
           parm = {
             id: this.selfId,
             name: this.addEditForm.name,
-            officeCode: this.addEditForm.officeCode.pop(),
+            officeCode: this.addEditForm.officeCode,
             type: this.addEditForm.type,
             price: this.addEditForm.price,
             sheets: this.addEditForm.sheets.toString(),
@@ -198,7 +198,7 @@ export default {
           httpUrl = "office_package/insert";
           parm = {
             name: this.addEditForm.name,
-            officeCode: this.addEditForm.officeCode.pop(),
+            officeCode: this.addEditForm.officeCode,
             type: this.addEditForm.type,
             price: this.addEditForm.price,
             sheets: this.addEditForm.sheets.toString(),
@@ -216,6 +216,7 @@ export default {
     },
     // 修改
     showEditdialog(info) {
+      console.log(info);
       this.selfId = info.id;
       this.uuid = info.uuid;
       this.dialogTitle = "修改信息";
@@ -228,6 +229,13 @@ export default {
       this.dialogTitle = "新增套餐模板";
       this.addEditForm = {};
       this.DialogVisible = true;
+    },
+    handleChange(val) {
+      if (val.length <= 1) {
+        this.addEditForm.officeCode = val.toString();
+      } else if (val.length > 1) {
+        this.addEditForm.officeCode = val.pop();
+      }
     },
     // 重置
     AddEditDialogClosed() {
