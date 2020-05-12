@@ -97,7 +97,7 @@
                       <span v-else>
                         <img class="chooseImages" :src="list.optMedia" />
                       </span>
-                      <span style="display:none">{{list.advId }}</span>
+                      <span style="display:none">{{list.optLabel }}</span>
                     </div>
                     <!-- 多选题 -->
                     <div class="listlabel" v-else-if="item.quesType==2">
@@ -106,7 +106,7 @@
                       <span v-else>
                         <img class="chooseImages" :src="list.optMedia" />
                       </span>
-                      <span style="display:none">{{list.advId }}</span>
+                      <span style="display:none">{{list.optLabel }}</span>
                     </div>
                     <!-- 文本题 -->
                     <div v-else-if="item.quesType==3">
@@ -114,7 +114,7 @@
                       <span v-else>
                         <img class="chooseImages" :src="list.optMedia" />
                       </span>
-                      <span style="display:none">{{list.advId }}</span>
+                      <span style="display:none">{{list.optLabel }}</span>
                     </div>
                     <!-- 分数题 -->
                     <div v-if="item.quesType==4">
@@ -124,7 +124,7 @@
                       <span v-else>
                         <img class="chooseImages" :src="list.optMedia" />
                       </span>
-                      <span style="display:none">{{list.advId }}</span>
+                      <span style="display:none">{{list.optLabel }}</span>
                     </div>
                   </div>
                 </div>
@@ -233,7 +233,7 @@
                       <el-input
                         size="mini"
                         class="conContent"
-                        v-model="subItem.advId "
+                        v-model="subItem.optLabel "
                         @focus="chooseAdvice(index,i)"
                         style="margin-left:30px;"
                       ></el-input>
@@ -352,7 +352,7 @@
         <EleTable :data="adviceList" :header="tableHeaderBig" @row-click="handleCurrentChoose">
           <el-table-column align="center" slot="fixed" fixed="left" label="选中" width="50">
             <template slot-scope="scope">
-              <el-radio :label="scope.row.id" v-model="radioId"></el-radio>
+              <el-radio :label="scope.row.labelValue" v-model="radioId"></el-radio>
             </template>
           </el-table-column>
         </EleTable>
@@ -549,7 +549,7 @@ export default {
           optOrder: 1,
           optScore: "1",
           optMedia: "",
-          advId: "",
+          optLabel: "",
           check: false
         },
         {
@@ -558,7 +558,7 @@ export default {
           optOrder: 2,
           optScore: "2",
           optMedia: "",
-          advId: "",
+          optLabel: "",
           check: false
         },
         {
@@ -567,7 +567,7 @@ export default {
           optContent: "选项3",
           optScore: "3",
           optMedia: "",
-          advId: "",
+          optLabel: "",
           check: false
         },
         {
@@ -576,7 +576,7 @@ export default {
           optContent: "选项4",
           optScore: "4",
           optMedia: "",
-          advId: "",
+          optLabel: "",
           check: false
         }
       ];
@@ -628,7 +628,7 @@ export default {
     // 显示隐藏编辑框
     getOneInfo(item, index) {
       console.log(item);
-      
+
       this.$set(this.single[index], "open", !this.single[index].open);
     },
     // 删除题目
@@ -659,7 +659,7 @@ export default {
     quesPosAdd(list, index, i) {
       let obj = {
         optScore: this.score++,
-        advId: "",
+        optLabel: "",
         optMedia: "",
         id: this.infolistid++,
         optContent: this.infolistval + this.infolistid
@@ -712,10 +712,9 @@ export default {
           optScore: list[i].optScore,
           optOrder: list[i].optOrder,
           optMedia: list[i].optMedia,
-          advId: list[i].advId
+          optLabel: list[i].optLabel
         };
         Arr.push(optObj);
-        
       }
       // 新增编辑题目接口
       const { data: res } = await this.$http.post(
@@ -728,12 +727,10 @@ export default {
           quesType: info.quesType,
           quesContent: str,
           quesMedia: info.quesMedia,
-          advId: info.advId,
           option: Arr
         }
       );
-      console.log(res);
-      
+
       if (res.code != 200) return this.$message.error("操作失败");
       this.$message.success("操作成功");
       info.open = false;
@@ -779,12 +776,14 @@ export default {
       this.chooseDialogVisible = true;
     },
     chooseEnter() {
-      this.single[this.advNum1].option[this.advNum2].advId = this.radioId;
+      console.log(this.single[this.advNum1].option[this.advNum2]);
+
+      this.single[this.advNum1].option[this.advNum2].optLabel = this.radioId;
       this.chooseDialogVisible = false;
     },
     chooseDialogClosed() {},
     handleCurrentChoose(val) {
-      this.radioId = val.id;
+      this.radioId = val.labelValue;
     },
     // 搜索建议
     systemSearch() {

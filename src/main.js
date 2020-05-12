@@ -31,7 +31,7 @@ import animated from 'animate.css' // npm install animate.css --save安装，在
 
 Vue.use(animated)
 // // 配置axios
-axios.defaults.baseURL = 'http://192.168.0.142:8080/zhuoya-web/'
+axios.defaults.baseURL = 'http://192.168.0.123:8080/zhuoya-web/'
 // axios请求拦截器
 axios.interceptors.request.use(function (config) {
   Nprogress.start()
@@ -50,7 +50,7 @@ axios.interceptors.response.use(function (config) {
 })
 // 全局挂载axios this.$http调用即可
 Vue.prototype.$http = axios
-Vue.prototype.$ajax = 'http://192.168.0.142:8086/zhuoya-sheet/'
+Vue.prototype.$ajax = 'http://192.168.0.123:8086/zhuoya-sheet/'
 // 文件上传地址
 Vue.prototype.UPLOAD_IMG = 'http://test.phmzykj.com/zhuoya_manager/oss/fileUpload.do'
 Vue.prototype.SHEET_IMG = 'http://test.phmzykj.com/zhuoya-sheet/upload'
