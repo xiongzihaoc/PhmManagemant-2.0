@@ -271,18 +271,19 @@ export default {
         pageNum: this.pageNum,
         userName: this.input
       });
+            console.log(res);
       if (res.code != 200) return this.$message.error("数获取失败");
-      console.log(res);
+
 
       this.userList = res.rows;
       this.total = res.total;
     },
-    // // 获取部门列表
-    // async getHosMenuList() {
-    //   const { data: res } = await this.$http.post("dept/getDeptList.do", {});
-    //   this.hosMenuList = res.data;
-    //   this.idArr.push(res.data[0].id);
-    // },
+    // 获取部门列表
+    async getHosMenuList() {
+      const { data: res } = await this.$http.post("dept/getDeptList.do", {});
+      this.hosMenuList = res.data;
+      this.idArr.push(res.data[0].id);
+    },
     // 分页
     handleSizeChange(newSize) {
       this.pageSize = newSize;

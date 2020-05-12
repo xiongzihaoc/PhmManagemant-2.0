@@ -122,107 +122,120 @@
     <el-dialog
       :title="infoTitle"
       :visible.sync="editDialogVisible"
-      width="40%"
       v-dialogDrag
       @close="editDialogClosed"
     >
-      <el-form ref="loginFormRef" :model="editAddForm" label-width="80px">
-        <el-form-item label="医院名称" prop="hospital">
-          <el-input v-model="addEditValue" @click.native="deptAdd"></el-input>
-        </el-form-item>
-        <el-form-item label="医院账号" prop="account">
-          <el-input v-model="editAddForm.account"></el-input>
-        </el-form-item>
-        <el-form-item label="医院图片" prop="hospitalLogo">
-          <el-upload
-            class="avatar-uploader"
-            :action="this.UPLOAD_IMG"
-            :show-file-list="false"
-            :on-success="handleAvatarSuccess"
-            :on-progress="uploadVideoProcess"
-            :before-upload="beforeAvatarUpload"
-          >
-            <img v-if="editAddForm.hospitalLogo" :src="editAddForm.hospitalLogo" class="avatar" />
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
-          <el-progress
-            v-if="videoFlag == true"
-            :percentage="percentageFile"
-            style="margin-top:20px;"
-          ></el-progress>
-        </el-form-item>
-        <el-form-item label="地址" prop="address">
-          <el-cascader
-            ref="addressRef"
-            v-model="newStr"
-            :options="regionData"
-            @change="handleChange"
-          ></el-cascader>
-        </el-form-item>
+      <el-form ref="loginFormRef" :model="editAddForm" label-width="125px" label-position="right">
+        <li class="formFlex">
+          <el-form-item label="医院名称" prop="hospital" style="flex:1">
+            <el-input v-model="addEditValue" @click.native="deptAdd"></el-input>
+          </el-form-item>
+          <el-form-item label="医院账号" prop="account" style="flex:1">
+            <el-input v-model="editAddForm.account"></el-input>
+          </el-form-item>
+        </li>
+        <li class="formFlex">
+          <el-form-item label="地址" prop="address" style="flex:1">
+            <el-cascader
+              ref="addressRef"
+              v-model="newStr"
+              :options="regionData"
+              @change="handleChange"
+              style="width:100%"
+            ></el-cascader>
+          </el-form-item>
+          <el-form-item label="医院图片" prop="hospitalLogo" style="flex:1">
+            <el-upload
+              class="avatar-uploader"
+              :action="this.UPLOAD_IMG"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :on-progress="uploadVideoProcess"
+              :before-upload="beforeAvatarUpload"
+            >
+              <img v-if="editAddForm.hospitalLogo" :src="editAddForm.hospitalLogo" class="avatar" />
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+            <el-progress
+              v-if="videoFlag == true"
+              :percentage="percentageFile"
+              style="margin-top:20px;"
+            ></el-progress>
+          </el-form-item>
+        </li>
         <el-form-item label="详细地址" prop="detailedAddress">
           <el-input v-model="editAddForm.detailedAddress"></el-input>
         </el-form-item>
-        <el-form-item label="对接人" prop="customer">
-          <el-input v-model="editAddForm.customer"></el-input>
-        </el-form-item>
-        <el-form-item label="对接人账号" prop="customerTel">
-          <el-input v-model="editAddForm.customerTel"></el-input>
-        </el-form-item>
-        <el-form-item label="销售人员" prop="salesmanUuid">
-          <el-input v-model="editAddForm.salesmanUuid"></el-input>
-        </el-form-item>
-        <el-form-item label="医院介绍" prop="description">
-          <el-input type="textarea" v-model="editAddForm.description"></el-input>
-        </el-form-item>
-        <el-form-item label="收费模式" prop="collectMode">
-          <el-select v-model="editAddForm.collectMode" placeholder="请选择">
-            <el-option
-              v-for="item in SfmsNameList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.dictValue"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="检测卡类型" prop="detectionType">
-          <el-select v-model="editAddForm.detectionType" placeholder="请选择">
-            <el-option
-              v-for="item in TJKNameList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.dictValue"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="用户答题方式" prop="patientAnswerWay">
-          <el-select v-model="editAddForm.patientAnswerWay" placeholder="请选择">
-            <el-option
-              v-for="item in DtfsNameList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.dictValue"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="检测报告是否审核" prop="checked">
-          <el-select v-model="editAddForm.checked" placeholder="请选择">
-            <el-option label="是" :value="'1'"></el-option>
-            <el-option label="否" :value="'0'"></el-option>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="数据是否共享" prop="dataSharing">
-          <el-select v-model="editAddForm.dataSharing" placeholder="请选择">
-            <el-option label="是" :value="'1'"></el-option>
-            <el-option label="否" :value="'0'"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="检测报告是否可见" prop="patientView">
-          <el-select v-model="editAddForm.patientView" placeholder="请选择">
-            <el-option label="是" :value="'1'"></el-option>
-            <el-option label="否" :value="'0'"></el-option>
-          </el-select>
-        </el-form-item>
+        <li class="formFlex">
+          <el-form-item label="对接人" prop="customer" style="flex:1">
+            <el-input v-model="editAddForm.customer"></el-input>
+          </el-form-item>
+          <el-form-item label="对接人账号" prop="customerTel" style="flex:1">
+            <el-input v-model="editAddForm.customerTel"></el-input>
+          </el-form-item>
+        </li>
+        <li class="formFlex">
+          <el-form-item label="销售人员" prop="salesmanUuid" style="flex:1">
+            <el-input v-model="editAddForm.salesmanUuid"></el-input>
+          </el-form-item>
+          <el-form-item label="医院介绍" prop="description" style="flex:1">
+            <el-input type="textarea" v-model="editAddForm.description"></el-input>
+          </el-form-item>
+        </li>
+        <li class="formFlex">
+          <el-form-item label="收费模式" prop="collectMode" style="flex:1">
+            <el-select v-model="editAddForm.collectMode" placeholder="请选择" style="width:100%">
+              <el-option
+                v-for="item in SfmsNameList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.dictValue"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="检测卡类型" prop="detectionType" style="flex:1">
+            <el-select v-model="editAddForm.detectionType" placeholder="请选择" style="width:100%">
+              <el-option
+                v-for="item in TJKNameList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.dictValue"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </li>
+        <li class="formFlex">
+          <el-form-item label="用户答题方式" prop="patientAnswerWay" style="flex:1">
+            <el-select v-model="editAddForm.patientAnswerWay" placeholder="请选择" style="width:100%">
+              <el-option
+                v-for="item in DtfsNameList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.dictValue"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="检测报告是否审核" prop="checked" style="flex:1">
+            <el-select v-model="editAddForm.checked" placeholder="请选择" style="width:100%">
+              <el-option label="是" :value="'1'"></el-option>
+              <el-option label="否" :value="'0'"></el-option>
+            </el-select>
+          </el-form-item>
+        </li>
+        <li class="formFlex">
+          <el-form-item label="数据是否共享" prop="dataSharing" style="flex:1">
+            <el-select v-model="editAddForm.dataSharing" placeholder="请选择" style="width:100%">
+              <el-option label="是" :value="'1'"></el-option>
+              <el-option label="否" :value="'0'"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="检测报告是否可见" prop="patientView" style="flex:1">
+            <el-select v-model="editAddForm.patientView" placeholder="请选择" style="width:100%">
+              <el-option label="是" :value="'1'"></el-option>
+              <el-option label="否" :value="'0'"></el-option>
+            </el-select>
+          </el-form-item>
+        </li>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">取 消</el-button>
@@ -262,7 +275,6 @@
   </div>
 </template>
 <script>
-// import regionData from "../../assets/js/address";
 import {
   provinceAndCityData,
   regionData,
@@ -329,8 +341,7 @@ export default {
     };
   },
   created() {
-    console.log(regionData);
-    
+    // console.log(regionData);
     this.getUserList();
     this.getHosMenuList();
     this.getDictionaryEleListOne();
@@ -377,8 +388,8 @@ export default {
     },
     // 修改
     showEditdialog(info) {
-      // console.log(info);
-      this.newStr = info.addressCodes.split(",");
+      console.log(info);
+      this.newStr = info.addressCodes;
       this.addEditValue = info.hospital;
       this.infoTitle = "修改信息";
       this.editDialogVisible = true;
@@ -393,6 +404,7 @@ export default {
       const ele = this.$refs.addressRef
         .getCheckedNodes()[0]
         .pathLabels.join(",");
+      console.log(ele);
 
       let httpUrl = "";
       let parm = {};
@@ -456,7 +468,9 @@ export default {
     },
     // 级联选择地址
     handleChange(val) {
-      this.newStr = val;
+      console.log(CodeToText.val);
+
+      this.newStr = val.toString();
     },
     // 部门新增
     deptAdd() {
@@ -475,6 +489,8 @@ export default {
     },
     // 删除
     async removeUserById(info) {
+      console.log(info);
+
       const confirmResult = await this.$confirm(
         "你确定要执行此操作, 是否继续?",
         "提示",
@@ -487,7 +503,7 @@ export default {
       if (confirmResult != "confirm") {
         return this.$message.info("取消删除");
       }
-      const { data: res } = await this.$http.get(
+      const { data: res } = await this.$http.post(
         "/hospital/delHospitalDetail",
         { id: info.id }
       );
@@ -587,6 +603,9 @@ export default {
 };
 </script>
 <style scoped>
+li {
+  list-style: none;
+}
 .mytree /deep/ .el-tree > .el-tree-node:after {
   border-top: none;
   border-left: none;
@@ -679,5 +698,8 @@ export default {
   width: 100px;
   height: 100px;
   display: block;
+}
+.formFlex {
+  display: flex;
 }
 </style>
