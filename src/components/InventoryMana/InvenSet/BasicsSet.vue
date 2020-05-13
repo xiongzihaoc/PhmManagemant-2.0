@@ -41,7 +41,7 @@ export default {
         warnCorn: "",
         adviceType: "",
         memo: "",
-        isTp: "否"
+        isTp: ""
       },
       editDialogVisible: false
     };
@@ -49,7 +49,9 @@ export default {
   created() {
     this.sheetUuid = JSON.parse(window.localStorage.getItem("sheetUuid")).uuid;
     this.editAddForm = JSON.parse(window.localStorage.getItem("sheetUuid"));
-    console.log(this.editAddForm);
+    if (this.editAddForm.isTp == null) {
+      this.editAddForm.isTp = "N";
+    }
   },
   methods: {
     async editPageEnter() {
