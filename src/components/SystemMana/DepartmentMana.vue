@@ -15,7 +15,7 @@
       >
         <el-table-column align="left" prop="deptName" label="###     名称" width="180"></el-table-column>
         <el-table-column align="center" prop="deptManager" label="负责人"></el-table-column>
-        <el-table-column align="center" prop="phone" label="联系方式" width="110"></el-table-column>
+        <el-table-column align="center" prop="phone" label="联系方式" width="120"></el-table-column>
         <el-table-column align="center" prop="deptTypeValue" label="组织类型"></el-table-column>
         <el-table-column align="center" prop="officeLabelValue" label="科室标签"></el-table-column>
         <el-table-column align="center" prop="logo" label="图标">

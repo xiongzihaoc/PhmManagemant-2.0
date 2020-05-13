@@ -168,7 +168,7 @@ export default {
     // 修改
     showEditdialog(info) {
       console.log(info);
-      
+
       this.editAddForm = JSON.parse(JSON.stringify(info));
       this.infoTitle = "修改信息";
       this.editDialogVisible = true;
@@ -225,6 +225,18 @@ export default {
     },
     // 删除建议
     async deleteBtn(info) {
+      const confirmResult = await this.$confirm(
+        "你确定要执行此操作, 是否继续?",
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }
+      ).catch(err => console.log(err));
+      if (confirmResult != "confirm") {
+        return this.$message.info("取消删除");
+      }
       const { data: res } = await this.$http.post(this.$ajax + "sheetAdv/del", {
         id: info.id
       });

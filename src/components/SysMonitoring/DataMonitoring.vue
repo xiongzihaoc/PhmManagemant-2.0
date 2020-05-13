@@ -56,21 +56,13 @@
           </template>
         </el-table-column>
       </EleTable>
-      <!-- 调用公用封装弹框组件 -->
-      <EleDialog
-        title="'111'"
-        @closeDialog="alldetailsDialog = false"
-        :visible.sync="alldetailsDialog"
-        :showTit="false"
-        :width="'760px'"
-      ></EleDialog>
     </el-card>
   </div>
 </template>
 <script>
 import EleTable from "../commonModule/table";
 export default {
-  components: { EleTable, EleDialog },
+  components: { EleTable, },
   data() {
     return {
       menuList: [],

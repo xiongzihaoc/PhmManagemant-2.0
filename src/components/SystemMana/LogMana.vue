@@ -47,7 +47,7 @@
 <script>
 import EleTable from "../commonModule/table";
 export default {
-  components: { EleTable, EleDialog },
+  components: { EleTable },
   data() {
     return {
       input: "",
