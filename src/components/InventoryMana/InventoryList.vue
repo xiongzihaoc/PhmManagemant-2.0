@@ -25,7 +25,12 @@
       >
         <el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
         <el-table-column align="center" prop="name" label="量表名称" show-overflow-tooltip></el-table-column>
-        <el-table-column align="center" prop="type" label="量表类型"></el-table-column>
+        <el-table-column align="center" prop="type" label="量表类型">
+          <template slot-scope="scope">
+            <span v-if="scope.row.type=== '1'">{{ "心理类" }}</span>
+            <span v-else>{{ "疾病类" }}</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" prop="price" label="量表价格(元)" show-overflow-tooltip></el-table-column>
         <el-table-column align="center" prop="state" label="状态" :formatter="ifendcase">
           <template slot-scope="scope">
@@ -97,12 +102,8 @@
         </el-form-item>
         <el-form-item label="量表类型" prop="type">
           <el-select v-model="editAddForm.type" clearable placeholder="请选择">
-            <el-option
-              v-for="item in eleNameList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.name"
-            ></el-option>
+            <el-option label="疾病类" value="0"></el-option>
+            <el-option label="心理类" value="1"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="量表价格" prop="price">
@@ -145,7 +146,8 @@ export default {
       },
       addEditValue: "",
       RoleList: [],
-      hosMenuList: []
+      hosMenuList: [],
+      editUuid: ""
     };
   },
   created() {
@@ -161,6 +163,8 @@ export default {
         pageNum: this.pageNum,
         name: this.input
       });
+      // console.log(res);
+
       if (res.code != 200) return this.$message.error("数获取失败");
       this.userList = res.rows;
       this.total = res.total;
@@ -195,6 +199,7 @@ export default {
     },
     // 修改
     showEditdialog(info) {
+      this.editUuid = info.uuid;
       this.editAddForm = JSON.parse(JSON.stringify(info));
       this.infoTitle = "修改信息";
       this.editDialogVisible = true;
@@ -216,7 +221,7 @@ export default {
       if (this.infoTitle == "修改信息") {
         httpUrl = "sheet/update";
         parm = {
-          id: this.showEditId,
+          uuid: this.editUuid,
           name: this.editAddForm.name,
           type: this.editAddForm.type,
           price: this.editAddForm.price,

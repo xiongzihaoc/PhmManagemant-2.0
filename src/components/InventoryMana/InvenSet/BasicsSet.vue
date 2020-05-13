@@ -7,6 +7,12 @@
           <el-option label="参与整合式" value="1"></el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="是否他评" prop="isTp " style="width:50%">
+        <el-select v-model="editAddForm.isTp" placeholder="请选择" style="width:100%">
+          <el-option label="是" value="Y"></el-option>
+          <el-option label="否" value="N"></el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="计分方式" prop="sumCorn" style="width:50%">
         <el-input v-model="editAddForm.sumCorn"></el-input>
       </el-form-item>
@@ -34,7 +40,8 @@ export default {
         instruction: "",
         warnCorn: "",
         adviceType: "",
-        memo: ""
+        memo: "",
+        isTp: "否"
       },
       editDialogVisible: false
     };
@@ -52,7 +59,8 @@ export default {
         instruction: this.editAddForm.instruction,
         warnCorn: this.editAddForm.warnCorn,
         adviceType: this.editAddForm.adviceType,
-        memo: this.editAddForm.memo
+        memo: this.editAddForm.memo,
+        isTp: this.editAddForm.isTp
       });
       if (res.code != 200) return this.$message.error("保存失败");
       this.$message.success("保存成功");

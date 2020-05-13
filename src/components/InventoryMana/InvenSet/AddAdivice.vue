@@ -70,8 +70,7 @@ export default {
     async HandleClickOver() {
       if (
         this.score.trim() == "" ||
-        this.commentInfo.trim() == "" ||
-        this.adviceInfo.trim() == ""
+        this.commentInfo.trim() == ""
       ) {
         return this.$message.error("请输入有效内容");
       } else {

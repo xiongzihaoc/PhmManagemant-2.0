@@ -67,7 +67,6 @@ export default {
     async HandleClickOver() {
       if (
         this.infoForm.scoreCron.trim() == "" ||
-        this.infoForm.advice.trim() == "" ||
         this.infoForm.comment.trim() == ""
       ) {
         return this.$message.error("请输入有效内容");

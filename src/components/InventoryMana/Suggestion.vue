@@ -25,6 +25,7 @@
         <el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
         <el-table-column align="center" prop="advKind" label="建议库"></el-table-column>
         <el-table-column align="center" prop="advFlag" label="标签名称"></el-table-column>
+        <el-table-column align="center" prop="identify" label="标签属性"></el-table-column>
         <el-table-column align="center" prop="advValue" label="赋值" show-overflow-tooltip></el-table-column>
         <el-table-column align="center" prop="advSelectNum" label="筛选序号"></el-table-column>
         <el-table-column align="center" prop="advKeyWord" label="关键词"></el-table-column>
@@ -68,16 +69,22 @@
         @closed="editDialogClosed"
       >
         <el-form-item label="建议库" prop="advKind">
-          <el-input v-model="editAddForm.advKind"></el-input>
+          <el-select v-model="editAddForm.advKind" clearable placeholder="请选择">
+            <el-option label="疾病类" value="0"></el-option>
+            <el-option label="心理类" value="1"></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="标签名称" prop="lableValue">
+        <el-form-item label="标签名称" prop="labelValue">
           <el-cascader
-            v-model="editAddForm.lableValue"
+            v-model="editAddForm.labelValue"
             :options="menuList"
             :props="optionProps"
             ref="myCascader"
             :show-all-levels="false"
           ></el-cascader>
+        </el-form-item>
+        <el-form-item label="标签属性" prop="identify">
+          <el-input v-model="editAddForm.identify"></el-input>
         </el-form-item>
         <el-form-item label="赋值" prop="advValue">
           <el-input v-model="editAddForm.advValue"></el-input>
@@ -113,12 +120,13 @@ export default {
       editDialogVisible: false,
       editAddForm: {
         advKind: "",
-        lableValue: "",
+        labelValue: "",
         advFlag: "",
         advValue: null,
         advSelectNum: null,
         advKeyWord: "",
-        advContent: ""
+        advContent: "",
+        identify: ""
       },
       menuList: [],
       optionProps: {
@@ -154,11 +162,13 @@ export default {
         this.$ajax + "lable/list",
         {}
       );
-      console.log(res);
+      // console.log(res);
       this.menuList = res.data;
     },
     // 修改
     showEditdialog(info) {
+      console.log(info);
+      
       this.editAddForm = JSON.parse(JSON.stringify(info));
       this.infoTitle = "修改信息";
       this.editDialogVisible = true;
@@ -183,23 +193,25 @@ export default {
         parm = {
           id: this.showEditId,
           advKind: this.editAddForm.advKind,
-          lableValue: this.editAddForm.lableValue.pop(),
+          labelValue: this.editAddForm.labelValue.pop(),
           advValue: this.editAddForm.advValue,
           advSelectNum: this.editAddForm.advSelectNum,
           advKeyWord: this.editAddForm.advKeyWord,
           advFlag: this.$refs["myCascader"].inputValue,
-          advContent: this.editAddForm.advContent
+          advContent: this.editAddForm.advContent,
+          identify: this.editAddForm.identify
         };
       } else if (this.infoTitle == "新增建议") {
         httpUrl = "sheetAdv/add";
         parm = {
           advKind: this.editAddForm.advKind,
-          lableValue: this.editAddForm.lableValue.pop(),
+          labelValue: this.editAddForm.labelValue.pop(),
           advValue: this.editAddForm.advValue,
           advSelectNum: this.editAddForm.advSelectNum,
           advKeyWord: this.editAddForm.advKeyWord,
           advFlag: this.$refs["myCascader"].inputValue,
-          advContent: this.editAddForm.advContent
+          advContent: this.editAddForm.advContent,
+          identify: this.editAddForm.identify
         };
       }
       this.$refs.loginFormRef.validate(async valid => {

@@ -29,8 +29,12 @@ export default {
         let obj = [];
         // 去除空行的空格  暂时还没开发
         var quesArrs = this.content.split("\n\n");
+        // console.log(quesArrs);
+        
         for (var i = 0; i < quesArrs.length; i++) {
           var ques = quesArrs[i].split("\n");
+          console.log(ques);
+          
           var question = {};
           var quesContent = ques[0];
           var quesType = 1;
