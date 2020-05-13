@@ -521,13 +521,13 @@ export default {
       this.total = res.total;
     },
     // 排序
-    sorted() {
-      if (this.single.length <= 0) {
-        this.singleid = "1";
-      } else if (!(this.single.length == this.singleid)) {
-        this.singleid = this.single.length + 1;
-      }
-    },
+    // sorted() {
+    //   if (this.single.length <= 0) {
+    //     this.singleid = "1";
+    //   } else if (!(this.single.length == this.singleid)) {
+    //     this.singleid = this.single.length + 1;
+    //   }
+    // },
     changetype(e) {
       if (e.target.innerText.indexOf("单") > -1) {
         this.listtype = "1";
@@ -545,12 +545,12 @@ export default {
     },
     //创建一个新单/多选题
     CreateChangeSingleList() {
-      this.sorted();
+      // this.sorted();
       let changelist = [
         {
           inid: "1",
           optContent: "选项1",
-          optScore: "1",
+          // optScore: "1",
           optMedia: "",
           optLabel: "",
           check: false
@@ -558,7 +558,7 @@ export default {
         {
           inid: "2",
           optContent: "选项2",
-          optScore: "2",
+          // optScore: "2",
           optMedia: "",
           optLabel: "",
           check: false
@@ -566,7 +566,7 @@ export default {
         {
           inid: "3",
           optContent: "选项3",
-          optScore: "3",
+          // optScore: "3",
           optMedia: "",
           optLabel: "",
           check: false
@@ -574,7 +574,7 @@ export default {
         {
           inid: "4",
           optContent: "选项4",
-          optScore: "4",
+          // optScore: "4",
           optMedia: "",
           optLabel: "",
           check: false
@@ -591,7 +591,7 @@ export default {
     },
     // 创建文本题
     CreateChangeTextareaList() {
-      this.sorted();
+      // this.sorted();
       let changelist = [
         {
           textareavalue: "",
@@ -729,8 +729,7 @@ export default {
           quesMedia: info.quesMedia,
           option: Arr
         }
-      );
-
+      );        
       if (res.code != 200) return this.$message.error("操作失败");
       this.$message.success("操作成功");
       info.open = false;
