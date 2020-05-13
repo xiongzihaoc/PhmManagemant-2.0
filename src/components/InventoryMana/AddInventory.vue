@@ -1,5 +1,5 @@
 <template>
-  <div class="CONTENT">
+  <div class="CONTENTADD">
     <el-card class="main_left">
       <p class="queschoose">题型选择</p>
       <div class="changeBtn">
@@ -767,7 +767,6 @@ export default {
     clsbatchDia() {
       this.batchAddDialogVisible = false;
       this.sheetQuesList();
-      window.location.reload(true);
     },
     // 添加建议
     chooseAdvice(index, i) {
@@ -834,7 +833,7 @@ export default {
 ul {
   list-style: none;
 }
-.CONTENT {
+.CONTENTADD {
   position: relative;
   width: 1000px;
   height: 500px;
@@ -860,7 +859,7 @@ ul {
   height: 850px;
   width: 50%;
 }
-.CONTENT h3 {
+.CONTENTADD h3 {
   text-align: center;
   margin-bottom: 40px;
 }
@@ -886,7 +885,7 @@ ul {
 .changeBtn .el-button + .el-button {
   margin-left: 0px;
 }
-.CONTENT .el-card__body {
+.CONTENTADD .el-card__body {
   padding: 0;
 }
 .list_box li {
@@ -1108,17 +1107,17 @@ ul {
 .el-select .el-input.is-focus .el-input__inner {
   border: 1px solid #cdcdcd;
 }
-.CONTENT .el-input__inner {
+.CONTENTADD .el-input__inner {
   border: 1px solid #cdcdcd;
   border-radius: 0;
   outline: none;
 }
-.CONTENT .el-textarea__inner {
+.CONTENTADD .el-textarea__inner {
   border-radius: 0;
   border: 1px solid #cdcdcd;
   outline: none;
 }
-.CONTENT {
+.CONTENTADD {
   padding: 0px 20px 10px;
 }
 .mustChecked {
@@ -1186,17 +1185,17 @@ ul {
   border-bottom: 3px solid #409eff;
   color: #000;
 }
-.CONTENT .avatar-uploader {
+.CONTENTADD .avatar-uploader {
   margin-left: 100px;
 }
-.CONTENT .avatar-uploader .el-upload {
+.CONTENTADD .avatar-uploader .el-upload {
   border: 1px solid #d9d9d9;
   background-color: #f7f8f9;
   cursor: pointer;
   position: relative;
 }
 
-.CONTENT .avatar-uploader-icon {
+.CONTENTADD .avatar-uploader-icon {
   font-size: 12;
   color: #8c939d;
   width: 20px;
@@ -1204,7 +1203,7 @@ ul {
   line-height: 20px;
   text-align: center;
 }
-.CONTENT .avatar {
+.CONTENTADD .avatar {
   width: 20px;
   height: 20px;
   display: block;

@@ -38,6 +38,10 @@
     color: #fff !important;
 }
 
+.CONTENTADD .el-icon-close:before {
+    color: #CCC !important;
+}
+
 .el-dialog__close {
     color: #fff !important;
 }
@@ -98,7 +102,6 @@
     background-color: #FFA500 !important;
     border-color: #FFA500 !important;
 }
-
 
 .el-tree .el-tree-node__expand-icon.expanded {
     -webkit-transform: rotate(0deg);

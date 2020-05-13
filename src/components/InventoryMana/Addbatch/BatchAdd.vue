@@ -51,7 +51,7 @@ export default {
           for (var j = 0; j < ques.length; j++) {
             if (j != 0) {
               var temp_option = {
-                optContent: ques[j].split('[')[0].toString(),
+                optContent: ques[j].split("[")[0].toString(),
                 optScore: ques[j]
                   .split("[")[1]
                   .toString()
@@ -92,7 +92,7 @@ export default {
   }
 };
 </script>
-<style lang='less'>
+<style lang='less' >
 .CONTENTT .title {
   position: relative;
   font-size: 12px;
@@ -124,6 +124,6 @@ export default {
   right: 10px;
 }
 .CONTENTT .batchAddDialog .el-icon-close:before {
-  color: #ccc;
+  color: red !important;
 }
 </style>
