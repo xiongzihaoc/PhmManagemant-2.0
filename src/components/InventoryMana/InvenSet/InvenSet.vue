@@ -72,7 +72,7 @@ ul {
 }
 .set_box_left li:hover {
   color: #fff;
-  background-color: #afdd22;
+  background-color: #FFA500;
 }
 .set_box_right {
   float: left;

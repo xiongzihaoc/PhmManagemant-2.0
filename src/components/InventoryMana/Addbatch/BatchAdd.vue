@@ -30,17 +30,20 @@ export default {
         // 去除空行的空格  暂时还没开发
         var quesArrs = this.content.split("\n\n");
         // console.log(quesArrs);
-        
+
         for (var i = 0; i < quesArrs.length; i++) {
           var ques = quesArrs[i].split("\n");
-          console.log(ques);
-          
+        console.log(ques);
+        
+          var quesOptType = ques[1];
           var question = {};
           var quesContent = ques[0];
           var quesType = 1;
           if (quesContent.indexOf("多选") > -1) {
             quesType = 2;
           } else if (quesContent.indexOf("评分") > -1) {
+            quesType = 4;
+          } else if (quesOptType.indexOf("[") > -1) {
             quesType = 4;
           }
           var sheetUuid = this.Uuid;
@@ -66,16 +69,16 @@ export default {
         }
 
         // 批量增加
-        const { data: res } = await this.$http.post(
-          this.$ajax + "sheetQues/batchAdd",
-          {
-            questions: obj
-          }
-        );
-        if (res.code != 200) return this.$message.error("批量添加失败");
-        this.$message.success("批量添加成功");
-        this.$emit("openOrCls");
-        this.content = "";
+        // const { data: res } = await this.$http.post(
+        //   this.$ajax + "sheetQues/batchAdd",
+        //   {
+        //     questions: obj
+        //   }
+        // );
+        // if (res.code != 200) return this.$message.error("批量添加失败");
+        // this.$message.success("批量添加成功");
+        // this.$emit("openOrCls");
+        // this.content = "";
       }
     },
     clearTxt() {

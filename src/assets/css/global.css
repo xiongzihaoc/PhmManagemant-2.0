@@ -22,7 +22,7 @@
 
 .el-tabs__item.is-active {
     color: #fff !important;
-    background-color: #afdd22;
+    background-color: #FFA500;
 }
 
 .el-tooltip__popper {
@@ -30,7 +30,7 @@
 }
 
 .el-dialog__header {
-    background-color: #afdd22;
+    background-color: #FFA500;
     padding: 15px 20px 10px !important;
 }
 
@@ -48,56 +48,56 @@
 }
 
 .el-dialog__footer .el-button--primary {
-    background-color: #afdd22;
-    border-color: #afdd22;
+    background-color: #FFA500;
+    border-color: #FFA500;
 }
 
 .el-dialog__footer .el-button--primary:hover {
-    background-color: #afdd22;
-    border-color: #afdd22;
+    background-color: #FFA500;
+    border-color: #FFA500;
 }
 
 .el-button–primary {
     color: #fff;
-    background-color: #afdd22;
-    border-color: #afdd22;
+    background-color: #FFA500;
+    border-color: #FFA500;
 }
 
 .el-button–primary:hover {
-    background-color: #afdd22 !important;
-    border-color: #afdd22 !important;
+    background-color: #FFA500 !important;
+    border-color: #FFA500 !important;
 }
 
 .el-button–primary:focus {
-    background-color: #afdd22 !important;
-    border-color: #afdd22 !important;
+    background-color: #FFA500 !important;
+    border-color: #FFA500 !important;
 }
 
 .el-row .el-button--primary {
-    background-color: #afdd22;
-    border-color: #afdd22;
+    background-color: #FFA500;
+    border-color: #FFA500;
 }
 
 .el-row .el-button--primary:hover {
-    background-color: #afdd22 !important;
-    border-color: #afdd22 !important;
+    background-color: #FFA500 !important;
+    border-color: #FFA500 !important;
 }
 
 .el-row .el-button--primary:focus {
-    background-color: #afdd22 !important;
-    border-color: #afdd22 !important;
+    background-color: #FFA500 !important;
+    border-color: #FFA500 !important;
 }
 
 .el-dialog__footer .el-button:first-child:hover {
-    color: #afdd22 !important;
-    border-color: #afdd22 !important;
+    color: #FFA500 !important;
+    border-color: #FFA500 !important;
 }
 
-/*.el-checkbox__input.is-checked .el-checkbox__inner,
+.el-checkbox__input.is-checked .el-checkbox__inner,
 .el-checkbox__input.is-indeterminate .el-checkbox__inner {
-    background-color: #afdd22 !important;
-    border-color: #afdd22 !important;
-}*/
+    background-color: #FFA500 !important;
+    border-color: #FFA500 !important;
+}
 
 
 .el-tree .el-tree-node__expand-icon.expanded {

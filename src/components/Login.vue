@@ -214,7 +214,7 @@ $light_gray: #eee;
   }
 }
 .loginBtn {
-  background-color: #afdd22;
+  background-color: #FFA500;
   border: none;
 }
 </style>
