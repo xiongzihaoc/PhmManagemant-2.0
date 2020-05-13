@@ -33,8 +33,7 @@ export default {
 
         for (var i = 0; i < quesArrs.length; i++) {
           var ques = quesArrs[i].split("\n");
-        console.log(ques);
-        
+
           var quesOptType = ques[1];
           var question = {};
           var quesContent = ques[0];
@@ -52,10 +51,16 @@ export default {
           for (var j = 0; j < ques.length; j++) {
             if (j != 0) {
               var temp_option = {
-                optContent: ques[j],
-                optScore: j,
+                optContent: ques[j].split('[')[0].toString(),
+                optScore: ques[j]
+                  .split("[")[1]
+                  .toString()
+                  .split("]")[0]
+                  .toString(),
+
                 optMedia: ""
               };
+
               option.push(temp_option);
             }
           }
@@ -69,16 +74,16 @@ export default {
         }
 
         // 批量增加
-        // const { data: res } = await this.$http.post(
-        //   this.$ajax + "sheetQues/batchAdd",
-        //   {
-        //     questions: obj
-        //   }
-        // );
-        // if (res.code != 200) return this.$message.error("批量添加失败");
-        // this.$message.success("批量添加成功");
-        // this.$emit("openOrCls");
-        // this.content = "";
+        const { data: res } = await this.$http.post(
+          this.$ajax + "sheetQues/batchAdd",
+          {
+            questions: obj
+          }
+        );
+        if (res.code != 200) return this.$message.error("批量添加失败");
+        this.$message.success("批量添加成功");
+        this.$emit("openOrCls");
+        this.content = "";
       }
     },
     clearTxt() {
