@@ -355,6 +355,12 @@
               <el-radio :label="scope.row.labelValue" v-model="radioId"></el-radio>
             </template>
           </el-table-column>
+          <el-table-column align="center" prop="advKind" slot="fixed" fixed="left" label="建议库">
+            <template slot-scope="scope">
+              <span v-if="scope.row.advKind=== '1'">{{ "心理类" }}</span>
+              <span v-else>{{ "疾病类" }}</span>
+            </template>
+          </el-table-column>
         </EleTable>
         <!-- 分页 -->
         <el-pagination
@@ -391,7 +397,7 @@ export default {
       singleid: 1,
       singletitle: "题目",
       infolistid: 2,
-      score: 5,
+      // score: 5,
       infolistval: "选项",
       checked: "",
       sheetUuid: "",
@@ -463,12 +469,8 @@ export default {
         syntax: true //语法检测
       },
       chooseDialogVisible: false,
-      tableHeaderBig: [],
       tableHeaderBig: [
-        { prop: "advKind", label: "建议库" },
         { prop: "advFlag", label: "标签名称" },
-        // { prop: "advValue", label: "赋值" },
-        // { prop: "advSelectNum", label: "筛选序号" },
         { prop: "advKeyWord", label: "关键词" },
         { prop: "advContent", label: "建议内容" }
       ],
@@ -512,6 +514,8 @@ export default {
           advKeyWord: this.inputAdvice
         }
       );
+      console.log(res);
+
       if (res.code != 200) return this.$message.error("数获取失败");
       this.adviceList = res.rows;
       this.total = res.total;
@@ -546,7 +550,6 @@ export default {
         {
           inid: "1",
           optContent: "选项1",
-          optOrder: 1,
           optScore: "1",
           optMedia: "",
           optLabel: "",
@@ -555,7 +558,6 @@ export default {
         {
           inid: "2",
           optContent: "选项2",
-          optOrder: 2,
           optScore: "2",
           optMedia: "",
           optLabel: "",
@@ -563,7 +565,6 @@ export default {
         },
         {
           inid: "3",
-          optOrder: 3,
           optContent: "选项3",
           optScore: "3",
           optMedia: "",
@@ -572,7 +573,6 @@ export default {
         },
         {
           inid: "4",
-          optOrder: 4,
           optContent: "选项4",
           optScore: "4",
           optMedia: "",
@@ -616,7 +616,7 @@ export default {
       }
       if (list.length < 10) {
         list.push({
-          score: this.score++,
+          // score: this.score++,
           optMedia: "",
           id: this.infolistid++,
           optContent: this.infolistval + this.infolistid
@@ -658,7 +658,7 @@ export default {
     // 插入选项
     quesPosAdd(list, index, i) {
       let obj = {
-        optScore: this.score++,
+        // optScore: this.score++,
         optLabel: "",
         optMedia: "",
         id: this.infolistid++,
@@ -667,29 +667,29 @@ export default {
       list.push(obj);
     },
     // 调整选项位置
-    quesPosTop(item, index, i) {
-      console.log(item);
+    // quesPosTop(item, index, i) {
+    //   console.log(item);
 
-      var upArr = this.single[index].option;
+    //   var upArr = this.single[index].option;
 
-      if (i != 0) {
-        upArr[i].optOrder = upArr[i].optOrder - 1;
-        upArr[i - 1].optOrder = upArr[i - 1].optOrder + 1;
-        upArr[i] = upArr.splice(i - 1, 1, upArr[i])[0];
-      } else {
-        return;
-      }
-    },
-    quesPosBottom(index, i) {
-      var downArr = this.single[index].option;
-      if (i + 1 != downArr.length) {
-        downArr[i].optOrder += 1;
-        downArr[i + 1].optOrder -= 1;
-        downArr[i] = downArr.splice(i + 1, 1, downArr[i])[0];
-      } else {
-        return;
-      }
-    },
+    //   if (i != 0) {
+    //     upArr[i].optOrder = upArr[i].optOrder - 1;
+    //     upArr[i - 1].optOrder = upArr[i - 1].optOrder + 1;
+    //     upArr[i] = upArr.splice(i - 1, 1, upArr[i])[0];
+    //   } else {
+    //     return;
+    //   }
+    // },
+    // quesPosBottom(index, i) {
+    //   var downArr = this.single[index].option;
+    //   if (i + 1 != downArr.length) {
+    //     downArr[i].optOrder += 1;
+    //     downArr[i + 1].optOrder -= 1;
+    //     downArr[i] = downArr.splice(i + 1, 1, downArr[i])[0];
+    //   } else {
+    //     return;
+    //   }
+    // },
     // 完成编辑按钮
     async HandleClickOver(index) {
       // 当前项li
@@ -703,14 +703,14 @@ export default {
         .replace(/>/g, " ");
       var str = txt.replace(/&nbsp;/gi, "");
       var list = info.option;
-      console.log(list);
-
       var Arr = [];
       for (var i = 0; i < list.length; i++) {
+        console.log(list[i]);
+
         var optObj = {
           optContent: list[i].optContent,
           optScore: list[i].optScore,
-          optOrder: list[i].optOrder,
+          // optOrder: list[i].optOrder,
           optMedia: list[i].optMedia,
           optLabel: list[i].optLabel
         };

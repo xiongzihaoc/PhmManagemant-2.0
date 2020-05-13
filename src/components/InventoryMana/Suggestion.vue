@@ -23,7 +23,12 @@
         style="width: 100%"
       >
         <el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
-        <el-table-column align="center" prop="advKind" label="建议库"></el-table-column>
+        <el-table-column align="center" prop="advKind" label="建议库">
+          <template slot-scope="scope">
+            <span v-if="scope.row.advKind=== '1'">{{ "心理类" }}</span>
+            <span v-else>{{ "疾病类" }}</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" prop="advFlag" label="标签名称"></el-table-column>
         <el-table-column align="center" prop="identify" label="标签属性"></el-table-column>
         <el-table-column align="center" prop="advValue" label="赋值" show-overflow-tooltip></el-table-column>
@@ -80,6 +85,7 @@
             :options="menuList"
             :props="optionProps"
             ref="myCascader"
+            @change="handleCas"
             :show-all-levels="false"
           ></el-cascader>
         </el-form-item>
@@ -184,7 +190,14 @@ export default {
       this.editAddForm = {};
       this.addEditValue = "";
     },
-
+    // 标签下拉框change事件
+    handleCas(val) {
+      if (val.length <= 1) {
+        this.editAddForm.labelValue = val.toString();
+      } else {
+        this.editAddForm.labelValue = val.pop().toString();
+      }
+    },
     editPageEnter() {
       let httpUrl = "";
       let parm = {};
@@ -193,7 +206,7 @@ export default {
         parm = {
           id: this.showEditId,
           advKind: this.editAddForm.advKind,
-          labelValue: this.editAddForm.labelValue.pop(),
+          labelValue: this.editAddForm.labelValue,
           advValue: this.editAddForm.advValue,
           advSelectNum: this.editAddForm.advSelectNum,
           advKeyWord: this.editAddForm.advKeyWord,
@@ -205,7 +218,7 @@ export default {
         httpUrl = "sheetAdv/add";
         parm = {
           advKind: this.editAddForm.advKind,
-          labelValue: this.editAddForm.labelValue.pop(),
+          labelValue: this.editAddForm.labelValue,
           advValue: this.editAddForm.advValue,
           advSelectNum: this.editAddForm.advSelectNum,
           advKeyWord: this.editAddForm.advKeyWord,
