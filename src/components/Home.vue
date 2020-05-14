@@ -93,11 +93,13 @@
           <router-view v-if="$route.meta.keepAlive"></router-view>
           <!--非缓存组件-->
         </keep-alive>
-        <router-view v-if="!$route.meta.keepAlive"></router-view>
+        <transition mode="out-in">
+          <router-view v-if="!$route.meta.keepAlive"></router-view>
+        </transition>
       </el-main>
       <!-- <el-footer style="z-index:9999">
        Copyright © 2019 zhuoya All rights reserved
-      </el-footer>-->
+      </el-footer> -->
     </el-container>
   </el-container>
 </template>
@@ -301,7 +303,7 @@ export default {
   padding-top: 20px;
 }
 .el-menu-item {
-  border-left: 2px solid #FFA500;
+  border-left: 2px solid #ffa500;
 }
 .topTags {
   height: 41px !important;

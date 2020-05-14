@@ -14,7 +14,9 @@
         </ul>
       </el-card>
       <el-card class="set_box_right animated bounceInRight">
-        <component :is="currentView"></component>
+        <keep-alive>
+          <component :is="currentView"></component>
+        </keep-alive>
       </el-card>
     </div>
   </div>
@@ -72,7 +74,7 @@ ul {
 }
 .set_box_left li:hover {
   color: #fff;
-  background-color: #FFA500;
+  background-color: #ffa500;
 }
 .set_box_right {
   float: left;
