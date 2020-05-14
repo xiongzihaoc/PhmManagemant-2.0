@@ -4,7 +4,15 @@
       <ul>
         <li>
           <h3>分数表达式</h3>
-          <el-input v-model="score" style="margin:10px 0 20px"></el-input>
+          <el-input v-model="score" style="margin:10px 0 20px;width:20%"></el-input>
+        </li>
+        <li>
+          <h3>等级程度</h3>
+          <el-select v-model="caLevel" placeholder="请选择" style="margin: 10px 0 20px;width:20%">
+            <el-option label="轻度" value="轻度"></el-option>
+            <el-option label="中度" value="中度"></el-option>
+            <el-option label="重度" value="重度"></el-option>
+          </el-select>
         </li>
         <li>
           <h3>评语</h3>
@@ -47,6 +55,7 @@ export default {
       score: "",
       commentInfo: "",
       adviceInfo: "",
+      caLevel: "",
       quillOption: quillConfig,
       myConfig: {
         // 编辑器不自动被内容撑高
@@ -68,10 +77,7 @@ export default {
   methods: {
     // 确认添加
     async HandleClickOver() {
-      if (
-        this.score.trim() == "" ||
-        this.commentInfo.trim() == ""
-      ) {
+      if (this.score.trim() == "" || this.commentInfo.trim() == "") {
         return this.$message.error("请输入有效内容");
       } else {
         const { data: res } = await this.$http.post(
@@ -80,7 +86,8 @@ export default {
             sheetUuid: this.sheetUuid,
             comment: this.commentInfo,
             advice: this.adviceInfo,
-            scoreCron: this.score
+            scoreCron: this.score,
+            caLevel: this.caLevel
           }
         );
         if (res.code != 200) return this.$message.error("添加失败");

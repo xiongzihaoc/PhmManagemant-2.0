@@ -7,6 +7,14 @@
           <el-input v-model="infoForm.scoreCron" style="margin:10px 0 20px"></el-input>
         </li>
         <li>
+          <h3>等级程度</h3>
+          <el-select v-model="infoForm.caLevel" placeholder="请选择" style="margin: 10px 0">
+            <el-option label="轻度" value="轻度"></el-option>
+            <el-option label="中度" value="中度"></el-option>
+            <el-option label="重度" value="重度"></el-option>
+          </el-select>
+        </li>
+        <li>
           <h3>评语</h3>
           <!-- 富文本编辑器 -->
           <quill-editor
@@ -44,6 +52,7 @@ export default {
   data() {
     return {
       infoForm: {},
+
       quillOption: quillConfig,
       myConfig: {
         // 编辑器不自动被内容撑高
@@ -61,6 +70,7 @@ export default {
   },
   created() {
     this.infoForm = JSON.parse(this.$route.query.info);
+    console.log(this.infoForm);
   },
   methods: {
     // 确认添加
@@ -77,7 +87,8 @@ export default {
             id: this.infoForm.id,
             comment: this.infoForm.comment,
             advice: this.infoForm.advice,
-            scoreCron: this.infoForm.scoreCron
+            scoreCron: this.infoForm.scoreCron,
+            caLevel: this.infoForm.caLevel
           }
         );
         if (res.code != 200) return this.$message.error("修改失败");

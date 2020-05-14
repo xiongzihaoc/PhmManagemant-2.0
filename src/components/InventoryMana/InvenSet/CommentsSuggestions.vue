@@ -50,7 +50,8 @@ export default {
       tableHeaderBig: [
         { label: "序号", type: "index", width: 60 },
         { prop: "comment", label: "评语" },
-        { prop: "scoreCron", label: "分数表达式" }
+        { prop: "scoreCron", label: "分数表达式" },
+        { prop: "caLevel", label: "等级程度" }
       ],
       sheetUuid: "",
       userList: []
