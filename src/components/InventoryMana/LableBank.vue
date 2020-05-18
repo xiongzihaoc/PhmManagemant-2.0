@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="Boxheight">
     <!-- 卡片视图 -->
     <el-card>
       <el-table

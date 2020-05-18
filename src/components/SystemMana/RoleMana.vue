@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="Boxheight">
     <!-- 卡片视图 -->
-    <el-card>
+    <el-card style="overflow: auto;">
       <el-row :gutter="20">
         <el-col :span="7">
           <el-input placeholder="请输入内容" v-model="input" @keyup.13.native="Foodsearch" clearable>

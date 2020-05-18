@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="height:100%">
     <!-- 卡片视图 -->
     <el-card>
       <el-row :gutter="20">
