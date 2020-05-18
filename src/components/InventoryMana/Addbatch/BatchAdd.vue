@@ -27,12 +27,22 @@ export default {
         return this.$message.error("请输入内容");
       } else {
         let obj = [];
-        // 去除空行的空格  暂时还没开发
-        var quesArrs = this.content.split("\n\n");
-        // console.log(quesArrs);
-
+        // 去除所有空格
+        var quesArrs = this.content.replace(/\ +/g, "").split("\n\n");
         for (var i = 0; i < quesArrs.length; i++) {
-          var ques = quesArrs[i].split("\n");
+          if (
+            quesArrs[i] == "" ||
+            quesArrs[i] == null ||
+            typeof quesArrs[i] == "undefined"
+          ) {
+            quesArrs.splice(i, 1);
+            i = i - 1;
+          }
+        }
+        console.log(quesArrs);
+        
+        for (var i = 0; i < quesArrs.length; i++) {
+          var ques = quesArrs[i].replace(/^\s+|\s+$/g, "").split("\n");
 
           var quesOptType = ques[1];
           var question = {};
@@ -47,22 +57,13 @@ export default {
           }
           var sheetUuid = this.Uuid;
           var option = [];
-
-          for (var j = 0; j < ques.length; j++) {
-            if (j != 0) {
-              var temp_option = {
-                optContent: ques[j].split("[")[0].toString(),
-                optScore: ques[j]
-                  .split("[")[1]
-                  .toString()
-                  .split("]")[0]
-                  .toString(),
-
-                optMedia: ""
-              };
-
-              option.push(temp_option);
-            }
+          for (var j = 1; j < ques.length; j++) {
+            var temp_option = {
+              optContent: ques[j].split("[")[0],
+              optScore: ques[j].split("[")[1].replace("]", ""),
+              optMedia: ""
+            };
+            option.push(temp_option);
           }
           question = {
             quesMedia: quesContent,
