@@ -397,7 +397,7 @@ export default {
       singleid: 1,
       singletitle: "题目",
       infolistid: 2,
-      // score: 5,
+      score: 5,
       infolistval: "选项",
       checked: "",
       sheetUuid: "",
@@ -521,13 +521,13 @@ export default {
       this.total = res.total;
     },
     // 排序
-    // sorted() {
-    //   if (this.single.length <= 0) {
-    //     this.singleid = "1";
-    //   } else if (!(this.single.length == this.singleid)) {
-    //     this.singleid = this.single.length + 1;
-    //   }
-    // },
+    sorted() {
+      if (this.single.length <= 0) {
+        this.singleid = "1";
+      } else if (!(this.single.length == this.singleid)) {
+        this.singleid = this.single.length + 1;
+      }
+    },
     changetype(e) {
       if (e.target.innerText.indexOf("单") > -1) {
         this.listtype = "1";
@@ -545,12 +545,12 @@ export default {
     },
     //创建一个新单/多选题
     CreateChangeSingleList() {
-      // this.sorted();
+      this.sorted();
       let changelist = [
         {
           inid: "1",
           optContent: "选项1",
-          // optScore: "1",
+          optScore: "1",
           optMedia: "",
           optLabel: "",
           check: false
@@ -558,7 +558,7 @@ export default {
         {
           inid: "2",
           optContent: "选项2",
-          // optScore: "2",
+          optScore: "2",
           optMedia: "",
           optLabel: "",
           check: false
@@ -566,7 +566,7 @@ export default {
         {
           inid: "3",
           optContent: "选项3",
-          // optScore: "3",
+          optScore: "3",
           optMedia: "",
           optLabel: "",
           check: false
@@ -574,7 +574,7 @@ export default {
         {
           inid: "4",
           optContent: "选项4",
-          // optScore: "4",
+          optScore: "4",
           optMedia: "",
           optLabel: "",
           check: false
@@ -591,7 +591,7 @@ export default {
     },
     // 创建文本题
     CreateChangeTextareaList() {
-      // this.sorted();
+      this.sorted();
       let changelist = [
         {
           textareavalue: "",
@@ -616,7 +616,7 @@ export default {
       }
       if (list.length < 10) {
         list.push({
-          // score: this.score++,
+          score: this.score++,
           optMedia: "",
           id: this.infolistid++,
           optContent: this.infolistval + this.infolistid
@@ -658,7 +658,7 @@ export default {
     // 插入选项
     quesPosAdd(list, index, i) {
       let obj = {
-        // optScore: this.score++,
+        optScore: this.score++,
         optLabel: "",
         optMedia: "",
         id: this.infolistid++,
@@ -667,29 +667,29 @@ export default {
       list.push(obj);
     },
     // 调整选项位置
-    // quesPosTop(item, index, i) {
-    //   console.log(item);
+    quesPosTop(item, index, i) {
+      console.log(item);
 
-    //   var upArr = this.single[index].option;
+      var upArr = this.single[index].option;
 
-    //   if (i != 0) {
-    //     upArr[i].optOrder = upArr[i].optOrder - 1;
-    //     upArr[i - 1].optOrder = upArr[i - 1].optOrder + 1;
-    //     upArr[i] = upArr.splice(i - 1, 1, upArr[i])[0];
-    //   } else {
-    //     return;
-    //   }
-    // },
-    // quesPosBottom(index, i) {
-    //   var downArr = this.single[index].option;
-    //   if (i + 1 != downArr.length) {
-    //     downArr[i].optOrder += 1;
-    //     downArr[i + 1].optOrder -= 1;
-    //     downArr[i] = downArr.splice(i + 1, 1, downArr[i])[0];
-    //   } else {
-    //     return;
-    //   }
-    // },
+      if (i != 0) {
+        upArr[i].optOrder = upArr[i].optOrder - 1;
+        upArr[i - 1].optOrder = upArr[i - 1].optOrder + 1;
+        upArr[i] = upArr.splice(i - 1, 1, upArr[i])[0];
+      } else {
+        return;
+      }
+    },
+    quesPosBottom(index, i) {
+      var downArr = this.single[index].option;
+      if (i + 1 != downArr.length) {
+        downArr[i].optOrder += 1;
+        downArr[i + 1].optOrder -= 1;
+        downArr[i] = downArr.splice(i + 1, 1, downArr[i])[0];
+      } else {
+        return;
+      }
+    },
     // 完成编辑按钮
     async HandleClickOver(index) {
       // 当前项li
@@ -710,7 +710,7 @@ export default {
         var optObj = {
           optContent: list[i].optContent,
           optScore: list[i].optScore,
-          // optOrder: list[i].optOrder,
+          optOrder: list[i].optOrder,
           optMedia: list[i].optMedia,
           optLabel: list[i].optLabel
         };
@@ -729,7 +729,7 @@ export default {
           quesMedia: info.quesMedia,
           option: Arr
         }
-      );        
+      );
       if (res.code != 200) return this.$message.error("操作失败");
       this.$message.success("操作成功");
       info.open = false;

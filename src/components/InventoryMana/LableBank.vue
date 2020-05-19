@@ -1,7 +1,7 @@
 <template>
   <div class="Boxheight">
     <!-- 卡片视图 -->
-    <el-card>
+    <el-card style="overflow:auto;">
       <el-table
         :data="menuList"
         :tree-props="{children: 'child', hasChildren: 'hasChildren'}"
