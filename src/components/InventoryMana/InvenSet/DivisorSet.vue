@@ -15,7 +15,7 @@
     </el-row>
     <!-- 调用公用表格组件 -->
     <EleTable :data="userList" :header="tableHeaderBig" row-key="id">
-      <el-table-column align="center" slot="fixed" fixed="right" label="操作" width="180">
+      <el-table-column align="center" slot="fixed" fixed="right" label="操作" width="300">
         <template slot-scope="scope">
           <!-- 修改按钮 -->
           <el-button
@@ -32,6 +32,12 @@
             icon="el-icon-edit"
           >删除</el-button>
           <!-- 跳转按钮 -->
+          <el-button
+            size="mini"
+            @click="addDiviSuggess(scope.row)"
+            type="success"
+            icon="el-icon-edit"
+          >因子建议</el-button>
         </template>
       </el-table-column>
     </EleTable>
@@ -141,6 +147,10 @@ export default {
       this.editId = info.id;
       this.infoTitle = "修改因子";
       this.editDialogVisible = true;
+    },
+    // 关联因子建议
+    addDiviSuggess(info) {
+      this.$router.push({path:"sheet/DivisorSetSugg",query:{id:info.id}});
     },
     // 删除因子
     async delEditdialog(info) {

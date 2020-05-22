@@ -206,6 +206,14 @@ const routes = [{
           title: '标签库'
         }
       },
+      {
+        path: '/sheet/DivisorSetSugg',
+        name: '关联因子建议',
+        component: () => import('@/components/InventoryMana/InvenSet/DivisorSetSugg.vue'),
+        meta: {
+          title: '关联因子建议'
+        }
+      },
     ]
   },
 ]

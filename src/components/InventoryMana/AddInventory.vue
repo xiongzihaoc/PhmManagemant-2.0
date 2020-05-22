@@ -313,7 +313,7 @@
     </el-dialog>
     <!-- 批量增加题目的弹框 -->
     <div class="batchAddDialog">
-      <el-dialog :visible.sync="batchAddDialogVisible" width="45%" v-dialogDrag>
+      <el-dialog :visible.sync="batchAddDialogVisible" width="45%" v-dialogDrag :close-on-click-modal="false">
         <ul>
           <li
             class="batchAddCon"
@@ -849,6 +849,7 @@ ul {
 }
 .main_right {
   overflow: auto;
+  -webkit-overflow-scrolling: touch;
   box-sizing: border-box;
   position: fixed;
   z-index: 100;

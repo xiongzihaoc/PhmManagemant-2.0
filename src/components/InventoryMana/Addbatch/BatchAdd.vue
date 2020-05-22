@@ -24,12 +24,11 @@ export default {
   methods: {
     async enterBtn() {
       if (this.content.trim() == "") {
-        return this.$message.error("请输入内容");
+        return this.$message.error("请输入有效内容");
       } else {
         let obj = [];
         // 去除所有空格
-
-        var quesArrs = this.content.replace(/\+/g, "").split("\n\n");
+        var quesArrs = this.content.replace(/\ +/g, "").split("\n\n");
         console.log(quesArrs);
 
         for (var i = 0; i < quesArrs.length; i++) {
@@ -42,13 +41,14 @@ export default {
             i = i - 1;
           }
         }
-        console.log(quesArrs);
+        // console.log(quesArrs);
 
         for (var i = 0; i < quesArrs.length; i++) {
           var ques = quesArrs[i].replace(/^\s+|\s+$/g, "").split("\n");
-          // console.log(333);
 
           var quesOptType = ques[1];
+          // console.log(quesOptType);
+
           var question = {};
           var quesContent = ques[0];
           var quesType = 1;
@@ -61,10 +61,10 @@ export default {
           }
           var sheetUuid = this.Uuid;
           var option = [];
-          console.log(ques);
+          // console.log(ques);
 
           for (var j = 1; j < ques.length; j++) {
-            console.log(ques[j].split("[")[1]);
+            // console.log(ques[j].split("[")[1]);
 
             var temp_option = {
               optContent: ques[j].split("[")[0],
@@ -92,10 +92,10 @@ export default {
         //     questions: obj
         //   }
         // );
-        if (res.code != 200) return this.$message.error("批量添加失败");
-        this.$message.success("批量添加成功");
-        this.$emit("openOrCls");
-        this.content = "";
+        // if (res.code != 200) return this.$message.error("批量添加失败");
+        // this.$message.success("批量添加成功");
+        // this.$emit("openOrCls");
+        // this.content = "";
       }
     },
     clearTxt() {
