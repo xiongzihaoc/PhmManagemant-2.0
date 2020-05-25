@@ -28,26 +28,29 @@ export default {
       } else {
         let obj = [];
         // 去除所有空格
+
         var quesArrs = this.content.replace(/\ +/g, "").split("\n\n");
+        // console.log(quesArrs);
+
+        // for (var i = 0; i < quesArrs.length; i++) {
+        //   if (
+        //     quesArrs[i] == "" ||
+        //     quesArrs[i] == null ||
+        //     quesArrs[i] == "undefined"
+        //   ) {
+        //     quesArrs.splice(i, 1);
+        //     i = i - 1;
+        //   }
+        // }
         console.log(quesArrs);
 
         for (var i = 0; i < quesArrs.length; i++) {
-          if (
-            quesArrs[i] == "" ||
-            quesArrs[i] == null ||
-            typeof quesArrs[i] == "undefined"
-          ) {
-            quesArrs.splice(i, 1);
-            i = i - 1;
-          }
-        }
-        // console.log(quesArrs);
+          console.log(111);
 
-        for (var i = 0; i < quesArrs.length; i++) {
-          var ques = quesArrs[i].replace(/^\s+|\s+$/g, "").split("\n");
+          var ques = quesArrs[i].split("\n");
+          console.log(222);
 
           var quesOptType = ques[1];
-          // console.log(quesOptType);
 
           var question = {};
           var quesContent = ques[0];
@@ -58,17 +61,18 @@ export default {
             quesType = 4;
           } else if (quesOptType.indexOf("[") > -1) {
             quesType = 4;
+          } else {
+            quesType = 1;
           }
           var sheetUuid = this.Uuid;
           var option = [];
-          // console.log(ques);
 
           for (var j = 1; j < ques.length; j++) {
-            // console.log(ques[j].split("[")[1]);
-
+            var optContent = ques[j].split("[")[0];
+            var optScore = ques[j].split("[")[1].split("]")[0];
             var temp_option = {
-              optContent: ques[j].split("[")[0],
-              optScore: ques[j].split("[")[1],
+              optContent: optContent,
+              optScore: optScore,
               optMedia: ""
             };
 
@@ -86,16 +90,16 @@ export default {
         }
 
         // 批量增加
-        // const { data: res } = await this.$http.post(
-        //   this.$ajax + "sheetQues/batchAdd",
-        //   {
-        //     questions: obj
-        //   }
-        // );
-        // if (res.code != 200) return this.$message.error("批量添加失败");
-        // this.$message.success("批量添加成功");
-        // this.$emit("openOrCls");
-        // this.content = "";
+        const { data: res } = await this.$http.post(
+          this.$ajax + "sheetQues/batchAdd",
+          {
+            questions: obj
+          }
+        );
+        if (res.code != 200) return this.$message.error("批量添加失败");
+        this.$message.success("批量添加成功");
+        this.$emit("openOrCls");
+        this.content = "";
       }
     },
     clearTxt() {
