@@ -17,7 +17,7 @@
         <el-input v-model="editAddForm.sumCorn"></el-input>
       </el-form-item>
       <el-form-item label="指导语" prop="instruction" style="width:50%">
-        <el-input v-model="editAddForm.instruction"></el-input>
+        <el-input type="textarea" v-model="editAddForm.instruction"></el-input>
       </el-form-item>
       <el-form-item label="预警表达式" prop="warnCorn" style="width:50%">
         <el-input v-model="editAddForm.warnCorn"></el-input>

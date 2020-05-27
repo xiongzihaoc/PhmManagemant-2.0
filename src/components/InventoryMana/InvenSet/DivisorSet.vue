@@ -15,7 +15,7 @@
     </el-row>
     <!-- 调用公用表格组件 -->
     <EleTable :data="userList" :header="tableHeaderBig" row-key="id">
-      <el-table-column align="center" slot="fixed" fixed="right" label="操作" width="300">
+      <el-table-column align="center" slot="fixed" fixed="right" label="操作" width="34 0">
         <template slot-scope="scope">
           <!-- 修改按钮 -->
           <el-button

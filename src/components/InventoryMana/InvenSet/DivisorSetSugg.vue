@@ -37,7 +37,7 @@
       <el-dialog
         :title="infoTitle"
         :visible.sync="editDialogVisible"
-        width="50%"
+        width="40%"
         :modal="false"
         v-dialogDrag
         @close="editDialogClosed"

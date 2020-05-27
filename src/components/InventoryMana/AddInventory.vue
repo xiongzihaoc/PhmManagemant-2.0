@@ -55,7 +55,7 @@
     <el-card class="main_right">
       <!-- 量表名称 -->
       <h3>{{inveName}}</h3>
-      <div class="list_box">
+      <div class="list_box" v-loading="fullscreenLoading">
         <!-- 拖拽模块 -->
         <vuedraggable v-model="single">
           <transition-group>
@@ -88,7 +88,7 @@
                 </div>
                 <div class="info-change-list" @click.prevent.stop="getOneInfo(item,index)">
                   <!-- 循环生成选项 -->
-                  <div class="listiconshow" v-for="(list,index) in item.option" :key="index">
+                  <div class="listiconshow" v-for="list in item.option" :key="list.id">
                     <!-- 判断type类型 -->
                     <!-- 单选题 -->
                     <div v-if="item.quesType==1">
@@ -149,7 +149,7 @@
                     >
                       <el-option
                         v-for="asItem in options"
-                        :key="asItem.value"
+                        :key="asItem.id"
                         :label="asItem.label"
                         :value="asItem.value"
                       ></el-option>
@@ -178,7 +178,7 @@
                       <span v-if="item.quesType == 4" style="margin-left:120px;">上移下移</span>
                       <span v-else style="margin-left:160px;">上移下移</span>
                     </div>
-                    <div v-for="(subItem,i) in item.option" :key="i" style="display:flex">
+                    <div v-for="(subItem,i) in item.option" :key="subItem.id" style="display:flex">
                       <!-- 题目输入框 -->
                       <el-input
                         v-if="item.quesType == 3"
@@ -313,7 +313,12 @@
     </el-dialog>
     <!-- 批量增加题目的弹框 -->
     <div class="batchAddDialog">
-      <el-dialog :visible.sync="batchAddDialogVisible" width="45%" v-dialogDrag :close-on-click-modal="false">
+      <el-dialog
+        :visible.sync="batchAddDialogVisible"
+        width="45%"
+        v-dialogDrag
+        :close-on-click-modal="false"
+      >
         <ul>
           <li
             class="batchAddCon"
@@ -407,19 +412,23 @@ export default {
       num2: null,
       options: [
         {
+          id: 1,
           value: "1",
           label: "单选"
         },
         {
+          id: 2,
           value: "2",
           label: "多选"
         },
 
         {
+          id: 3,
           value: "4",
           label: "评分"
         },
         {
+          id: 4,
           value: "3",
           label: "文本"
         }
@@ -441,10 +450,12 @@ export default {
       editAddForm: {
         instrValue: ""
       },
+      fullscreenLoading: true,
       quesName: null,
       editDialogVisible: false,
       batchAddDialogVisible: false,
       ImgDialogVisible: false,
+      // 富文本配置
       editorOption: {
         modules: {
           toolbar: [
@@ -489,7 +500,6 @@ export default {
     this.sheetUuid = JSON.parse(window.localStorage.getItem("sheetUuid")).uuid;
     this.inveName = JSON.parse(window.localStorage.getItem("sheetUuid")).name;
     this.sheetQuesList();
-    this.getScaleList();
   },
 
   methods: {
@@ -501,6 +511,8 @@ export default {
           sheetUuid: this.sheetUuid
         }
       );
+      if (res.code !== 200) return this.$message.error("获取题目列表失败");
+      this.fullscreenLoading = false;
       this.single = res.rows;
       this.quesName = res.rows.length;
     },
@@ -771,6 +783,7 @@ export default {
     chooseAdvice(index, i) {
       this.advNum1 = index;
       this.advNum2 = i;
+      this.getScaleList();
       this.chooseDialogVisible = true;
     },
     chooseEnter() {
