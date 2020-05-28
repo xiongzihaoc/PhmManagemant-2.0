@@ -15,7 +15,7 @@
     </el-row>
     <!-- 调用公用表格组件 -->
     <EleTable :data="userList" :header="tableHeaderBig" row-key="id">
-      <el-table-column align="center" slot="fixed" fixed="right" label="操作" width="34 0">
+      <el-table-column align="center" slot="fixed" fixed="right" label="操作" width="300">
         <template slot-scope="scope">
           <!-- 修改按钮 -->
           <el-button
@@ -150,7 +150,10 @@ export default {
     },
     // 关联因子建议
     addDiviSuggess(info) {
-      this.$router.push({path:"sheet/DivisorSetSugg",query:{id:info.id}});
+      this.$router.push({
+        path: "sheet/DivisorSetSugg",
+        query: { id: info.id }
+      });
     },
     // 删除因子
     async delEditdialog(info) {

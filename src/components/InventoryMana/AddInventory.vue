@@ -57,7 +57,7 @@
       <h3>{{inveName}}</h3>
       <div class="list_box" v-loading="fullscreenLoading">
         <!-- 拖拽模块 -->
-        <vuedraggable v-model="single">
+        <vuedraggable v-model="single" @change="changeIndex($event)">
           <transition-group>
             <!-- 循环生成各项题目 -->
             <ul v-for="(item,index) in single" :key="item.id">
@@ -593,7 +593,7 @@ export default {
         }
       ];
       this.single.push({
-        open: false,
+        open: true,
         quesIsAnswer: 1,
         id: this.singleid++,
         quesMedia: this.singletitle + (this.singleid - 1),
@@ -613,7 +613,7 @@ export default {
         }
       ];
       this.single.push({
-        open: false,
+        open: true,
         quesIsAnswer: 1,
         id: this.singleid++,
         quesMedia: this.singletitle + (this.singleid - 1),
@@ -628,7 +628,7 @@ export default {
       }
       if (list.length < 10) {
         list.push({
-          score: this.score++,
+          optScore: this.score++,
           optMedia: "",
           id: this.infolistid++,
           optContent: this.infolistval + this.infolistid
@@ -799,6 +799,13 @@ export default {
     // 搜索建议
     systemSearch() {
       this.getScaleList();
+    },
+    changeIndex(e) {
+      var oldIndex = e.moved.oldIndex;
+      var newIndex = e.moved.newIndex;
+      this.single[newIndex];
+      console.log(this.single[oldIndex]);
+      console.log(this.single[newIndex]);
     },
     // 分页
     handleSizeChange(newSize) {
