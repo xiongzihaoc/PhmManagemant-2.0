@@ -4,8 +4,7 @@
       <div class="sheet_box_left">
         <!-- 搜索框 -->
         <div class="search_box">
-          <el-input placeholder="量表搜索" v-model="input" @keyup.13.native="systemSearch" clearable>
-            <el-button slot="append" icon="el-icon-search" @click="systemSearch"></el-button>
+          <el-input placeholder="量表搜索" v-model="input" @input="systemSearch" clearable>
           </el-input>
           <p class="scaleList">问卷列表</p>
         </div>
@@ -291,15 +290,19 @@ export default {
   background-size: 100%;
 }
 .sheetIcon {
+  float: left;
   width: 20px;
   height: 20px;
-  float: left;
   margin: 0 10px;
   background: url("../../../assets/images/blueIcon.png") no-repeat;
   background-size: 100%;
 }
 .sheetName {
   float: left;
+  width: 210px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 14px;
 }
 .selected {
