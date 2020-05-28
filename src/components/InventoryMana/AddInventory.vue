@@ -293,6 +293,8 @@
           <el-button type="info" plain @click.prevent.stop="batchAddQues()">批量添加题目</el-button>
         </div>
       </div>
+      <!-- 回到顶部 -->
+      <el-backtop target=".main_right"></el-backtop>
     </el-card>
     <!-- 添加题目说明的弹框 -->
     <el-dialog title="题目说明" :visible.sync="editDialogVisible" width="40%" v-dialogDrag>
