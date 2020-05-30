@@ -42,8 +42,10 @@
     "sass-loader": "^8.0.0",
     "vue-cli-plugin-element": "^1.0.1",
     "vue-router": "^3.0.7",
+    "vue-svg-icon": "^1.2.9",
     "vue-template-compiler": "^2.6.10",
-    "webpack": "^4.41.2"
+    "webpack": "^4.41.2",
+    "xml-loader": "^1.2.1"
   },
   "eslintConfig": {
     "root": true,
