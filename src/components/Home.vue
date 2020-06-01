@@ -21,7 +21,7 @@
         :collapse="isCollapse"
         :collapse-transition="false"
         router
-        :default-active="activePath"
+        :default-active="$route.path"
       >
         <!-- 一级菜单 -->
         <el-submenu :index="item.id + ''" v-for="item in menuList" :key="item.id">
@@ -153,7 +153,7 @@ export default {
     },
     // 保持连接的激活状态
     saveNavState(activePath) {
-      this.activePath = activePath;
+      // this.activePath = activePath;
       // window.sessionStorage.setItem("activePath", activePath);
     },
     handleCommand(command) {},

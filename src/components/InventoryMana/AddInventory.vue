@@ -76,7 +76,7 @@
                     size="mini"
                     class="editBtn"
                     icon="el-icon-edit"
-                    @click.prevent.stop="editBtn(item,index)"
+                    @click.prevent.stop="getOneInfo(item,index)"
                   >编辑</el-button>
                   <el-button
                     plain
@@ -641,8 +641,6 @@ export default {
     },
     // 显示隐藏编辑框
     getOneInfo(item, index) {
-      console.log(item);
-
       this.$set(this.single[index], "open", !this.single[index].open);
     },
     // 删除题目
@@ -656,10 +654,6 @@ export default {
       if (res.code != 200) return this.$message.error("删除失败");
       this.single.splice(index, 1);
       this.sheetQuesList();
-    },
-    // 编辑题目
-    editBtn(item, index) {
-      this.$set(this.single[index], "open", !this.single[index].open);
     },
     // 删除选项
     quesPosDel(index, i) {
@@ -682,10 +676,8 @@ export default {
     },
     // 调整选项位置
     quesPosTop(item, index, i) {
-      console.log(item);
 
       var upArr = this.single[index].option;
-
       if (i != 0) {
         upArr[i].optOrder = upArr[i].optOrder - 1;
         upArr[i - 1].optOrder = upArr[i - 1].optOrder + 1;
@@ -695,6 +687,7 @@ export default {
       }
     },
     quesPosBottom(index, i) {
+      
       var downArr = this.single[index].option;
       if (i + 1 != downArr.length) {
         downArr[i].optOrder += 1;

@@ -4,8 +4,7 @@
       <div class="sheet_box_left">
         <!-- 搜索框 -->
         <div class="search_box">
-          <el-input placeholder="量表搜索" v-model="input" @input="systemSearch" clearable>
-          </el-input>
+          <el-input placeholder="量表搜索" v-model="input" @input="systemSearch" clearable></el-input>
           <p class="scaleList">问卷列表</p>
         </div>
         <!-- 搜索内容主题 -->
@@ -28,10 +27,14 @@
             @change="handleCheckAllChange"
           >全选</el-checkbox>
         </div>
-        <div class="sheetContent">
+        <div
+          class="sheetContent"
+          v-if="this.sheetQuesList.length >= 1"
+          v-loading="fullscreenLoading"
+        >
           <ul>
-            <li v-for="(item,index) in sheetQuesList" :key="index">
-              <p>{{item.quesContent}}</p>
+            <li v-for="item in sheetQuesList" :key="item.id">
+              <p v-html="item.quesMedia"></p>
               <!-- 循环生成选项 -->
               <div class="listiconshow" v-for="(list,i) in item.option" :key="i">
                 <!-- 判断type类型 -->
@@ -65,6 +68,7 @@
             </li>
           </ul>
         </div>
+        <div class="sheetContent" v-else>无数据</div>
       </div>
     </div>
     <!-- 查看已选题目区域 -->
@@ -74,10 +78,10 @@
       </div>
       <div class="sheetContent_select">
         <ul>
-          <li v-for="(item,index) in this.checkList" :key="index">
-            <p>{{item.quesContent}}</p>
+          <li v-for="item in this.checkList" :key="item.id">
+            <p v-html="item.quesMedia"></p>
             <!-- 循环生成选项 -->
-            <div class="listiconshow" v-for="(list,i) in item.option" :key="i">
+            <div class="listiconshow" v-for="list in item.option" :key="list.id">
               <!-- 判断type类型 -->
               <div v-if="item.quesType==1">
                 <el-radio :label="1">{{list.optContent}}</el-radio>
@@ -136,6 +140,7 @@ export default {
       sheetList: [],
       sheetQuesList: [],
       radio: [],
+      fullscreenLoading: false,
       isIndeterminate: true,
       checkAll: false,
       checkList: [],
@@ -164,6 +169,7 @@ export default {
     },
     // 获取点击量表的题目列表
     async searchContent(info) {
+      this.fullscreenLoading = true;
       const { data: res } = await this.$http.post(
         this.$ajax + "sheetQues/list",
         {
@@ -171,6 +177,8 @@ export default {
         }
       );
       this.sheetQuesList = res.rows;
+      this.fullscreenLoading = false;
+      console.log(res);
     },
     // 选择题目进行添加
     async enterCheked() {
