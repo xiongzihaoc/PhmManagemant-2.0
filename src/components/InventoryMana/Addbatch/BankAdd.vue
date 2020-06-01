@@ -68,7 +68,9 @@
             </li>
           </ul>
         </div>
-        <div class="sheetContent" v-else>无数据</div>
+        <div class="sheetContent Nodata" v-else>
+          <span style="font-size:20px;color:#ccc">暂无数据</span>
+        </div>
       </div>
     </div>
     <!-- 查看已选题目区域 -->
@@ -397,5 +399,10 @@ export default {
   position: absolute;
   right: 20px;
   top: 18px;
+}
+.Nodata {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
