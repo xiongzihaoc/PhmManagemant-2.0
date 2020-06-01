@@ -21,7 +21,9 @@ import '../public/UEditor/ueditor.all.js'
 import '../public/UEditor/lang/zh-cn/zh-cn.js'
 import '../public/UEditor/ueditor.parse'
 import '../public/UEditor/themes/default/css/ueditor.css'
-import '../public/UEditor/themes/default/css/ueditor.min.css'
+// 引用svg图标
+import svg from 'vue-svg-icon/Icon'
+Vue.component('svg-icon', svg);
 // 引入md5加密
 import md5 from 'js-md5'
 Vue.prototype.$md5 = md5
