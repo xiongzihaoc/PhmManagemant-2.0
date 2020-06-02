@@ -174,7 +174,6 @@ export default {
     // 修改
     showEditdialog(info) {
       console.log(info);
-
       this.editAddForm = JSON.parse(JSON.stringify(info));
       this.infoTitle = "修改信息";
       this.editDialogVisible = true;
@@ -192,10 +191,14 @@ export default {
     },
     // 标签下拉框change事件
     handleCas(val) {
-      if (val.length <= 1) {
-        this.editAddForm.labelValue = val.toString();
+      if (this.infoTitle == "新增建议") {
+        return;
       } else {
-        this.editAddForm.labelValue = val.pop().toString();
+        if (val.length <= 1) {
+          this.editAddForm.labelValue = val.toString();
+        } else {
+          this.editAddForm.labelValue = val.pop().toString();
+        }
       }
     },
     editPageEnter() {
