@@ -231,10 +231,14 @@ export default {
       this.DialogVisible = true;
     },
     handleChange(val) {
-      if (val.length <= 1) {
-        this.addEditForm.officeCode = val.toString();
-      } else if (val.length > 1) {
-        this.addEditForm.officeCode = val.pop();
+      if (this.dialogTitle == "新增套餐模板") {
+        return;
+      } else {
+        if (val.length <= 1) {
+          this.addEditForm.officeCode = val.toString();
+        } else if (val.length > 1) {
+          this.addEditForm.officeCode = val.pop();
+        }
       }
     },
     // 重置
