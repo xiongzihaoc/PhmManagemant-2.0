@@ -76,7 +76,7 @@
           ></el-cascader>
         </el-form-item>
         <el-form-item label="量表选择" prop="sheets">
-          <el-select multiple v-model="addEditForm.sheets" placeholder="请选择">
+          <el-select multiple v-model="addEditForm.sheets" placeholder="请选择" style="width:100%">
             <el-option
               v-for="item in userList"
               :key="item.uuid"
@@ -231,14 +231,10 @@ export default {
       this.DialogVisible = true;
     },
     handleChange(val) {
-      if (this.dialogTitle == "新增套餐模板") {
-        return;
-      } else {
-        if (val.length <= 1) {
-          this.addEditForm.officeCode = val.toString();
-        } else if (val.length > 1) {
-          this.addEditForm.officeCode = val.pop();
-        }
+      if (val.length <= 1) {
+        this.addEditForm.officeCode = val.toString();
+      } else if (val.length > 1) {
+        this.addEditForm.officeCode = val.pop();
       }
     },
     // 重置
@@ -296,5 +292,5 @@ export default {
   }
 };
 </script>
-<style lang='less' scoped>
+<style lang='less'>
 </style>

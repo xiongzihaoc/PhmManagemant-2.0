@@ -21,7 +21,7 @@
         :collapse="isCollapse"
         :collapse-transition="false"
         router
-        :default-active="$route.path"
+        :default-active="routerPath"
       >
         <!-- 一级菜单 -->
         <el-submenu :index="item.id + ''" v-for="item in menuList" :key="item.id">
@@ -34,7 +34,6 @@
             :index="'/' + subItem.url"
             v-for="subItem in item.child"
             :key="subItem.id"
-            @click="saveNavState('/' + subItem.url)"
           >
             <template slot="title">
               <i class="el-icon-menu"></i>
@@ -97,9 +96,6 @@
           <router-view v-if="!$route.meta.keepAlive"></router-view>
         </transition>
       </el-main>
-      <!-- <el-footer style="z-index:9999">
-       Copyright © 2019 zhuoya All rights reserved
-      </el-footer> -->
     </el-container>
   </el-container>
 </template>
@@ -110,7 +106,6 @@ export default {
     return {
       menuList: [],
       isCollapse: false,
-      activePath: "/index",
       loginName: "",
       isClass: false,
       iswidth: false,
@@ -151,13 +146,7 @@ export default {
     JumpIndex() {
       this.$router.push({ path: "/index" });
     },
-    // 保持连接的激活状态
-    saveNavState(activePath) {
-      // this.activePath = activePath;
-      // window.sessionStorage.setItem("activePath", activePath);
-    },
     handleCommand(command) {},
-    // tab切换时，动态的切换路由
     // tab切换时，动态的切换路由
     tabClick(tab) {
       let path = this.activeIndex;
@@ -187,6 +176,11 @@ export default {
     this.activePath = this.$route.path;
   },
   computed: {
+    routerPath: function() {
+      return this.$route.meta.guidePath
+        ? this.$route.meta.jumpPath
+        : this.$route.path;
+    },
     options() {
       return this.$store.state.options;
     },

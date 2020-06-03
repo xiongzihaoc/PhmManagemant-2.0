@@ -191,14 +191,10 @@ export default {
     },
     // 标签下拉框change事件
     handleCas(val) {
-      if (this.infoTitle == "新增建议") {
-        return;
+      if (val.length <= 1) {
+        this.editAddForm.labelValue = val.toString();
       } else {
-        if (val.length <= 1) {
-          this.editAddForm.labelValue = val.toString();
-        } else {
-          this.editAddForm.labelValue = val.pop().toString();
-        }
+        this.editAddForm.labelValue = val.pop().toString();
       }
     },
     editPageEnter() {

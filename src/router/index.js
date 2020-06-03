@@ -1,7 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
-
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
 const routes = [{
     path: '/',
     redirect: '/login'
@@ -147,7 +150,7 @@ const routes = [{
         name: '量表列表',
         component: () => import('@/components/InventoryMana/InventoryList.vue'),
         meta: {
-          title: '量表列表'
+          title: '量表列表',
         }
       },
       {
@@ -155,7 +158,9 @@ const routes = [{
         name: '题目列表',
         component: () => import('@/components/InventoryMana/AddInventory.vue'),
         meta: {
-          title: '题目列表'
+          title: '题目列表',
+          guidePath: true,
+          jumpPath: '/sheet/list',
         }
       },
       {
@@ -163,7 +168,9 @@ const routes = [{
         name: '量表设置',
         component: () => import('@/components/InventoryMana/InvenSet/InvenSet.vue'),
         meta: {
-          title: '量表设置'
+          title: '量表设置',
+          guidePath: true,
+          jumpPath: '/sheet/list',
         }
       },
       {
@@ -171,7 +178,9 @@ const routes = [{
         name: '新增建议评语',
         component: () => import('@/components/InventoryMana/InvenSet/AddAdivice.vue'),
         meta: {
-          title: '新增建议评语'
+          title: '新增建议评语',
+          guidePath: true,
+          jumpPath: '/sheet/list',
         }
       },
       {
@@ -211,7 +220,9 @@ const routes = [{
         name: '关联因子建议',
         component: () => import('@/components/InventoryMana/InvenSet/DivisorSetSugg.vue'),
         meta: {
-          title: '关联因子建议'
+          title: '关联因子建议',
+          guidePath: true,
+          jumpPath: '/sheet/list',
         }
       },
     ]
