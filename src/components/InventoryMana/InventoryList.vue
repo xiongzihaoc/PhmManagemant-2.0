@@ -25,12 +25,14 @@
       >
         <el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
         <el-table-column align="center" prop="name" label="量表名称" show-overflow-tooltip></el-table-column>
+
         <el-table-column align="center" prop="type" label="量表类型">
           <template slot-scope="scope">
             <span v-if="scope.row.type=== '1'">{{ "心理类" }}</span>
             <span v-else>{{ "疾病类" }}</span>
           </template>
         </el-table-column>
+        <el-table-column align="center" prop="name" label="科室类型" show-overflow-tooltip></el-table-column>
         <el-table-column align="center" prop="price" label="量表价格(元)" show-overflow-tooltip></el-table-column>
         <el-table-column align="center" prop="state" label="状态" :formatter="ifendcase">
           <template slot-scope="scope">
@@ -98,16 +100,31 @@
         @closed="editDialogClosed"
       >
         <el-form-item label="量表名称" prop="name">
-          <el-input v-model="editAddForm.name"></el-input>
+          <el-input v-model="editAddForm.name" style="width:100%;"></el-input>
         </el-form-item>
         <el-form-item label="量表类型" prop="type">
-          <el-select v-model="editAddForm.type" clearable placeholder="请选择">
+          <el-select v-model="editAddForm.type" clearable placeholder="请选择" style="width:100%">
             <el-option label="疾病类" value="0"></el-option>
             <el-option label="心理类" value="1"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="科室类型" prop="officeType">
+          <el-select
+            v-model="editAddForm.officeType"
+            clearable
+            placeholder="请选择"
+            style="width:100%"
+          >
+            <el-option
+              v-for="item in eleNameList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.dictValue"
+            ></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="量表价格" prop="price">
-          <el-input v-model="editAddForm.price"></el-input>
+          <el-input v-model="editAddForm.price" style="width:100%"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -136,7 +153,8 @@ export default {
         name: "",
         type: "",
         price: "",
-        state: ""
+        state: "",
+        officeType: ""
       },
       eleNameList: [],
       addDialogVisible: false,
@@ -172,8 +190,9 @@ export default {
     // 数据字典科室列表
     async getDictionaryEleList() {
       const { data: res } = await this.$http.post("dict/getPreviewData", {
-        dictValue: "officeType"
+        dictValue: "officeLable"
       });
+      console.log(res);
       this.eleNameList = res.data;
     },
     // 跳转到题目列表
@@ -225,7 +244,8 @@ export default {
           name: this.editAddForm.name,
           type: this.editAddForm.type,
           price: this.editAddForm.price,
-          state: this.editAddForm.state
+          state: this.editAddForm.state,
+          officeType: this.editAddForm.officeType
         };
       } else if (this.infoTitle == "新增量表") {
         httpUrl = "sheet/add";
@@ -233,7 +253,8 @@ export default {
           name: this.editAddForm.name,
           type: this.editAddForm.type,
           price: this.editAddForm.price,
-          state: this.editAddForm.state
+          state: this.editAddForm.state,
+          officeType: this.editAddForm.officeType
         };
       } else {
         httpUrl = "sheet/copy";
@@ -242,7 +263,8 @@ export default {
           name: this.editAddForm.name,
           type: this.editAddForm.type,
           price: this.editAddForm.price,
-          state: this.editAddForm.state
+          state: this.editAddForm.state,
+          officeType: this.editAddForm.officeType
         };
       }
       this.$refs.loginFormRef.validate(async valid => {

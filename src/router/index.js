@@ -61,9 +61,11 @@ const routes = [{
         path: '/JumpDictionaryNext',
         name: '新增字典数据',
         component: () => import('@/components/SystemMana/JumpDictionaryNext.vue'),
-        // meta: {
-        title: '新增字典数据'
-        // }
+        meta: {
+          title: '新增字典数据',
+          guidePath: true,
+          jumpPath: '/system/dict',
+        }
       },
       {
         path: '/system/role',
@@ -102,7 +104,15 @@ const routes = [{
         name: '加密管理',
         component: () => import('@/components/SystemMana/EncryptionMana.vue'),
         meta: {
-          title: '加密管理'
+          title: '加密管理',
+        }
+      },
+      {
+        path: '/system/config',
+        name: '参数配置',
+        component: () => import('@/components/SystemMana/paramConfig.vue'),
+        meta: {
+          title: '参数配置',
         }
       },
       {
