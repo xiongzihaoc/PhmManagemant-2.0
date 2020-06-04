@@ -32,7 +32,7 @@
             <span v-else>{{ "疾病类" }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="name" label="科室类型" show-overflow-tooltip></el-table-column>
+        <el-table-column align="center" prop="officeTypeName" label="科室类型"></el-table-column>
         <el-table-column align="center" prop="price" label="量表价格(元)" show-overflow-tooltip></el-table-column>
         <el-table-column align="center" prop="state" label="状态" :formatter="ifendcase">
           <template slot-scope="scope">

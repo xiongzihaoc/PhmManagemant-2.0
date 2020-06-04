@@ -7,6 +7,7 @@
         :data="hosMenuList"
         :lazy="true"
         :header-cell-style="{background:'#f5f5f5'}"
+        highlight-current-row
         style="width: 100%;margin-bottom: 20px;"
         row-key="id"
         ref="singleTable"

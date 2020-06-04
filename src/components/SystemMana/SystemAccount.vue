@@ -10,7 +10,7 @@
         </el-col>
         <!-- 添加用户按钮 -->
         <el-col :span="4">
-          <el-button type="primary" @click="addUsers">新增账户</el-button>
+          <el-button type="primary" @click="addUsers">新增帐户</el-button>
         </el-col>
       </el-row>
       <!-- 表格 -->
@@ -36,54 +36,10 @@
         <!-- 操作 -->
         <el-table-column align="center" slot="fixed" fixed="right" label="操作" width="100">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click.prevent.stop="showEditdialog(scope.row)">查看</el-button>
+            <el-button type="primary" size="mini" @click.prevent.stop="showEditdialog(scope.row)">修改</el-button>
           </template>
         </el-table-column>
       </EleTable>
-      <!-- <el-table
-        stripe
-        ref="singleTable"
-        tooltip-effect="dark"
-        :data="userList"
-        :header-cell-style="{background:'#f5f5f5'}"
-        style="width: 100%"
-      >
-        <el-table-column align="center" type="selection" width="60"></el-table-column>
-        <el-table-column align="center" prop="userId" label="序号" width="60"></el-table-column>
-        <el-table-column align="center" prop="userName" label="用户名"></el-table-column>
-        <el-table-column align="center" prop="loginName" label="登录名"></el-table-column>
-        <el-table-column align="center" prop="roleName" label="角色"></el-table-column>
-        <el-table-column align="center" prop="email" label="邮箱" show-overflow-tooltip></el-table-column>
-        <el-table-column align="center" prop="loginIp" label="IP"></el-table-column>
-        <el-table-column align="center" prop="userPhone" label="手机号"></el-table-column>
-        <el-table-column align="center" prop="status" label="状态" :formatter="ifendcase">
-          <template slot-scope="scope">
-            <span
-              style="color:#13ce66;font-weight:700;"
-              v-if="scope.row.status=== '1'"
-            >{{ ifendcase(scope.row) }}</span>
-            <span v-else style="color:#ff4949;font-weight:700;">{{ ifendcase(scope.row) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" prop="operate" label="操作" width="180">
-      <template slot-scope="scope">-->
-      <!-- 修改按钮 -->
-      <!-- <el-button
-              size="mini"
-              @click="showEditdialog(scope.row)"
-              type="primary"
-              icon="el-icon-edit"
-      >编辑</el-button>-->
-      <!-- 删除按钮 -->
-      <!-- <el-button
-              size="mini"
-              @click="removeUserById(scope.row.acId)"
-              type="danger"
-              icon="el-icon-delete"
-            >删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>-->
       <!-- 分页区域 -->
       <el-pagination
         @size-change="handleSizeChange"
@@ -269,7 +225,6 @@ export default {
         { prop: "email", label: "邮箱" },
         { prop: "loginIp", label: "IP" },
         { prop: "userPhone", label: "手机号" },
-        { prop: "userPhone", label: "手机号" }
       ],
       userList: [],
       // 获取用户列表的参数对象
