@@ -22,7 +22,6 @@
         :header-cell-style="{background:'#f5f5f5'}"
         style="width: 100%"
       >
-        <!-- <el-table-column align="center" type="selection" width="60"></el-table-column> -->
         <el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
         <el-table-column align="center" prop="batchName" label="批次名称"></el-table-column>
         <el-table-column align="center" prop="cardNum" label="检测卡号"></el-table-column>
@@ -31,24 +30,6 @@
         <el-table-column align="center" prop="phone" label="手机号"></el-table-column>
         <el-table-column align="center" prop="hospital" label="医院"></el-table-column>
         <el-table-column align="center" prop="office" label="科室"></el-table-column>
-        <!-- <el-table-column align="center" prop="operate" label="操作" width="180">
-          <template slot-scope="scope"> -->
-            <!-- 修改按钮 -->
-            <!-- <el-button
-              size="mini"
-              @click="showEditdialog(scope.row)"
-              type="primary"
-              icon="el-icon-edit"
-            >编辑</el-button> -->
-            <!-- 删除按钮 -->
-            <!-- <el-button
-              size="mini"
-              @click="removeUserById(scope.row.acId)"
-              type="danger"
-              icon="el-icon-delete"
-            >删除</el-button>
-          </template> -->
-        <!-- </el-table-column> -->
       </el-table>
       <!-- 分页区域 -->
       <el-pagination
@@ -63,7 +44,12 @@
     </el-card>
     <!-- 增改页面 -->
     <el-dialog :title="infoTitle" :visible.sync="editDialogVisible" width="40%" v-dialogDrag>
-      <el-form ref="loginFormRef" :model="editAddForm" label-width="80px" @closed="editDialogClosed">
+      <el-form
+        ref="loginFormRef"
+        :model="editAddForm"
+        label-width="90px"
+        @closed="editDialogClosed"
+      >
         <el-form-item label="医院科室" prop="office">
           <el-input v-model="addEditValue" @click.native="deptAdd"></el-input>
         </el-form-item>
@@ -155,7 +141,7 @@ export default {
       RoleList: [],
       idArr: [],
       hosMenuList: [],
-      TJKNameList:[],
+      TJKNameList: []
     };
   },
   created() {
