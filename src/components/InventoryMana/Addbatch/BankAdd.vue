@@ -13,10 +13,10 @@
             <li
               v-for="(item,index) in sheetList"
               :key="index"
-              @click="searchContent(item)"
+              @click="searchContent(item,index)"
               :class="{blue:i===index}"
             >
-              <i class="sheetIcon"></i>
+              <i class="sheetIcon" :class="{icon:i===index}"></i>
               <span class="sheetName">{{item.name}}</span>
             </li>
           </ul>
@@ -155,10 +155,12 @@ export default {
       lookCheck: false,
       back: false,
       tosele: true,
-      i:0,
+      i: 0
     };
   },
   created() {
+
+    
     this.getScaleList();
   },
   methods: {
@@ -176,9 +178,8 @@ export default {
       this.getScaleList();
     },
     // 获取点击量表的题目列表
-    async searchContent(info) {
-      console.log(info);
-      
+    async searchContent(info, index) {
+      this.i = index;
       this.fullscreenLoading = true;
       const { data: res } = await this.$http.post(
         this.$ajax + "sheetQues/list",
@@ -186,9 +187,9 @@ export default {
           sheetUuid: info.uuid
         }
       );
+      if (res.code != 200) return this.$message.error("获取量表题目失败");
       this.sheetQuesList = res.rows;
       this.fullscreenLoading = false;
-      console.log(res);
     },
     // 选择题目进行添加
     async enterCheked() {
@@ -299,13 +300,7 @@ export default {
   padding: 11px 0 10px 8px;
 }
 .search-content li:hover {
-  background-color: #409eff;
-  color: #fff;
   cursor: pointer;
-}
-.search-content li:hover .sheetIcon {
-  background: url("../../../assets/images/fffIcon.png") no-repeat;
-  background-size: 100%;
 }
 .sheetIcon {
   float: left;
@@ -412,5 +407,13 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.blue {
+  background-color: #409eff;
+  color: #fff;
+}
+.icon {
+  background: url("../../../assets/images/fffIcon.png") no-repeat;
+  background-size: 100%;
 }
 </style>
