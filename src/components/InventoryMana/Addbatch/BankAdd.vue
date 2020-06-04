@@ -10,7 +10,12 @@
         <!-- 搜索内容主题 -->
         <div class="search-content">
           <ul>
-            <li v-for="(item,index) in sheetList" :key="index" @click="searchContent(item)">
+            <li
+              v-for="(item,index) in sheetList"
+              :key="index"
+              @click="searchContent(item)"
+              :class="{blue:i===index}"
+            >
               <i class="sheetIcon"></i>
               <span class="sheetName">{{item.name}}</span>
             </li>
@@ -149,7 +154,8 @@ export default {
       searchCheck: true,
       lookCheck: false,
       back: false,
-      tosele: true
+      tosele: true,
+      i:0,
     };
   },
   created() {
@@ -171,6 +177,8 @@ export default {
     },
     // 获取点击量表的题目列表
     async searchContent(info) {
+      console.log(info);
+      
       this.fullscreenLoading = true;
       const { data: res } = await this.$http.post(
         this.$ajax + "sheetQues/list",

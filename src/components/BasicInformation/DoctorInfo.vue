@@ -77,7 +77,13 @@
       ></el-pagination>
     </el-card>
     <!-- 增改页面 -->
-    <el-dialog :title="infoTitle" :visible.sync="editDialogVisible" width="40%" v-dialogDrag>
+    <el-dialog
+      :title="infoTitle"
+      :visible.sync="editDialogVisible"
+      width="40%"
+      @open="getData"
+      v-dialogDrag
+    >
       <el-form
         ref="loginFormRef"
         :rules="loginRules"
@@ -89,13 +95,19 @@
           <el-input v-model="editAddForm.name"></el-input>
         </el-form-item>
         <el-form-item label="性别" prop="gender">
-          <el-select v-model="editAddForm.gender" placeholder="请选择">
+          <el-select v-model="editAddForm.gender" placeholder="请选择" style="width:100%;">
             <el-option label="男" value="男"></el-option>
             <el-option label="女" value="女"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="职称" prop="title">
-          <el-select v-model="editAddForm.title" multiple clearable placeholder="请选择">
+          <el-select
+            v-model="editAddForm.title"
+            multiple
+            clearable
+            placeholder="请选择"
+            style="width:100%;"
+          >
             <el-option
               v-for="item in eleNameList"
               :key="item.id"
@@ -106,6 +118,48 @@
         </el-form-item>
         <el-form-item label="医院科室" prop="office">
           <el-input v-model="addEditValue" @click.native="deptAdd"></el-input>
+        </el-form-item>
+        <el-form-item label="科室类型" prop="officeLable">
+          <el-select v-model="editAddForm.officeLable" style="width:100%;">
+            <el-option
+              v-for="item in DictDeptList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.dictValue"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="擅长方向" prop="speciality">
+          <div
+            v-for="(item,index) in tagList"
+            :key="index"
+            style="position: relative;padding:1px 5px;background:#409EFF;color:#fff;border-radius:5px;float:left;margin:5px"
+          >
+            <span>{{item.specialityValue}}</span>
+            <i
+              class="el-icon-error"
+              style="color:orange;font-size: 20px;position: absolute;right: -5px;top: -9px;"
+              @click="removeTags(index)"
+            ></i>
+          </div>
+
+          <div
+            style="width: 50px;height: 50px;border: #606266 dashed 1px;text-align: center;float:left;margin-left:10px"
+            @click="addCheckTags()"
+          >
+            <i
+              class="el-icon-plus"
+              style="font-size: 25px;margin-top: 50%;transform: translateY(-50%);"
+            ></i>
+          </div>
+        </el-form-item>
+        <el-form-item label="帐号类型" prop="accountType">
+          <el-select v-model="editAddForm.accountType" style="width:100%">
+            <el-option label="医生帐号" value="0"></el-option>
+            <el-option label="科室帐号" value="1"></el-option>
+            <el-option label="部门帐号" value="2"></el-option>
+            <el-option label="医院帐号" value="3"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="editAddForm.phone"></el-input>
@@ -183,6 +237,31 @@
         <el-button type="primary" @click="addDeptEnter">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 擅长方向tags选择弹框 -->
+    <el-dialog title="选择标签" :visible.sync="tagDialogVisible" width="40%" v-dialogDrag>
+      <el-form
+        ref="addTagFormRef"
+        :rules="addTagRules"
+        :model="addtagForm"
+        label-width="80px"
+        @closed="tagDialogClosed"
+      >
+        <el-form-item label="添加标签" prop="specialityValue">
+          <el-input v-model="addtagForm.specialityValue"></el-input>
+        </el-form-item>
+        <el-form-item label="添加颜色" prop="specialityColor">
+          <el-select v-model="addtagForm.specialityColor">
+            <el-option label="黄色" value="#FFF500"></el-option>
+            <el-option label="绿色" value="#5B972F"></el-option>
+            <el-option label="红色" value="#E80000"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="tagDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addtagEnter">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -206,7 +285,8 @@ export default {
         { prop: "hospital", label: "医院" },
         { prop: "office", label: "科室" },
         { prop: "phone", label: "手机号" },
-        { prop: "office", label: "科室" },
+        { prop: "officeLableValue", label: "科室类型" },
+        { prop: "officeLableValue", label: "擅长方向" },
         { prop: "userName", label: "登录名" },
         { prop: "introduction", label: "简介" }
       ],
@@ -228,8 +308,10 @@ export default {
         phone: null,
         userName: "",
         password: "",
+        officeLable: "",
         introduction: "",
         status: "",
+        accountType: "",
         photoUrl: ""
       },
       eleNameList: [],
@@ -248,7 +330,9 @@ export default {
       addEditValue: "",
       showEditId: null,
       cloneEditId: null,
+      DictDeptList: [],
       RoleList: [],
+      tagList: [],
       hosMenuList: [],
       loginRules: {
         userName: [
@@ -263,16 +347,32 @@ export default {
           { required: true, message: "手机号不能为空", trigger: "blur" },
           { validator: checkMobile, trigger: "blur" }
         ]
+      },
+      addTagRules: {
+        specialityValue: [
+          { required: true, message: "请输入用户名", trigger: "blur" }
+        ],
+        specialityColor: [
+          { required: true, message: "请输入密码", trigger: "blur" }
+        ]
+      },
+      tagDialogVisible: false,
+      addtagForm: {
+        specialityValue: "",
+        specialityColor: ""
       }
     };
   },
   created() {
     this.getUserList();
-    this.getHosMenuList();
-    this.getDictionaryEleList();
   },
-
   methods: {
+    // 弹框打开加载下拉数据
+    getData() {
+      this.getDictionaryEleList();
+      this.getDictDeptList();
+      this.getHosMenuList();
+    },
     // 获取用户列表
     async getUserList() {
       const { data: res } = await this.$http.post("doctor/getDoctorList", {
@@ -282,12 +382,18 @@ export default {
       if (res.code != 200) return this.$message.error("数获取失败");
       this.userList = res.rows;
       this.total = res.total;
+      var specialityArr = res.rows;
+      specialityArr.forEach(item => {
+        item.speciality = eval(item.speciality);
+      });
+      console.log(specialityArr);
     },
     // 数据字典职称列表
     async getDictionaryEleList() {
       const { data: res } = await this.$http.post("dict/getPreviewData", {
         dictValue: "YSZC"
       });
+      console.log(res);
       this.eleNameList = res.data;
     },
     // // 获取部门列表
@@ -298,8 +404,18 @@ export default {
 
       this.idArr.push(res.data[0].id);
     },
+    // 数据字典科室类型列表
+    async getDictDeptList() {
+      const { data: res } = await this.$http.post("dict/getPreviewData", {
+        dictValue: "officeLable"
+      });
+      console.log(res);
+      this.DictDeptList = res.data;
+    },
     // 修改
     showEditdialog(info) {
+      console.log(info);
+    this.tagList = info.speciality
       this.idArr.push(info.id);
       this.addEditValue = `${info.hospital} / ${info.office}`;
       this.infoTitle = "修改信息";
@@ -319,6 +435,8 @@ export default {
       this.addEditValue = "";
     },
     editPageEnter() {
+      console.log(this.tagList);
+
       let httpUrl = "";
       let parm = {};
       if (this.infoTitle == "修改信息") {
@@ -333,7 +451,10 @@ export default {
           dcDept: this.editAddForm.dcDept,
           introduction: this.editAddForm.introduction,
           status: this.editAddForm.status,
-          photoUrl: this.editAddForm.photoUrl
+          photoUrl: this.editAddForm.photoUrl,
+          officeLable: this.editAddForm.officeLable,
+          accountType: this.editAddForm.accountType,
+          speciality: JSON.stringify(this.tagList)
         };
       } else {
         httpUrl = "doctor/saveDoctor";
@@ -347,7 +468,10 @@ export default {
           dcDept: this.editAddForm.dcDept,
           introduction: this.editAddForm.introduction,
           status: this.editAddForm.status,
-          photoUrl: this.editAddForm.photoUrl
+          photoUrl: this.editAddForm.photoUrl,
+          officeLable: this.editAddForm.officeLable,
+          accountType: this.editAddForm.accountType,
+          speciality: JSON.stringify(this.tagList)
         };
       }
       this.$refs.loginFormRef.validate(async valid => {
@@ -397,6 +521,22 @@ export default {
     systemSearch() {
       this.getUserList();
     },
+    // 点击添加tag弹框
+    addCheckTags() {
+      this.addtagForm = {};
+      this.tagDialogVisible = true;
+    },
+    // 移除tags
+    removeTags(index) {
+      this.tagList.splice(index, 1);
+    },
+    addtagEnter() {
+      this.tagList.push(this.addtagForm);
+      console.log(this.tagList);
+
+      this.tagDialogVisible = false;
+    },
+    tagDialogClosed() {},
     // 上传照片
     handleAvatarSuccess(res, file) {
       if (res.code != 200) return this.$message.error("上传失败");
@@ -538,5 +678,21 @@ export default {
   width: 100px;
   height: 100px;
   display: block;
+}
+.el-tag + .el-tag {
+  margin-left: 10px;
+}
+
+.button-new-tag {
+  margin-left: 10px;
+  height: 32px;
+  line-height: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.input-new-tag {
+  width: 90px;
+  margin-left: 10px;
+  vertical-align: bottom;
 }
 </style>
