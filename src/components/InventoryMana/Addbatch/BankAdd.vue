@@ -155,7 +155,8 @@ export default {
       lookCheck: false,
       back: false,
       tosele: true,
-      i: null
+      i: 0,
+      firstUuid: ""
     };
   },
   created() {
@@ -169,11 +170,23 @@ export default {
       });
       if (res.code != 200) return this.$message.error("数获取失败");
       this.sheetList = res.rows;
-      console.log(res);
+      this.firstUuid = this.sheetList[0].uuid;
+      this.firstQues();
     },
     // 搜索按钮
     systemSearch() {
       this.getScaleList();
+    },
+    // 获取点击量表的题目列表
+    async firstQues() {
+      const { data: res } = await this.$http.post(
+        this.$ajax + "sheetQues/list",
+        {
+          sheetUuid: this.firstUuid
+        }
+      );
+      if (res.code != 200) return this.$message.error("获取量表题目失败");
+      this.sheetQuesList = res.rows;
     },
     // 获取点击量表的题目列表
     async searchContent(info, index) {
