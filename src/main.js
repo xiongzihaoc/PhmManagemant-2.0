@@ -34,8 +34,11 @@ import animated from 'animate.css' // npm install animate.css --save安装，在
 Vue.use(animated)
 // // 配置axios
 axios.defaults.baseURL = 'http://192.168.0.130:8080/zhuoya-web/'
+axios.defaults.timeout = 10000
 // axios请求拦截器
 axios.interceptors.request.use(function (config) {
+  console.log(config);
+
   Nprogress.start()
   config.headers.Authorization = window.sessionStorage.getItem('token')
   return config

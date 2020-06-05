@@ -30,11 +30,7 @@
             <span>{{item.menuName}}</span>
           </template>
           <!-- 二级菜单 -->
-          <el-menu-item
-            :index="'/' + subItem.url"
-            v-for="subItem in item.child"
-            :key="subItem.id"
-          >
+          <el-menu-item :index="'/' + subItem.url" v-for="subItem in item.child" :key="subItem.id">
             <template slot="title">
               <i class="el-icon-menu"></i>
               <span>{{subItem.menuName}}</span>
@@ -114,13 +110,9 @@ export default {
   },
   created() {
     this.getMenuList();
-
     this.loginName = window.localStorage.getItem("loginName");
   },
   methods: {
-    rightEvent(info) {
-      console.log(info);
-    },
     // 退出
     async logout() {
       const { data: res } = await this.$http.get("user/signOut", {});
@@ -153,6 +145,7 @@ export default {
       this.$router.replace({ path: path });
     },
     tabRemove(targetName) {
+      console.log(targetName);
       // 首页不可删除
       if (targetName == "/index") {
         return;
@@ -171,9 +164,6 @@ export default {
         }
       }
     }
-  },
-  mounted() {
-    this.activePath = this.$route.path;
   },
   computed: {
     routerPath: function() {
