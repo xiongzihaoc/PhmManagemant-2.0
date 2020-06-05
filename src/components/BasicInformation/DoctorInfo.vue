@@ -366,6 +366,7 @@ export default {
   created() {
     this.getUserList();
   },
+
   methods: {
     // 弹框打开加载下拉数据
     getData() {
@@ -415,7 +416,7 @@ export default {
     // 修改
     showEditdialog(info) {
       console.log(info);
-    this.tagList = info.speciality
+      this.tagList = info.speciality;
       this.idArr.push(info.id);
       this.addEditValue = `${info.hospital} / ${info.office}`;
       this.infoTitle = "修改信息";
@@ -429,9 +430,12 @@ export default {
     },
     // 添加用户
     addUsers() {
+      console.log(this.addtagForm);
       this.infoTitle = "新增医生信息";
       this.editDialogVisible = true;
       this.editAddForm = {};
+      this.addtagForm = {};
+      this.tagList = [];
       this.addEditValue = "";
     },
     editPageEnter() {

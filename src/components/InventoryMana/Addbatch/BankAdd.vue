@@ -38,7 +38,7 @@
           v-loading="fullscreenLoading"
         >
           <ul>
-            <li v-for="item in sheetQuesList" :key="item.id">
+            <li ref="liRef" v-for="item in sheetQuesList" :key="item.id">
               <p v-html="item.quesMedia"></p>
               <!-- 循环生成选项 -->
               <div class="listiconshow" v-for="(list,i) in item.option" :key="i">
@@ -112,7 +112,7 @@
             </div>
             <div
               class="posCheckInner_select el-icon-delete"
-              @click.prevent.stop="delChoose(item,index)"
+              @click.prevent.stop="delChoose(item,i)"
             ></div>
           </li>
         </ul>
@@ -155,12 +155,10 @@ export default {
       lookCheck: false,
       back: false,
       tosele: true,
-      i: 0
+      i: null
     };
   },
   created() {
-
-    
     this.getScaleList();
   },
   methods: {
