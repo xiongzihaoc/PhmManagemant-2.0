@@ -4,20 +4,25 @@
       <div class="sheet_box_left">
         <!-- 搜索框 -->
         <div class="search_box">
-          <el-input placeholder="量表搜索" v-model="input" @input="systemSearch" clearable></el-input>
+          <el-input
+            placeholder="量表搜索"
+            v-model="input"
+            @input="systemSearch"
+            clearable
+          ></el-input>
           <p class="scaleList">问卷列表</p>
         </div>
         <!-- 搜索内容主题 -->
         <div class="search-content">
           <ul>
             <li
-              v-for="(item,index) in sheetList"
+              v-for="(item, index) in sheetList"
               :key="index"
-              @click="searchContent(item,index)"
-              :class="{blue:i===index}"
+              @click="searchContent(item, index)"
+              :class="{ blue: i === index }"
             >
-              <i class="sheetIcon" :class="{icon:i===index}"></i>
-              <span class="sheetName">{{item.name}}</span>
+              <i class="sheetIcon" :class="{ icon: i === index }"></i>
+              <span class="sheetName">{{ item.name }}</span>
             </li>
           </ul>
         </div>
@@ -30,7 +35,8 @@
             class="checkAll"
             :indeterminate="isIndeterminate"
             @change="handleCheckAllChange"
-          >全选</el-checkbox>
+            >全选</el-checkbox
+          >
         </div>
         <div
           class="sheetContent"
@@ -41,15 +47,19 @@
             <li ref="liRef" v-for="item in sheetQuesList" :key="item.id">
               <p v-html="item.quesMedia"></p>
               <!-- 循环生成选项 -->
-              <div class="listiconshow" v-for="(list,i) in item.option" :key="i">
+              <div
+                class="listiconshow"
+                v-for="(list, i) in item.option"
+                :key="i"
+              >
                 <!-- 判断type类型 -->
-                <div v-if="item.quesType==1">
-                  <el-radio :label="1">{{list.optContent}}</el-radio>
+                <div v-if="item.quesType == 1">
+                  <el-radio :label="1">{{ list.optContent }}</el-radio>
                 </div>
-                <div class="listlabel" v-else-if="item.quesType==2">
-                  <el-checkbox>{{list.optContent}}</el-checkbox>
+                <div class="listlabel" v-else-if="item.quesType == 2">
+                  <el-checkbox>{{ list.optContent }}</el-checkbox>
                 </div>
-                <div v-else-if="item.quesType==3">
+                <div v-else-if="item.quesType == 3">
                   <el-input
                     type="textarea"
                     :rows="2"
@@ -58,13 +68,21 @@
                     v-model="list.optContent"
                   ></el-input>
                 </div>
-                <div v-if="item.quesType==4">
-                  <el-radio :label="2" style="margin-right:10px;">{{list.optContent}}</el-radio>
-                  <span style="color:orange;font-size:14px;">( 分值：{{list.optScore}} )</span>
+                <div v-if="item.quesType == 4">
+                  <el-radio :label="2" style="margin-right:10px;">{{
+                    list.optContent
+                  }}</el-radio>
+                  <span style="color:orange;font-size:14px;"
+                    >( 分值：{{ list.optScore }} )</span
+                  >
                 </div>
               </div>
               <div class="posCheckInner">
-                <el-checkbox-group class="checkGroup" v-model="checkList" @change="chooseItem">
+                <el-checkbox-group
+                  class="checkGroup"
+                  v-model="checkList"
+                  @change="chooseItem"
+                >
                   <el-checkbox class="posCheck" :label="item">
                     <i style="color:#F7F9FC"></i>
                   </el-checkbox>
@@ -88,15 +106,19 @@
           <li v-for="item in this.checkList" :key="item.id">
             <p v-html="item.quesMedia"></p>
             <!-- 循环生成选项 -->
-            <div class="listiconshow" v-for="list in item.option" :key="list.id">
+            <div
+              class="listiconshow"
+              v-for="list in item.option"
+              :key="list.id"
+            >
               <!-- 判断type类型 -->
-              <div v-if="item.quesType==1">
-                <el-radio :label="1">{{list.optContent}}</el-radio>
+              <div v-if="item.quesType == 1">
+                <el-radio :label="1">{{ list.optContent }}</el-radio>
               </div>
-              <div class="listlabel" v-else-if="item.quesType==2">
-                <el-checkbox>{{list.optContent}}</el-checkbox>
+              <div class="listlabel" v-else-if="item.quesType == 2">
+                <el-checkbox>{{ list.optContent }}</el-checkbox>
               </div>
-              <div v-else-if="item.quesType==3">
+              <div v-else-if="item.quesType == 3">
                 <el-input
                   type="textarea"
                   :rows="2"
@@ -105,14 +127,18 @@
                   v-model="list.optContent"
                 ></el-input>
               </div>
-              <div v-if="item.quesType==4">
-                <el-radio :label="2" style="margin-right:10px;">{{list.optContent}}</el-radio>
-                <span style="color:orange;font-size:14px;">( 分值：{{list.optScore}} )</span>
+              <div v-if="item.quesType == 4">
+                <el-radio :label="2" style="margin-right:10px;">{{
+                  list.optContent
+                }}</el-radio>
+                <span style="color:orange;font-size:14px;"
+                  >( 分值：{{ list.optScore }} )</span
+                >
               </div>
             </div>
             <div
               class="posCheckInner_select el-icon-delete"
-              @click.prevent.stop="delChoose(item,i)"
+              @click.prevent.stop="delChoose(item, i)"
             ></div>
           </li>
         </ul>
@@ -121,10 +147,15 @@
     <div class="sheet_footer">
       <span class="selected">
         已选
-        <i>{{this.checkList.length}}</i> 题
+        <i>{{ this.checkList.length }}</i> 题
       </span>
       <span class="selectedQues">
-        <a href="###" @click.prevent.stop="Viewselected" v-show="tosele">查看已选题目</a>
+        <a
+          href="javascript:;"
+          @click.prevent.stop="Viewselected"
+          v-show="tosele"
+          >查看已选题目</a
+        >
       </span>
       <el-button
         type="info"
@@ -132,8 +163,15 @@
         class="enterBack"
         @click.prevent.stop="Backselected"
         v-show="back"
-      >返回继续选题</el-button>
-      <el-button type="primary" size="mini" class="enterBack" @click.prevent.stop="enterCheked">确定</el-button>
+        >返回继续选题</el-button
+      >
+      <el-button
+        type="primary"
+        size="mini"
+        class="enterBack"
+        @click.prevent.stop="enterCheked"
+        >确定</el-button
+      >
     </div>
   </div>
 </template>
@@ -216,6 +254,7 @@ export default {
         };
         Arr.push(question);
       });
+      if (Arr.length < 1) return this.$message.error("请至少选择一题啦");
       const { data: res } = await this.$http.post(
         this.$ajax + "sheetQues/batchAdd",
         {
@@ -230,11 +269,15 @@ export default {
     },
     // 全选
     handleCheckAllChange(val) {
+      console.log(val);
+
       this.checkList = val ? this.sheetQuesList : [];
       this.isIndeterminate = false;
     },
-    chooseItem(val) {
-      let checkedCount = val.length;
+    chooseItem(value) {
+      console.log(value);
+
+      let checkedCount = value.length;
       this.checkAll = checkedCount === this.checkList.length;
       this.isIndeterminate =
         checkedCount > 0 && checkedCount < this.checkList.length;
@@ -262,7 +305,7 @@ export default {
   }
 };
 </script>
-<style lang='less'>
+<style lang="less">
 .sheet_box {
   width: 100%;
   height: 530px;
