@@ -4,8 +4,17 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入内容" v-model="input" @keyup.13.native="systemSearch" clearable>
-            <el-button slot="append" icon="el-icon-search" @click="systemSearch"></el-button>
+          <el-input
+            placeholder="请输入内容"
+            v-model="input"
+            @keyup.13.native="systemSearch"
+            clearable
+          >
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="systemSearch"
+            ></el-button>
           </el-input>
         </el-col>
         <!-- 添加用户按钮 -->
@@ -19,22 +28,53 @@
         stripe
         ref="singleTable"
         :data="infoList"
-        :header-cell-style="{background:'#f5f5f5'}"
+        :header-cell-style="{ background: '#f5f5f5' }"
         style="width: 100%"
       >
-        <el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
+        <el-table-column
+          align="center"
+          type="index"
+          label="序号"
+          width="60"
+        ></el-table-column>
         <el-table-column align="center" prop="advKind" label="建议库">
           <template slot-scope="scope">
-            <span v-if="scope.row.advKind=== '1'">{{ "心理类" }}</span>
+            <span v-if="scope.row.advKind === '1'">{{ "心理类" }}</span>
             <span v-else>{{ "疾病类" }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="advFlag" label="标签名称"></el-table-column>
-        <el-table-column align="center" prop="identify" label="标签属性"></el-table-column>
-        <el-table-column align="center" prop="advValue" label="赋值" show-overflow-tooltip></el-table-column>
-        <el-table-column align="center" prop="advSelectNum" label="筛选序号"></el-table-column>
-        <el-table-column align="center" prop="advKeyWord" label="关键词"></el-table-column>
-        <el-table-column align="center" prop="advContent" label="建议内容" show-overflow-tooltip></el-table-column>
+        <el-table-column
+          align="center"
+          prop="advFlag"
+          label="标签名称"
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="identify"
+          label="标签属性"
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="advValue"
+          label="赋值"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="advSelectNum"
+          label="筛选序号"
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="advKeyWord"
+          label="关键词"
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="advContent"
+          label="建议内容"
+          show-overflow-tooltip
+        ></el-table-column>
         <el-table-column align="center" prop="operate" label="操作" width="200">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
@@ -43,14 +83,16 @@
               @click="showEditdialog(scope.row)"
               type="primary"
               icon="el-icon-edit"
-            >编辑</el-button>
+              >编辑</el-button
+            >
             <!-- 修改按钮 -->
             <el-button
               size="mini"
               @click="deleteBtn(scope.row)"
               type="danger"
               icon="el-icon-delete"
-            >删除</el-button>
+              >删除</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -59,14 +101,19 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChangev"
         :current-page="pageNum"
-        :page-sizes="[10, 20,50]"
+        :page-sizes="[10, 20, 50]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
       ></el-pagination>
     </el-card>
     <!-- 增改页面 -->
-    <el-dialog :title="infoTitle" :visible.sync="editDialogVisible" width="40%" v-dialogDrag>
+    <el-dialog
+      :title="infoTitle"
+      :visible.sync="editDialogVisible"
+      width="40%"
+      v-dialogDrag
+    >
       <el-form
         ref="loginFormRef"
         :model="editAddForm"
@@ -74,7 +121,11 @@
         @closed="editDialogClosed"
       >
         <el-form-item label="建议库" prop="advKind">
-          <el-select v-model="editAddForm.advKind" clearable placeholder="请选择">
+          <el-select
+            v-model="editAddForm.advKind"
+            clearable
+            placeholder="请选择"
+          >
             <el-option label="疾病类" value="0"></el-option>
             <el-option label="心理类" value="1"></el-option>
           </el-select>
@@ -102,7 +153,7 @@
           <el-input v-model="editAddForm.advKeyWord"></el-input>
         </el-form-item>
         <el-form-item label="建议内容" prop="advContent">
-          <el-input v-model="editAddForm.advContent"></el-input>
+          <el-input type="textarea" :rows="5" v-model="editAddForm.advContent"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -272,5 +323,9 @@ export default {
   watch: {}
 };
 </script>
-<style lang='less' scoped>
+<style lang="less" scoped>
+.el-select,
+.el-cascader {
+  width: 100%;
+}
 </style>

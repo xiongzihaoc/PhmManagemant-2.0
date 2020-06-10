@@ -4,13 +4,24 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入内容" v-model="input" @keyup.13.native="dicSearch" clearable>
-            <el-button slot="append" icon="el-icon-search" @click="dicSearch"></el-button>
+          <el-input
+            placeholder="请输入内容"
+            v-model="input"
+            @keyup.13.native="dicSearch"
+            clearable
+          >
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="dicSearch"
+            ></el-button>
           </el-input>
         </el-col>
         <!-- 添加按钮 -->
         <el-col :span="4">
-          <el-button type="primary" @click="addDictionary">新增套餐模板</el-button>
+          <el-button type="primary" @click="addDictionary"
+            >新增套餐模板</el-button
+          >
         </el-col>
       </el-row>
       <!-- 公用表格组件 -->
@@ -26,12 +37,21 @@
           <template slot-scope="scope">
             <span
               style="color:#13ce66;font-weight:700;"
-              v-if="scope.row.status=== '1'"
-            >{{ ifendcase(scope.row) }}</span>
-            <span v-else style="color:#ff4949;font-weight:700;">{{ ifendcase(scope.row) }}</span>
+              v-if="scope.row.status === '1'"
+              >{{ ifendcase(scope.row) }}</span
+            >
+            <span v-else style="color:#ff4949;font-weight:700;">{{
+              ifendcase(scope.row)
+            }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" slot="fixed" fixed="right" label="操作" width="180">
+        <el-table-column
+          align="center"
+          slot="fixed"
+          fixed="right"
+          label="操作"
+          width="180"
+        >
           <template slot-scope="scope">
             <!-- 修改按钮 -->
             <el-button
@@ -39,14 +59,16 @@
               @click="showEditdialog(scope.row)"
               type="primary"
               icon="el-icon-edit"
-            >编辑</el-button>
+              >编辑</el-button
+            >
             <!-- 删除按钮 -->
             <el-button
               size="mini"
               @click="removeById(scope.row)"
               type="danger"
               icon="el-icon-delete"
-            >删除</el-button>
+              >删除</el-button
+            >
           </template>
         </el-table-column>
       </EleTable>
@@ -57,6 +79,7 @@
       :visible.sync="DialogVisible"
       width="40%"
       @closed="AddEditDialogClosed"
+      @open="AddEditDialogOpend"
       v-dialogDrag
     >
       <el-form ref="addFormRef" :model="addEditForm" label-width="80px">
@@ -73,10 +96,17 @@
             :show-all-levels="false"
             @change="handleChange"
             :props="optionProps"
+            ref="CascaderRef"
+            style="width:100%"
           ></el-cascader>
         </el-form-item>
         <el-form-item label="量表选择" prop="sheets">
-          <el-select multiple v-model="addEditForm.sheets" placeholder="请选择" style="width:100%">
+          <el-select
+            multiple
+            v-model="addEditForm.sheets"
+            placeholder="请选择"
+            style="width:100%"
+          >
             <el-option
               v-for="item in userList"
               :key="item.uuid"
@@ -91,7 +121,12 @@
         <el-form-item label="套餐描述">
           <el-input v-model="addEditForm.describes"></el-input>
         </el-form-item>
-        <el-form-item label="状态" prop="status" v-if="this.dialogTitle=='修改信息'" v-show="true">
+        <el-form-item
+          label="状态"
+          prop="status"
+          v-if="this.dialogTitle == '修改信息'"
+          v-show="true"
+        >
           <el-select v-model="addEditForm.status" placeholder="请选择">
             <el-option label="启用" :value="'1'"></el-option>
             <el-option label="禁用" :value="'0'"></el-option>
@@ -148,9 +183,7 @@ export default {
     };
   },
   created() {
-    this.getScaleList();
     this.getDictionaryList();
-    this.getDictionaryEleList();
   },
   methods: {
     async getDictionaryList() {
@@ -214,6 +247,11 @@ export default {
         this.DialogVisible = false;
       });
     },
+    // 弹框open触发函数
+    AddEditDialogOpend() {
+      this.getScaleList();
+      this.getDictionaryEleList();
+    },
     // 修改
     showEditdialog(info) {
       console.log(info);
@@ -231,6 +269,10 @@ export default {
       this.DialogVisible = true;
     },
     handleChange(val) {
+      console.log(this.$Cascader);
+      
+
+
       if (val.length <= 1) {
         this.addEditForm.officeCode = val.toString();
       } else if (val.length > 1) {
@@ -292,5 +334,4 @@ export default {
   }
 };
 </script>
-<style lang='less'>
-</style>
+<style lang="less"></style>
