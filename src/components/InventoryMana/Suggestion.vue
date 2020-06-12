@@ -153,7 +153,11 @@
           <el-input v-model="editAddForm.advKeyWord"></el-input>
         </el-form-item>
         <el-form-item label="建议内容" prop="advContent">
-          <el-input type="textarea" :rows="5" v-model="editAddForm.advContent"></el-input>
+          <el-input
+            type="textarea"
+            :rows="5"
+            v-model="editAddForm.advContent"
+          ></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -242,10 +246,13 @@ export default {
     },
     // 标签下拉框change事件
     handleCas(val) {
-      if (val.length <= 1) {
+      var ValLength = val.length;
+      if (val.length == 1) {
         this.editAddForm.labelValue = val.toString();
+      } else if (val.length == 0) {
+        return;
       } else {
-        this.editAddForm.labelValue = val.pop().toString();
+        this.editAddForm.labelValue = val[ValLength - 1];
       }
     },
     editPageEnter() {

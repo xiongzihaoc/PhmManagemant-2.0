@@ -269,14 +269,13 @@ export default {
       this.DialogVisible = true;
     },
     handleChange(val) {
-      console.log(this.$Cascader);
-      
-
-
-      if (val.length <= 1) {
+      var ValLength = val.length;
+      if (val.length == 1) {
         this.addEditForm.officeCode = val.toString();
-      } else if (val.length > 1) {
-        this.addEditForm.officeCode = val.pop();
+      } else if (val.length < 1) {
+        return;
+      } else {
+        this.addEditForm.officeCode = val[ValLength - 1];
       }
     },
     // 重置

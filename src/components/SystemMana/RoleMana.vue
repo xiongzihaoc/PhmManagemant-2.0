@@ -4,8 +4,17 @@
     <el-card style="overflow: auto;">
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入内容" v-model="input" @keyup.13.native="Foodsearch" clearable>
-            <el-button slot="append" icon="el-icon-search" @click="Foodsearch"></el-button>
+          <el-input
+            placeholder="请输入内容"
+            v-model="input"
+            @keyup.13.native="Foodsearch"
+            clearable
+          >
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="Foodsearch"
+            ></el-button>
           </el-input>
         </el-col>
         <!-- 添加角色按钮 -->
@@ -18,18 +27,35 @@
         :data="RoleList"
         ref="singleTable"
         stripe
-        :header-cell-style="{background:'#f5f5f5'}"
+        :header-cell-style="{ background: '#f5f5f5' }"
         style="width: 100%"
       >
-        <el-table-column align="center" prop="roleId" label="序号" width="60"></el-table-column>
-        <el-table-column align="center" prop="roleName" label="角色"></el-table-column>
-        <el-table-column align="center" prop="status" label="状态" :formatter="ifendcase">
+        <el-table-column
+          align="center"
+          prop="roleId"
+          label="序号"
+          width="60"
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="roleName"
+          label="角色"
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="status"
+          label="状态"
+          :formatter="ifendcase"
+        >
           <template slot-scope="scope">
             <span
               style="color:#13ce66;font-weight:700;"
-              v-if="scope.row.status=== '1'"
-            >{{ ifendcase(scope.row) }}</span>
-            <span v-else style="color:#ff4949;font-weight:700;">{{ ifendcase(scope.row) }}</span>
+              v-if="scope.row.status === '1'"
+              >{{ ifendcase(scope.row) }}</span
+            >
+            <span v-else style="color:#ff4949;font-weight:700;">{{
+              ifendcase(scope.row)
+            }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" prop="operate" label="操作" width="220">
@@ -40,20 +66,27 @@
               @click="showEditdialog(scope.row)"
               type="primary"
               icon="el-icon-edit"
-            >编辑</el-button>
+              >编辑</el-button
+            >
             <!-- 分配权限 -->
             <el-button
               size="mini"
               @click="REVOKE(scope.row)"
               type="warning"
               icon="el-icon-s-operation"
-            >分配权限</el-button>
+              >分配权限</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
     </el-card>
     <!-- 弹框页面 -->
-    <el-dialog :title="dialogTitle" :visible.sync="editAddDialogVisible" width="40%" v-dialogDrag>
+    <el-dialog
+      :title="dialogTitle"
+      :visible.sync="editAddDialogVisible"
+      width="40%"
+      v-dialogDrag
+    >
       <el-form
         :model="AddEditForm"
         ref="editFormRef"
@@ -63,7 +96,11 @@
         <el-form-item label="角色" prop="roleName">
           <el-input v-model="AddEditForm.roleName"></el-input>
         </el-form-item>
-        <el-form-item label="状态" prop="status" v-show="dialogTitle == '修改信息'?true:false">
+        <el-form-item
+          label="状态"
+          prop="status"
+          v-show="dialogTitle == '修改信息' ? true : false"
+        >
           <el-select v-model="AddEditForm.status" placeholder="请选择">
             <el-option label="启用" :value="'1'"></el-option>
             <el-option label="禁用" :value="'0'"></el-option>
@@ -83,7 +120,11 @@
       @closed="powerDialogClosed"
       v-dialogDrag
     >
-      <el-form :model="powerChooseForm" ref="powerEditFormRef" label-width="80px">
+      <el-form
+        :model="powerChooseForm"
+        ref="powerEditFormRef"
+        label-width="80px"
+      >
         <el-form-item prop="deptName">
           <el-tree
             class="EditTree"
@@ -152,6 +193,8 @@ export default {
     },
     // 弹框
     showEditdialog(info) {
+      console.log(info);
+
       this.AddEditForm = JSON.parse(JSON.stringify(info));
       this.dialogTitle = "修改信息";
       this.id = info.roleId;
@@ -202,6 +245,8 @@ export default {
       const { data: res } = await this.$http.post("menu/list");
       this.hosMenuList = res.data;
       var str = info.menuIds;
+      console.log(str);
+      
       var arr = str.split(",");
       for (var i = 0; i < arr.length; i++) {
         if (
@@ -210,7 +255,8 @@ export default {
           arr[i] == "2" ||
           arr[i] == "19" ||
           arr[i] == "24" ||
-          arr[i] == "27"
+          arr[i] == "27" ||
+          arr[i] == "45"
         ) {
           arr.splice(i, 1);
         }
@@ -227,19 +273,23 @@ export default {
         ...this.$refs.treeRef.getCheckedKeys(),
         ...this.$refs.treeRef.getHalfCheckedKeys()
       ];
-      const idStr = keys.join(",");
-      const { data: res } = await this.$http.post("role/authSysRoleMenu", {
-        roleId: this.powerId,
-        menuIds: idStr
-      });
 
-      this.powerDialogVisible = false;
-      if (res.code != 200) {
-        //更新权限失败
-        return this.$message.error("分配权限失败");
-      }
-      this.$message.success("分配权限成功");
-      this.getRoleList();
+      
+      const idStr = keys.join(",");
+
+      
+      // const { data: res } = await this.$http.post("role/authSysRoleMenu", {
+      //   roleId: this.powerId,
+      //   menuIds: idStr
+      // });
+
+      // this.powerDialogVisible = false;
+      // if (res.code != 200) {
+      //   //更新权限失败
+      //   return this.$message.error("分配权限失败");
+      // }
+      // this.$message.success("分配权限成功");
+      // this.getRoleList();
     },
     // 状态判断
     ifendcase(val) {
@@ -252,5 +302,4 @@ export default {
   }
 };
 </script>
-<style lang='less' scoped>
-</style>
+<style lang="less" scoped></style>

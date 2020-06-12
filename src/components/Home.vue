@@ -7,7 +7,7 @@
       <div class="logoDiv">
         <img
           :width="iswidth?'30px':'50px'"
-          :height="isheight?'30px':'50px'"
+          :height="isheight?'30px':'50px'" 
           class="logoImg"
           src="../assets/images/logo.png"
           @click="JumpIndex"
