@@ -1,11 +1,20 @@
 <template>
   <div class="Boxheight">
     <!-- 卡片视图 -->
-    <el-card style="overflow:auto;">
+    <el-card>
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入内容" v-model="input" @keyup.13.native="systemSearch" clearable>
-            <el-button slot="append" icon="el-icon-search" @click="systemSearch"></el-button>
+          <el-input
+            placeholder="请输入内容"
+            v-model="input"
+            @keyup.13.native="systemSearch"
+            clearable
+          >
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="systemSearch"
+            ></el-button>
           </el-input>
         </el-col>
         <!-- 添加用户按钮 -->
@@ -19,25 +28,75 @@
         ref="singleTable"
         tooltip-effect="dark"
         :data="userList"
-        :header-cell-style="{background:'#f5f5f5'}"
+        :header-cell-style="{ background: '#f5f5f5' }"
         style="width: 100%"
       >
-        <!-- <el-table-column align="center" type="selection" width="60"></el-table-column> -->
-        <el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
-        <el-table-column align="center" prop="hospital" label="医院名称"></el-table-column>
-        <el-table-column align="center" prop="account" label="医院账号" width="100"></el-table-column>
+        <el-table-column
+          align="center"
+          type="index"
+          label="序号"
+          width="60"
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="hospital"
+          label="医院名称"
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="account"
+          label="医院账号"
+          width="100"
+        ></el-table-column>
         <el-table-column align="center" prop="hospitalLogo" label="医院图片">
           <template slot-scope="scope">
-            <img id="img" v-if="scope.row.hospitalLogo != null " :src="scope.row.hospitalLogo" />
+            <img
+              id="img"
+              v-if="scope.row.hospitalLogo != null"
+              :src="scope.row.hospitalLogo"
+            />
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="address" label="省市区" show-overflow-tooltip></el-table-column>
-        <el-table-column align="center" prop="detailedAddress" label="详细地址" show-overflow-tooltip></el-table-column>
-        <el-table-column align="center" prop="customer" label="对接人"></el-table-column>
-        <el-table-column align="center" prop="customerTel" label="对接人账号" width="120"></el-table-column>
-        <el-table-column align="center" prop="salesmanUuid" label="销售人员"></el-table-column>
-        <el-table-column align="center" prop="description" label="医院介绍" show-overflow-tooltip></el-table-column>
-        <el-table-column align="center" prop="collectMode" label="收费模式" :formatter="ifendcaseSfms"></el-table-column>
+        <el-table-column
+          align="center"
+          prop="address"
+          label="省市区"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="detailedAddress"
+          label="详细地址"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="customer"
+          label="对接人"
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="customerTel"
+          label="对接人账号"
+          width="120"
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="salesmanUuid"
+          label="销售人员"
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="description"
+          label="医院介绍"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="collectMode"
+          label="收费模式"
+          :formatter="ifendcaseSfms"
+        ></el-table-column>
         <el-table-column
           align="center"
           prop="detectionType"
@@ -50,13 +109,21 @@
           label="用户答题方式"
           :formatter="ifendcaseDtfs"
         ></el-table-column>
-        <el-table-column align="center" prop="checked" label="检测报告是否审核" :formatter="ifendcaseAudit">
+        <el-table-column
+          align="center"
+          prop="checked"
+          label="检测报告是否审核"
+          :formatter="ifendcaseAudit"
+        >
           <template slot-scope="scope">
             <span
               style="color:#13ce66;font-weight:700;"
-              v-if="scope.row.checked=== '1'"
-            >{{ ifendcaseAudit(scope.row) }}</span>
-            <span v-else style="color:#ff4949;font-weight:700;">{{ ifendcaseAudit(scope.row) }}</span>
+              v-if="scope.row.checked === '1'"
+              >{{ ifendcaseAudit(scope.row) }}</span
+            >
+            <span v-else style="color:#ff4949;font-weight:700;">{{
+              ifendcaseAudit(scope.row)
+            }}</span>
           </template>
         </el-table-column>
 
@@ -69,9 +136,12 @@
           <template slot-scope="scope">
             <span
               style="color:#13ce66;font-weight:700;"
-              v-if="scope.row.dataSharing=== '1'"
-            >{{ ifendcaseData(scope.row) }}</span>
-            <span v-else style="color:#ff4949;font-weight:700;">{{ ifendcaseData(scope.row) }}</span>
+              v-if="scope.row.dataSharing === '1'"
+              >{{ ifendcaseData(scope.row) }}</span
+            >
+            <span v-else style="color:#ff4949;font-weight:700;">{{
+              ifendcaseData(scope.row)
+            }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -83,9 +153,12 @@
           <template slot-scope="scope">
             <span
               style="color:#13ce66;font-weight:700;"
-              v-if="scope.row.patientView=== '1'"
-            >{{ ifendcaseReport(scope.row) }}</span>
-            <span v-else style="color:#ff4949;font-weight:700;">{{ ifendcaseReport(scope.row) }}</span>
+              v-if="scope.row.patientView === '1'"
+              >{{ ifendcaseReport(scope.row) }}</span
+            >
+            <span v-else style="color:#ff4949;font-weight:700;">{{
+              ifendcaseReport(scope.row)
+            }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" prop="operate" label="操作" width="180">
@@ -96,14 +169,16 @@
               @click="showEditdialog(scope.row)"
               type="primary"
               icon="el-icon-edit"
-            >编辑</el-button>
+              >编辑</el-button
+            >
             <!-- 删除按钮 -->
             <el-button
               size="mini"
               @click="removeUserById(scope.row)"
               type="danger"
               icon="el-icon-delete"
-            >删除</el-button>
+              >删除</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -112,7 +187,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChangev"
         :current-page="pageNum"
-        :page-sizes="[10, 20,50]"
+        :page-sizes="[10, 20, 50]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -125,17 +200,22 @@
       v-dialogDrag
       @close="editDialogClosed"
     >
-      <el-form ref="loginFormRef" :model="editAddForm" label-width="125px" label-position="right">
-        <li class="formFlex">
-          <el-form-item label="医院名称" prop="hospital" style="flex:1">
+      <el-form
+        ref="loginFormRef"
+        :model="editAddForm"
+        label-width="125px"
+        label-position="center"
+      >
+        <li style="display:flex;justify-content: space-between;">
+          <el-form-item label="医院名称" prop="hospital" style="width:48%">
             <el-input v-model="addEditValue" @click.native="deptAdd"></el-input>
           </el-form-item>
-          <el-form-item label="医院账号" prop="account" style="flex:1">
+          <el-form-item label="医院账号" prop="account" style="width:48%">
             <el-input v-model="editAddForm.account"></el-input>
           </el-form-item>
         </li>
-        <li class="formFlex">
-          <el-form-item label="地址" prop="address" style="flex:1">
+        <li style="display:flex;justify-content: space-between;">
+          <el-form-item label="地址" prop="address" style="width:48%">
             <el-cascader
               ref="addressRef"
               v-model="newStr"
@@ -144,47 +224,41 @@
               style="width:100%"
             ></el-cascader>
           </el-form-item>
-          <el-form-item label="医院图片" prop="hospitalLogo" style="flex:1">
-            <el-upload
-              class="avatar-uploader"
-              :action="this.UPLOAD_IMG"
-              :show-file-list="false"
-              :on-success="handleAvatarSuccess"
-              :on-progress="uploadVideoProcess"
-              :before-upload="beforeAvatarUpload"
-            >
-              <img v-if="editAddForm.hospitalLogo" :src="editAddForm.hospitalLogo" class="avatar" />
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-            </el-upload>
-            <el-progress
-              v-if="videoFlag == true"
-              :percentage="percentageFile"
-              style="margin-top:20px;"
-            ></el-progress>
+          <el-form-item
+            label="详细地址"
+            prop="detailedAddress"
+            style="width:48%"
+          >
+            <el-input v-model="editAddForm.detailedAddress"></el-input>
           </el-form-item>
         </li>
-        <el-form-item label="详细地址" prop="detailedAddress">
-          <el-input v-model="editAddForm.detailedAddress"></el-input>
-        </el-form-item>
-        <li class="formFlex">
-          <el-form-item label="对接人" prop="customer" style="flex:1">
+        <li style="display:flex;justify-content: space-between;">
+          <el-form-item label="对接人" prop="customer" style="width:48%">
             <el-input v-model="editAddForm.customer"></el-input>
           </el-form-item>
-          <el-form-item label="对接人账号" prop="customerTel" style="flex:1">
+          <el-form-item label="对接人账号" prop="customerTel" style="width:48%">
             <el-input v-model="editAddForm.customerTel"></el-input>
           </el-form-item>
         </li>
-        <li class="formFlex">
-          <el-form-item label="销售人员" prop="salesmanUuid" style="flex:1">
+        <li style="display:flex;justify-content: space-between;">
+          <el-form-item label="销售人员" prop="salesmanUuid" style="width:48%">
             <el-input v-model="editAddForm.salesmanUuid"></el-input>
           </el-form-item>
-          <el-form-item label="医院介绍" prop="description" style="flex:1">
-            <el-input type="textarea" v-model="editAddForm.description"></el-input>
+          <el-form-item label="医院介绍" prop="description" style="width:48%">
+            <el-input
+              type="textarea"
+              v-model="editAddForm.description"
+            ></el-input>
           </el-form-item>
         </li>
-        <li class="formFlex">
-          <el-form-item label="收费模式" prop="collectMode" style="flex:1">
-            <el-select v-model="editAddForm.collectMode" placeholder="请选择" style="width:100%">
+
+        <li style="display:flex;justify-content: space-between;">
+          <el-form-item label="收费模式" prop="collectMode" style="width:48%">
+            <el-select
+              v-model="editAddForm.collectMode"
+              placeholder="请选择"
+              style="width:100%"
+            >
               <el-option
                 v-for="item in SfmsNameList"
                 :key="item.id"
@@ -193,8 +267,16 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="检测卡类型" prop="detectionType" style="flex:1">
-            <el-select v-model="editAddForm.detectionType" placeholder="请选择" style="width:100%">
+          <el-form-item
+            label="检测卡类型"
+            prop="detectionType"
+            style="width:48%"
+          >
+            <el-select
+              v-model="editAddForm.detectionType"
+              placeholder="请选择"
+              style="width:100%"
+            >
               <el-option
                 v-for="item in TJKNameList"
                 :key="item.id"
@@ -204,9 +286,17 @@
             </el-select>
           </el-form-item>
         </li>
-        <li class="formFlex">
-          <el-form-item label="用户答题方式" prop="patientAnswerWay" style="flex:1">
-            <el-select v-model="editAddForm.patientAnswerWay" placeholder="请选择" style="width:100%">
+        <li style="display:flex;justify-content: space-between;">
+          <el-form-item
+            label="用户答题方式"
+            prop="patientAnswerWay"
+            style="width:48%"
+          >
+            <el-select
+              v-model="editAddForm.patientAnswerWay"
+              placeholder="请选择"
+              style="width:100%"
+            >
               <el-option
                 v-for="item in DtfsNameList"
                 :key="item.id"
@@ -215,27 +305,73 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="检测报告是否审核" prop="checked" style="flex:1">
-            <el-select v-model="editAddForm.checked" placeholder="请选择" style="width:100%">
+          <el-form-item
+            label="检测报告是否审核"
+            prop="checked"
+            style="width:48%"
+          >
+            <el-select
+              v-model="editAddForm.checked"
+              placeholder="请选择"
+              style="width:100%"
+            >
               <el-option label="是" :value="'1'"></el-option>
               <el-option label="否" :value="'0'"></el-option>
             </el-select>
           </el-form-item>
         </li>
-        <li class="formFlex">
-          <el-form-item label="数据是否共享" prop="dataSharing" style="flex:1">
-            <el-select v-model="editAddForm.dataSharing" placeholder="请选择" style="width:100%">
+        <li style="display:flex;justify-content: space-between;">
+          <el-form-item
+            label="数据是否共享"
+            prop="dataSharing"
+            style="width:48%"
+          >
+            <el-select
+              v-model="editAddForm.dataSharing"
+              placeholder="请选择"
+              style="width:100%"
+            >
               <el-option label="是" :value="'1'"></el-option>
               <el-option label="否" :value="'0'"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="检测报告是否可见" prop="patientView" style="flex:1">
-            <el-select v-model="editAddForm.patientView" placeholder="请选择" style="width:100%">
+          <el-form-item
+            label="检测报告是否可见"
+            prop="patientView"
+            style="width:48%"
+          >
+            <el-select
+              v-model="editAddForm.patientView"
+              placeholder="请选择"
+              style="width:100%"
+            >
               <el-option label="是" :value="'1'"></el-option>
               <el-option label="否" :value="'0'"></el-option>
             </el-select>
           </el-form-item>
         </li>
+        <el-form-item label="医院图片" prop="hospitalLogo">
+          <el-upload
+            class="avatar-uploader"
+            :action="this.UPLOAD_IMG"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :on-progress="uploadVideoProcess"
+            :before-upload="beforeAvatarUpload"
+          >
+            <img
+              v-if="editAddForm.hospitalLogo"
+              :src="editAddForm.hospitalLogo"
+              class="avatar"
+            />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+          <el-progress
+            v-if="videoFlag == true"
+            :percentage="percentageFile"
+            style="margin-top:20px;"
+          ></el-progress>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">取 消</el-button>
@@ -243,7 +379,12 @@
       </span>
     </el-dialog>
     <!-- 部门新增页面 -->
-    <el-dialog title="选择医院科室" :visible.sync="addDeptDialogVisible" width="40%" v-dialogDrag>
+    <el-dialog
+      title="选择医院科室"
+      :visible.sync="addDeptDialogVisible"
+      width="40%"
+      v-dialogDrag
+    >
       <el-form
         ref="deptAddFormRef"
         :model="addDeptForm"
@@ -602,7 +743,7 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style scoped>
 li {
   list-style: none;
 }
@@ -685,9 +826,9 @@ li {
   display: block;
   font-size: 28px;
   color: #8c939d;
-  width: 100px;
-  height: 100px;
-  line-height: 100px;
+  width: 70px;
+  height: 70px;
+  line-height: 70px;
   text-align: center;
   border: 1px dashed #ccc;
 }
