@@ -92,6 +92,7 @@ export default {
   },
   created() {
     this.id = this.$route.query.id;
+    
     this.getDictionaryList();
   },
   methods: {
@@ -102,6 +103,8 @@ export default {
         name: this.input
       });
       this.menuList = res.data;
+      console.log(this.menuList);
+      
     },
     // 修改
     showEditdialog(info) {

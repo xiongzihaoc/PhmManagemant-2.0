@@ -4,8 +4,17 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入内容" v-model="input" @keyup.13.native="systemSearch" clearable>
-            <el-button slot="append" icon="el-icon-search" @click="systemSearch"></el-button>
+          <el-input
+            placeholder="请输入内容"
+            v-model="input"
+            @keyup.13.native="systemSearch"
+            clearable
+          >
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="systemSearch"
+            ></el-button>
           </el-input>
         </el-col>
         <!-- 添加用户按钮 -->
@@ -20,33 +29,69 @@
         ref="singleTable"
         :data="userList"
         highlight-current-row
-        :header-cell-style="{background:'#f5f5f5'}"
+        :header-cell-style="{ background: '#f5f5f5' }"
         style="width: 100%"
       >
-        <el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
-        <el-table-column align="center" prop="name" label="量表名称" show-overflow-tooltip></el-table-column>
+        <el-table-column
+          align="center"
+          type="index"
+          label="序号"
+          width="60"
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="name"
+          label="量表名称"
+          show-overflow-tooltip
+        ></el-table-column>
 
         <el-table-column align="center" prop="type" label="量表类型">
           <template slot-scope="scope">
-            <span v-if="scope.row.type=== '1'">{{ "心理类" }}</span>
+            <span v-if="scope.row.type === '1'">{{ "心理类" }}</span>
             <span v-else>{{ "疾病类" }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="officeTypeName" label="科室类型"></el-table-column>
-        <el-table-column align="center" prop="price" label="量表价格(元)" show-overflow-tooltip></el-table-column>
-        <el-table-column align="center" prop="state" label="状态" :formatter="ifendcase">
+        <el-table-column
+          align="center"
+          prop="officeTypeName"
+          label="科室类型"
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="price"
+          label="量表价格(元)"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="state"
+          label="状态"
+          :formatter="ifendcase"
+        >
           <template slot-scope="scope">
             <span
               style="color:#13ce66;font-weight:700;"
-              v-if="scope.row.state=== '1'"
-            >{{ ifendcase(scope.row) }}</span>
-            <span v-else style="color:#E6A23C;font-weight:700;">{{ ifendcase(scope.row) }}</span>
+              v-if="scope.row.state === '1'"
+              >{{ ifendcase(scope.row) }}</span
+            >
+            <span v-else style="color:#E6A23C;font-weight:700;">{{
+              ifendcase(scope.row)
+            }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="createBy" label="创建人"></el-table-column>
-        <el-table-column align="center" prop="createTime" label="创建时间" width="160">
+        <el-table-column
+          align="center"
+          prop="createBy"
+          label="创建人"
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="createTime"
+          label="创建时间"
+          width="160"
+        >
           <template slot-scope="scope">
-            <div>{{timesChangeDate(scope.row.createTime)}}</div>
+            <div>{{ timesChangeDate(scope.row.createTime) }}</div>
           </template>
         </el-table-column>
 
@@ -58,23 +103,31 @@
               @click="showEditdialog(scope.row)"
               type="primary"
               icon="el-icon-edit"
-            >编辑</el-button>
+              >编辑</el-button
+            >
             <!-- 修改按钮 -->
             <el-button
               size="mini"
               @click="cloneDialog(scope.row)"
               type="warning"
               icon="el-icon-document-copy"
-            >克隆</el-button>
+              >克隆</el-button
+            >
             <el-dropdown style="margin-left:10px;">
               <el-button type="primary" size="mini">
                 量表设计
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="addDictionarybtn(scope.row)">题目列表</el-dropdown-item>
-                <el-dropdown-item @click.native="invenSet(scope.row)">量表设置</el-dropdown-item>
-                <el-dropdown-item @click.native="invenAnalyze(scope.row)">量表分析</el-dropdown-item>
+                <el-dropdown-item @click.native="addDictionarybtn(scope.row)"
+                  >题目列表</el-dropdown-item
+                >
+                <el-dropdown-item @click.native="invenSet(scope.row)"
+                  >量表设置</el-dropdown-item
+                >
+                <el-dropdown-item @click.native="invenAnalyze(scope.row)"
+                  >量表分析</el-dropdown-item
+                >
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -85,14 +138,19 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChangev"
         :current-page="pageNum"
-        :page-sizes="[10, 20,50]"
+        :page-sizes="[10, 20, 50]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
       ></el-pagination>
     </el-card>
     <!-- 增改页面 -->
-    <el-dialog :title="infoTitle" :visible.sync="editDialogVisible" width="40%" v-dialogDrag>
+    <el-dialog
+      :title="infoTitle"
+      :visible.sync="editDialogVisible"
+      width="40%"
+      v-dialogDrag
+    >
       <el-form
         ref="loginFormRef"
         :model="editAddForm"
@@ -103,9 +161,18 @@
           <el-input v-model="editAddForm.name" style="width:100%;"></el-input>
         </el-form-item>
         <el-form-item label="量表类型" prop="type">
-          <el-select v-model="editAddForm.type" clearable placeholder="请选择" style="width:100%">
-            <el-option label="疾病类" value="0"></el-option>
-            <el-option label="心理类" value="1"></el-option>
+          <el-select
+            v-model="editAddForm.type"
+            clearable
+            placeholder="请选择"
+            style="width:100%"
+          >
+            <el-option
+              v-for="item in sheetTypeList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.dictValue"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="科室类型" prop="officeType">
@@ -157,6 +224,7 @@ export default {
         officeType: ""
       },
       eleNameList: [],
+      sheetTypeList: [],
       addDialogVisible: false,
       defaultProps: {
         label: "deptName",
@@ -171,6 +239,7 @@ export default {
   created() {
     this.getScaleList();
     this.getDictionaryEleList();
+    this.getSheetTypeList();
   },
 
   methods: {
@@ -185,6 +254,8 @@ export default {
 
       if (res.code != 200) return this.$message.error("数获取失败");
       this.userList = res.rows;
+      console.log(this.userList);
+      
       this.total = res.total;
     },
     // 数据字典科室列表
@@ -194,6 +265,15 @@ export default {
       });
       console.log(res);
       this.eleNameList = res.data;
+    },
+    // 数据字典量表类型列表
+    async getSheetTypeList() {
+      const { data: res } = await this.$http.post("dict/getPreviewData", {
+        dictValue: "SHEET_TYPE"
+      });
+      console.log(res);
+      
+      this.sheetTypeList = res.data;
     },
     // 跳转到题目列表
     addDictionarybtn(info) {
@@ -335,7 +415,7 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style scoped>
 .mytree /deep/ .el-tree > .el-tree-node:after {
   border-top: none;
   border-left: none;

@@ -424,7 +424,6 @@ import {
   CodeToText,
   TextToCode
 } from "element-china-area-data";
-import { watch } from "fs";
 export default {
   data() {
     return {
@@ -530,6 +529,8 @@ export default {
     // 修改
     showEditdialog(info) {
       console.log(info);
+
+      console.log(info.addressCodes);
       this.newStr = info.addressCodes;
       this.addEditValue = info.hospital;
       this.infoTitle = "修改信息";
@@ -542,6 +543,9 @@ export default {
     },
     async editPageEnter() {
       // 区域码转中文
+      console.log(this.$refs.addressRef
+        .getCheckedNodes()[0]);
+      
       const ele = this.$refs.addressRef
         .getCheckedNodes()[0]
         .pathLabels.join(",");
@@ -609,9 +613,7 @@ export default {
     },
     // 级联选择地址
     handleChange(val) {
-      console.log(CodeToText.val);
-
-      this.newStr = val.toString();
+      this.newStr = [val.toString()];
     },
     // 部门新增
     deptAdd() {

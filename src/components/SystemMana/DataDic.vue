@@ -35,7 +35,7 @@
             <span v-else style="color:#ff4949;font-weight:700;">{{ ifendcase(scope.row) }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="operate" label="操作" width="260">
+        <el-table-column align="center" prop="operate" label="操作" width="280">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
             <el-button
@@ -207,6 +207,7 @@ export default {
     },
     // 跳转下一级
     jumpDictionarybtn(info) {
+
       this.$router.push({
         path: "/JumpDictionaryNext",
         query: { id: info.id }
