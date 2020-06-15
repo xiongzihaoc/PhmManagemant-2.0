@@ -26,7 +26,7 @@
         <el-table-column align="center" prop="dictValue" label="键值" sortable></el-table-column>
         <el-table-column align="center" prop="remark" label="备注" sortable show-overflow-tooltip></el-table-column>
         <el-table-column align="center" prop="dictSort" label="排序号"></el-table-column>
-        <el-table-column align="center" prop="operate" label="操作" width="180">
+        <el-table-column align="center" prop="operate" label="操作" width="200">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
             <el-button
