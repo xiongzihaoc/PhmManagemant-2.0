@@ -4,8 +4,17 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入内容" v-model="input" @keyup.13.native="systemSearch" clearable>
-            <el-button slot="append" icon="el-icon-search" @click="systemSearch"></el-button>
+          <el-input
+            placeholder="请输入内容"
+            v-model="input"
+            @keyup.13.native="systemSearch"
+            clearable
+          >
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="systemSearch"
+            ></el-button>
           </el-input>
         </el-col>
         <!-- 添加用户按钮 -->
@@ -15,9 +24,19 @@
       </el-row>
       <!-- 调用公用表格组件 -->
       <EleTable :data="userList" :header="tableHeaderBig" row-key="id">
-        <el-table-column align="center" slot="fixed" fixed="right" prop="photoUrl" label="照片">
+        <el-table-column
+          align="center"
+          slot="fixed"
+          fixed="right"
+          prop="photoUrl"
+          label="照片"
+        >
           <template slot-scope="scope">
-            <img id="img" v-if="scope.row.photoUrl != null " :src="scope.row.photoUrl" />
+            <img
+              id="img"
+              v-if="scope.row.photoUrl != null"
+              :src="scope.row.photoUrl"
+            />
           </template>
         </el-table-column>
         <el-table-column
@@ -31,9 +50,12 @@
           <template slot-scope="scope">
             <span
               style="color:#13ce66;font-weight:700;"
-              v-if="scope.row.appStatus=== '1'"
-            >{{ ifendcaseApp(scope.row) }}</span>
-            <span v-else style="color:#ff4949;font-weight:700;">{{ ifendcaseApp(scope.row) }}</span>
+              v-if="scope.row.appStatus === '1'"
+              >{{ ifendcaseApp(scope.row) }}</span
+            >
+            <span v-else style="color:#ff4949;font-weight:700;">{{
+              ifendcaseApp(scope.row)
+            }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -47,12 +69,21 @@
           <template slot-scope="scope">
             <span
               style="color:#13ce66;font-weight:700;"
-              v-if="scope.row.status=== '1'"
-            >{{ ifendcase(scope.row) }}</span>
-            <span v-else style="color:#ff4949;font-weight:700;">{{ ifendcase(scope.row) }}</span>
+              v-if="scope.row.status === '1'"
+              >{{ ifendcase(scope.row) }}</span
+            >
+            <span v-else style="color:#ff4949;font-weight:700;">{{
+              ifendcase(scope.row)
+            }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" slot="fixed" fixed="right" label="操作" width="100">
+        <el-table-column
+          align="center"
+          slot="fixed"
+          fixed="right"
+          label="操作"
+          width="100"
+        >
           <template slot-scope="scope">
             <!-- 修改按钮 -->
             <el-button
@@ -60,7 +91,8 @@
               @click="showEditdialog(scope.row)"
               type="primary"
               icon="el-icon-edit"
-            >编辑</el-button>
+              >编辑</el-button
+            >
             <!-- 跳转按钮 -->
           </template>
         </el-table-column>
@@ -70,7 +102,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChangev"
         :current-page="pageNum"
-        :page-sizes="[10, 20,50]"
+        :page-sizes="[10, 20, 50]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -95,7 +127,11 @@
           <el-input v-model="editAddForm.name"></el-input>
         </el-form-item>
         <el-form-item label="性别" prop="gender">
-          <el-select v-model="editAddForm.gender" placeholder="请选择" style="width:100%;">
+          <el-select
+            v-model="editAddForm.gender"
+            placeholder="请选择"
+            style="width:100%;"
+          >
             <el-option label="男" value="男"></el-option>
             <el-option label="女" value="女"></el-option>
           </el-select>
@@ -131,11 +167,11 @@
         </el-form-item>
         <el-form-item label="擅长方向" prop="speciality">
           <div
-            v-for="(item,index) in tagList"
+            v-for="(item, index) in tagList"
             :key="index"
             style="position: relative;padding:1px 5px;background:#409EFF;color:#fff;border-radius:5px;float:left;margin:5px"
           >
-            <span>{{item.specialityValue}}</span>
+            <span>{{ item.specialityValue }}</span>
             <i
               class="el-icon-error"
               style="color:orange;font-size: 20px;position: absolute;right: -5px;top: -9px;"
@@ -167,13 +203,18 @@
         <el-form-item label="登录名" prop="userName">
           <el-input v-model="editAddForm.userName"></el-input>
         </el-form-item>
-        <el-form-item label="密码" prop="password" v-if="infoTitle == '新增医生信息'" v-show="true">
+        <el-form-item
+          label="密码"
+          prop="password"
+          v-if="infoTitle == '新增医生信息'"
+          v-show="true"
+        >
           <el-input v-model="editAddForm.password"></el-input>
         </el-form-item>
         <el-form-item label="简介" prop="introduction">
           <el-input
             type="textarea"
-            :autosize="{ minRows: 5, maxRows: 10}"
+            :autosize="{ minRows: 5, maxRows: 10 }"
             v-model="editAddForm.introduction"
           ></el-input>
         </el-form-item>
@@ -186,7 +227,11 @@
             :on-progress="uploadVideoProcess"
             :before-upload="beforeAvatarUpload"
           >
-            <img v-if="editAddForm.photoUrl" :src="editAddForm.photoUrl" class="avatar" />
+            <img
+              v-if="editAddForm.photoUrl"
+              :src="editAddForm.photoUrl"
+              class="avatar"
+            />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
           <el-progress
@@ -195,7 +240,12 @@
             style="margin-top:20px;"
           ></el-progress>
         </el-form-item>
-        <el-form-item label="状态" prop="status" v-if="infoTitle == '修改信息'" v-show="true">
+        <el-form-item
+          label="状态"
+          prop="status"
+          v-if="infoTitle == '修改信息'"
+          v-show="true"
+        >
           <el-select v-model="editAddForm.status" placeholder="请选择">
             <el-option label="启用" :value="'1'"></el-option>
             <el-option label="禁用" :value="'0'"></el-option>
@@ -208,7 +258,12 @@
       </span>
     </el-dialog>
     <!-- 部门选择页面 -->
-    <el-dialog title="选择医院科室" :visible.sync="addDeptDialogVisible" width="40%" v-dialogDrag>
+    <el-dialog
+      title="选择医院科室"
+      :visible.sync="addDeptDialogVisible"
+      width="40%"
+      v-dialogDrag
+    >
       <el-form
         ref="deptAddFormRef"
         :model="addDeptForm"
@@ -238,7 +293,12 @@
       </span>
     </el-dialog>
     <!-- 擅长方向tags选择弹框 -->
-    <el-dialog title="选择标签" :visible.sync="tagDialogVisible" width="40%" v-dialogDrag>
+    <el-dialog
+      title="选择标签"
+      :visible.sync="tagDialogVisible"
+      width="40%"
+      v-dialogDrag
+    >
       <el-form
         ref="addTagFormRef"
         :rules="addTagRules"
@@ -368,7 +428,7 @@ export default {
   },
 
   methods: {
-    // 弹框打开加载下拉数据
+    // 弹框open事件打开加载下拉数据
     getData() {
       this.getDictionaryEleList();
       this.getDictDeptList();
@@ -415,13 +475,13 @@ export default {
     },
     // 修改
     showEditdialog(info) {
-      console.log(info);
       this.tagList = info.speciality;
       this.idArr.push(info.id);
       this.addEditValue = `${info.hospital} / ${info.office}`;
       this.infoTitle = "修改信息";
       this.editDialogVisible = true;
       this.editAddForm = JSON.parse(JSON.stringify(info));
+      this.editAddForm.officeLable = info.officeLableValue;
       this.editId = info.id;
       this.editAddForm.title = info.title.split(",");
     },
@@ -440,7 +500,6 @@ export default {
     },
     editPageEnter() {
       console.log(this.tagList);
-
       let httpUrl = "";
       let parm = {};
       if (this.infoTitle == "修改信息") {
@@ -594,7 +653,7 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style scoped>
 .mytree /deep/ .el-tree > .el-tree-node:after {
   border-top: none;
   border-left: none;
