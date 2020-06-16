@@ -502,6 +502,7 @@ export default {
       this.userList = res.rows;
       this.total = res.total;
     },
+    // 根据数据字典字段获取数据
     async getDictionaryEleListOne() {
       const { data: res } = await this.$http.post("dict/getPreviewData", {
         dictValue: "TJKLX"
@@ -528,10 +529,8 @@ export default {
     },
     // 修改
     showEditdialog(info) {
-      console.log(info);
-
       console.log(info.addressCodes);
-      this.newStr = info.addressCodes;
+      this.newStr = info.addressCodes.split(",");
       this.addEditValue = info.hospital;
       this.infoTitle = "修改信息";
       this.editDialogVisible = true;
@@ -543,9 +542,6 @@ export default {
     },
     async editPageEnter() {
       // 区域码转中文
-      console.log(this.$refs.addressRef
-        .getCheckedNodes()[0]);
-      
       const ele = this.$refs.addressRef
         .getCheckedNodes()[0]
         .pathLabels.join(",");
@@ -560,7 +556,7 @@ export default {
           account: this.editAddForm.account,
           hospitalLogo: this.editAddForm.hospitalLogo,
           address: ele.replace(/,/g, ""),
-          addressCodes: this.newStr.join(","),
+          addressCodes: this.newStr,
           deptUuid: this.editAddForm.deptUuid,
           detailedAddress: this.editAddForm.detailedAddress,
           customer: this.editAddForm.customer,
@@ -580,7 +576,7 @@ export default {
           account: this.editAddForm.account,
           hospitalLogo: this.editAddForm.hospitalLogo,
           address: ele.replace(/,/g, ""),
-          addressCodes: this.newStr.join(","),
+          addressCodes: this.newStr,
           deptUuid: this.editAddForm.deptUuid,
           detailedAddress: this.editAddForm.detailedAddress,
           customer: this.editAddForm.customer,
@@ -613,7 +609,10 @@ export default {
     },
     // 级联选择地址
     handleChange(val) {
-      this.newStr = [val.toString()];
+      console.log(val);
+
+      this.newStr = val.toString();
+      console.log(this.newStr);
     },
     // 部门新增
     deptAdd() {
