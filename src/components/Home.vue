@@ -2,12 +2,12 @@
   <!-- 容器 -->
   <el-container>
     <!-- 侧边栏 -->
-    <el-aside :width="isCollapse?'64px':'200px'">
+    <el-aside :width="isCollapse ? '64px' : '200px'">
       <!-- 侧边栏菜单区域 -->
       <div class="logoDiv">
         <img
-          :width="iswidth?'30px':'50px'"
-          :height="isheight?'30px':'50px'" 
+          :width="iswidth ? '30px' : '50px'"
+          :height="isheight ? '30px' : '50px'"
           class="logoImg"
           src="../assets/images/logo.png"
           @click="JumpIndex"
@@ -24,16 +24,24 @@
         :default-active="routerPath"
       >
         <!-- 一级菜单 -->
-        <el-submenu :index="item.id + ''" v-for="item in menuList" :key="item.id">
+        <el-submenu
+          :index="item.id + ''"
+          v-for="item in menuList"
+          :key="item.id"
+        >
           <template slot="title">
             <i :class="item.icon" height="24px"></i>
-            <span>{{item.menuName}}</span>
+            <span>{{ item.menuName }}</span>
           </template>
           <!-- 二级菜单 -->
-          <el-menu-item :index="'/' + subItem.url" v-for="subItem in item.child" :key="subItem.id">
+          <el-menu-item
+            :index="'/' + subItem.url"
+            v-for="subItem in item.child"
+            :key="subItem.id"
+          >
             <template slot="title">
               <i class="el-icon-menu"></i>
-              <span>{{subItem.menuName}}</span>
+              <span>{{ subItem.menuName }}</span>
             </template>
           </el-menu-item>
         </el-submenu>
@@ -45,7 +53,7 @@
         <div class="header_left">
           <i
             @click="toggleCollapse()"
-            :class="isClass?'el-icon-s-unfold':'el-icon-s-fold'"
+            :class="isClass ? 'el-icon-s-unfold' : 'el-icon-s-fold'"
             id="toggle"
           ></i>
         </div>
@@ -53,7 +61,7 @@
           <el-dropdown @command="handleCommand">
             <span class="el-dropdown-link aaa">
               <img class="logoutImg" src="../assets/images/angry.gif" alt />
-              <span class="loginName">{{loginName}}</span>
+              <span class="loginName">{{ loginName }}</span>
               <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
@@ -201,7 +209,7 @@ export default {
   }
 };
 </script>
-<style lang='less' scoped>
+<style lang="less" scoped>
 .el-container {
   height: 100%;
 }

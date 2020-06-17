@@ -144,7 +144,6 @@ export default {
         dictValue: "deptType"
       });
       this.DEPNameList = res.data;
-      // console.log(res);
     },
     // 增加
     addDictionary() {},

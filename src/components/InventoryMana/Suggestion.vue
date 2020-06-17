@@ -112,14 +112,10 @@
       :title="infoTitle"
       :visible.sync="editDialogVisible"
       width="40%"
+      @closed="editDialogClosed"
       v-dialogDrag
     >
-      <el-form
-        ref="loginFormRef"
-        :model="editAddForm"
-        label-width="80px"
-        @closed="editDialogClosed"
-      >
+      <el-form ref="loginFormRef" :model="editAddForm" label-width="80px">
         <el-form-item label="建议库" prop="advKind">
           <el-select
             v-model="editAddForm.advKind"
@@ -229,14 +225,13 @@ export default {
     // 修改
     showEditdialog(info) {
       console.log(info);
+      // this.$refs.cascader.clearCheckedNodes();
       this.editAddForm = JSON.parse(JSON.stringify(info));
       this.infoTitle = "修改信息";
       this.editDialogVisible = true;
       this.showEditId = info.id;
     },
-    editDialogClosed() {
-      this.$refs.editFormRef.resetFields();
-    },
+    editDialogClosed() {},
     // 添加用户
     addUsers() {
       this.infoTitle = "新增建议";
@@ -246,8 +241,6 @@ export default {
     },
     // 标签下拉框change事件
     handleCas(val) {
-      console.log(111);
-
       var ValLength = val.length;
       if (val.length == 1) {
         this.editAddForm.labelValue = val;
