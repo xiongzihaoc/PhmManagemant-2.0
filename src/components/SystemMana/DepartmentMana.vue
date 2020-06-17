@@ -63,7 +63,7 @@
         label-width="80px"
         @closed="dynamicDialogClosed"
       >
-        <el-form-item label="上一级">
+        <el-form-item label="上一级" v-if="this.dynamicTitle == '新增信息'">
           <el-input v-model="goback" disabled></el-input>
         </el-form-item>
         <el-form-item label="名称" prop="deptName">
@@ -124,28 +124,36 @@ export default {
     this.getDictionaryEleListTwo();
   },
   methods: {
+    // 部门列表
     async getHosMenuList() {
       const { data: res } = await this.$http.post("dept/list", {});
       this.hosMenuList = res.data;
       console.log(res);
     },
+    // 科室标签列表
     async getDictionaryEleListOne() {
       const { data: res } = await this.$http.post("dict/getPreviewData", {
-        dictValue: "officeType"
+        dictValue: "officeLable"
       });
+      
       this.TJKNameList = res.data;
     },
+    // 部门类型
     async getDictionaryEleListTwo() {
       const { data: res } = await this.$http.post("dict/getPreviewData", {
         dictValue: "deptType"
       });
       this.DEPNameList = res.data;
-      console.log(res);
+      // console.log(res);
     },
     // 增加
     addDictionary() {},
     // 修改
-    showEditdialog() {},
+    showEditdialog(info) {
+      this.dynamicDialogVisible = true
+      this.dynamicForm = JSON.parse(JSON.stringify(info))
+      // this.goback = 
+    },
     // 搜索
     hospSearch() {},
     // 操作里面新增

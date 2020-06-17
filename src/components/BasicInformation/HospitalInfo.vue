@@ -529,24 +529,24 @@ export default {
     },
     // 修改
     showEditdialog(info) {
-      console.log(info.addressCodes);
-      this.newStr = info.addressCodes.split(",");
+      console.log(info);
+      this.editAddForm = JSON.parse(JSON.stringify(info));
+      this.newStr = info.addressCodes.split(",");      
       this.addEditValue = info.hospital;
+      this.editId = info.id;
       this.infoTitle = "修改信息";
       this.editDialogVisible = true;
-      this.editAddForm = JSON.parse(JSON.stringify(info));
-      this.editId = info.id;
     },
     editDialogClosed() {
       this.newStr = [];
+      this.editAddForm = {};
+      this.addEditValue = "";
     },
     async editPageEnter() {
       // 区域码转中文
-      const ele = this.$refs.addressRef
+      let ele = this.$refs.addressRef
         .getCheckedNodes()[0]
         .pathLabels.join(",");
-      console.log(ele);
-
       let httpUrl = "";
       let parm = {};
       if (this.infoTitle == "修改信息") {
@@ -604,15 +604,10 @@ export default {
     addUsers() {
       this.infoTitle = "新增医院信息";
       this.editDialogVisible = true;
-      this.editAddForm = {};
-      this.addEditValue = "";
     },
     // 级联选择地址
     handleChange(val) {
-      console.log(val);
-
       this.newStr = val.toString();
-      console.log(this.newStr);
     },
     // 部门新增
     deptAdd() {

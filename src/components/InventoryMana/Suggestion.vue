@@ -181,7 +181,7 @@ export default {
       editDialogVisible: false,
       editAddForm: {
         advKind: "",
-        labelValue: "",
+        labelValue: [],
         advFlag: "",
         advValue: null,
         advSelectNum: null,
@@ -246,9 +246,11 @@ export default {
     },
     // 标签下拉框change事件
     handleCas(val) {
+      console.log(111);
+
       var ValLength = val.length;
       if (val.length == 1) {
-        this.editAddForm.labelValue = val.toString();
+        this.editAddForm.labelValue = val;
       } else if (val.length == 0) {
         return;
       } else {
