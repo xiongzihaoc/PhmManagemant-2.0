@@ -27,17 +27,18 @@ Vue.component('svg-icon', svg);
 // 引入md5加密
 import md5 from 'js-md5'
 Vue.prototype.$md5 = md5
+import animated from 'animate.css' // npm install animate.css --save安装，在引入
+Vue.use(animated)
 // 导入axios
 import axios from 'axios'
-import animated from 'animate.css' // npm install animate.css --save安装，在引入
+// 引入animate动画库
 
-Vue.use(animated)
-// // 配置axios
-// 测试
+// 配置axios
+// 测试地址
 // axios.defaults.baseURL = 'http://192.168.0.117:8085/zhuoya-web/'
-// 正式
+// 正式地址
 axios.defaults.baseURL = 'http://www.phmzykj.com/zhuoya-web/'
-axios.defaults.timeout = 10000
+axios.defaults.timeout = 15000
 // axios请求拦截器
 axios.interceptors.request.use(function (config) {
   Nprogress.start()
@@ -56,9 +57,9 @@ axios.interceptors.response.use(function (config) {
 })
 // 全局挂载axios this.$http调用即可
 Vue.prototype.$http = axios
-// 测试
+// 测试地址
 // Vue.prototype.$ajax = 'http://192.168.0.117:8086/zhuoya-sheet/'
-// 正式
+// 正式地址
 Vue.prototype.$ajax = 'http://www.phmzykj.com/zhuoya-sheet/'
 // 文件上传地址
 Vue.prototype.UPLOAD_IMG = 'http://www.phmzykj.com/zhuoya_manager/oss/fileUpload.do'
