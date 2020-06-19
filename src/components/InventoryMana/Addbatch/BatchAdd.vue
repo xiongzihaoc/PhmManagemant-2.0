@@ -4,10 +4,24 @@
       <p>1. 题目与题目之间需空一行，题目可以不加题号，题干中间不得换行</p>
       <p>2. 题干与选项，及各选项之间需回车换行，题干必须是一行(长度不限)</p>
       <p>3. 题目无选项直接空一行，会默认识别为单选题目</p>
-      <el-button type="info" plain class="titleBtn" size="small" @click="clearTxt">清空文本框</el-button>
+      <el-button
+        type="info"
+        plain
+        class="titleBtn"
+        size="small"
+        @click="clearTxt"
+        >清空文本框</el-button
+      >
     </div>
-    <el-input class="Ccontent" type="textarea" :rows="25" v-model="content"></el-input>
-    <el-button class="enterBtn" type="primary" @click.prevent.stop="enterBtn()">确定保存</el-button>
+    <el-input
+      class="Ccontent"
+      type="textarea"
+      :rows="25"
+      v-model="content"
+    ></el-input>
+    <el-button class="enterBtn" type="primary" @click.prevent.stop="enterBtn()"
+      >确定保存</el-button
+    >
   </div>
 </template>
 <script>
@@ -30,6 +44,8 @@ export default {
         // 去除所有空格
 
         var quesArrs = this.content.replace(/\ +/g, "").split("\n\n");
+        console.log(333);
+
         // console.log(quesArrs);
 
         // for (var i = 0; i < quesArrs.length; i++) {
@@ -45,8 +61,6 @@ export default {
         console.log(quesArrs);
 
         for (var i = 0; i < quesArrs.length; i++) {
-          console.log(111);
-
           var ques = quesArrs[i].split("\n");
           console.log(222);
 
@@ -68,18 +82,22 @@ export default {
           var option = [];
 
           for (var j = 1; j < ques.length; j++) {
-            var optContent = ques[j].split("[")[0];
-            var optScore = ques[j].split("[")[1].split("]")[0];
-            var temp_option = {
-              optContent: optContent,
-              optScore: optScore,
-              optMedia: ""
-            };
+            if (ques[j].indexOf("[") == -1 || ques[j].indexOf("]") == -1) {
+              return this.$message.error(
+                "内容选项请添加 [阿拉伯数字] 类型的后缀"
+              );
+            } else {
+              var optContent = ques[j].split("[")[0];
+              var optScore = ques[j].split("[")[1].split("]")[0];
 
-            option.push(temp_option);
+              var temp_option = {
+                optContent: optContent,
+                optScore: optScore,
+                optMedia: ""
+              };
+              option.push(temp_option);
+            }
           }
-          // console.log(option);
-
           question = {
             quesMedia: quesContent,
             option: option,
@@ -108,7 +126,7 @@ export default {
   }
 };
 </script>
-<style lang='less' >
+<style lang="less">
 .CONTENTT .title {
   position: relative;
   font-size: 12px;
