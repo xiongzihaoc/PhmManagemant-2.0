@@ -150,6 +150,7 @@ export default {
     // 修改
     showEditdialog(info) {
       this.dynamicDialogVisible = true
+      this.dynamicTitle = "修改信息";
       this.dynamicForm = JSON.parse(JSON.stringify(info))
       // this.goback = 
     },
