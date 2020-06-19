@@ -103,6 +103,7 @@
         <el-form-item label="量表选择" prop="sheets">
           <el-select
             multiple
+            filterable
             v-model="addEditForm.sheets"
             placeholder="请选择"
             style="width:100%"
@@ -198,8 +199,12 @@ export default {
     // 获取量表列表
     async getScaleList() {
       const { data: res } = await this.$http.post(this.$ajax + "sheet/list", {
-        name: this.input
+        name: this.input,
+        pageSize: 15000,
+        pageNum: this.pageNum
       });
+      console.log(res);
+
       if (res.code != 200) return this.$message.error("数据获取失败");
       this.userList = res.rows;
     },
@@ -250,6 +255,7 @@ export default {
     // 弹框open触发函数
     AddEditDialogOpend() {
       this.getScaleList();
+
       this.getDictionaryEleList();
     },
     // 修改
