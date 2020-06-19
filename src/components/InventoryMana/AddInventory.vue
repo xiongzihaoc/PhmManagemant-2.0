@@ -101,7 +101,8 @@
                     </div>
                     <!-- 多选题 -->
                     <div class="listlabel" v-else-if="item.quesType==2">
-                      <el-checkbox>{{list.optContent}}</el-checkbox>
+                      <el-checkbox style="margin-right:10px;">{{list.optContent}}</el-checkbox>
+                      <span class="listOptscore">( 分值：{{list.optScore}} )</span>
                       <span v-if="list.optMedia==''"></span>
                       <span v-else>
                         <img class="chooseImages" :src="list.optMedia" />
@@ -172,8 +173,8 @@
                       <span style="margin-left:20px;">选项文字</span>
                       <span style="margin-left:230px;">图片</span>
                       <span style="margin-left:40px;">说明</span>
-                      <span style="margin-left:40px;" v-if="item.quesType == 4" v-show="true">分数</span>
-                      <span v-if="item.quesType == 4" style="margin-left:100px;">建议</span>
+                      <span style="margin-left:40px;" v-if="item.quesType == 4 ||item.quesType == 2" v-show="true">分数</span>
+                      <span v-if="item.quesType == 4 || item.quesType == 2" style="margin-left:100px;">建议</span>
                       <span v-else style="margin-left:80px;">建议</span>
                       <span v-if="item.quesType == 4" style="margin-left:120px;">上移下移</span>
                       <span v-else style="margin-left:160px;">上移下移</span>
@@ -223,7 +224,7 @@
                       <span style="margin-left:51px;" class="quesInstr"></span>
                       <!-- 分数 -->
                       <el-input
-                        v-if="item.quesType == 4"
+                        v-if="item.quesType == 4 || item.quesType == 2"
                         v-show="true"
                         size="mini"
                         v-model="subItem.optScore"
