@@ -201,7 +201,7 @@ export default {
       const { data: res } = await this.$http.post(this.$ajax + "sheet/list", {
         name: this.input,
         pageSize: 15000,
-        pageNum: this.pageNum
+        pageNum: 15000,
       });
       console.log(res);
 
