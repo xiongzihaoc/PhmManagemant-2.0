@@ -201,7 +201,7 @@
                       <span style="margin-left:230px;">图片</span>
                       <span style="margin-left:40px;">说明</span>
                       <span
-                        style="margin-left:40px;"
+                        style="margin-left:50px;"
                         v-if="item.quesType == 4 || item.quesType == 2"
                         >分数</span
                       >
@@ -1108,7 +1108,7 @@ ul {
   line-height: 30px;
 }
 .inpOptScore {
-  width: 40px;
+  width: 50px;
   display: inline-block;
   margin-left: 34px;
   padding: 0 5px;
