@@ -35,7 +35,7 @@ import axios from 'axios'
 
 // 配置axios
 // 测试地址
-// axios.defaults.baseURL = 'http://192.168.0.117:8085/zhuoya-web/'
+// axios.defaults.baseURL = 'http://192.168.0.117:8080/zhuoya-web/'
 // 正式地址
 axios.defaults.baseURL = 'http://www.phmzykj.com/zhuoya-web/'
 axios.defaults.timeout = 15000

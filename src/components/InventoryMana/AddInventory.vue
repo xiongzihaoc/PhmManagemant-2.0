@@ -12,7 +12,8 @@
             icon="el-icon-s-opportunity"
             @click.prevent.stop="changetype"
             style="margin-right:10px"
-          >单选</el-button>
+            >单选</el-button
+          >
           <el-button
             class="chooseType"
             size="mini"
@@ -20,7 +21,8 @@
             plain
             icon="el-icon-s-help"
             @click.prevent.stop="changetype"
-          >评分</el-button>
+            >评分</el-button
+          >
         </li>
         <li style="display:flex;justify-content: center;">
           <el-button
@@ -31,7 +33,8 @@
             icon="el-icon-finished"
             @click.prevent.stop="changetype"
             style="margin-right:10px"
-          >多选</el-button>
+            >多选</el-button
+          >
           <el-button
             class="chooseType"
             size="mini"
@@ -39,7 +42,8 @@
             plain
             icon="el-icon-tickets"
             @click.prevent.stop="changetype"
-          >文本</el-button>
+            >文本</el-button
+          >
         </li>
         <li style="display:flex;justify-content: center;">
           <span style="font-size:14px;color:#909399">
@@ -47,28 +51,29 @@
             <a
               href="###"
               style="font-size:14px;color:#1ea0fa;margin-left:5px;text-decoration:none;"
-            >{{quesName}}</a>
+              >{{ quesName }}</a
+            >
           </span>
         </li>
       </div>
     </el-card>
     <el-card class="main_right">
       <!-- 量表名称 -->
-      <h3>{{inveName}}</h3>
+      <h3>{{ inveName }}</h3>
       <div class="list_box" v-loading="fullscreenLoading">
         <!-- 拖拽模块 -->
         <vuedraggable v-model="single" @change="changeIndex($event)">
           <transition-group>
             <!-- 循环生成各项题目 -->
-            <ul v-for="(item,index) in single" :key="item.id">
+            <ul v-for="(item, index) in single" :key="item.id">
               <li>
                 <p
                   class="quesTitle"
-                  @click.prevent.stop="getOneInfo(item,index)"
+                  @click.prevent.stop="getOneInfo(item, index)"
                   v-html="item.quesMedia"
                 ></p>
                 <!-- 题目说明 -->
-                <p class="quesTips">{{item.quesTips}}</p>
+                <p class="quesTips">{{ item.quesTips }}</p>
                 <!-- 编辑删除按钮 -->
                 <div class="editDel">
                   <el-button
@@ -76,56 +81,73 @@
                     size="mini"
                     class="editBtn"
                     icon="el-icon-edit"
-                    @click.prevent.stop="getOneInfo(item,index)"
-                  >编辑</el-button>
+                    @click.prevent.stop="getOneInfo(item, index)"
+                    >编辑</el-button
+                  >
                   <el-button
                     plain
                     size="mini"
                     class="delBtn"
                     icon="el-icon-delete"
-                    @click.prevent.stop="delBtn(item,index)"
-                  >删除</el-button>
+                    @click.prevent.stop="delBtn(item, index)"
+                    >删除</el-button
+                  >
                 </div>
-                <div class="info-change-list" @click.prevent.stop="getOneInfo(item,index)">
+                <div
+                  class="info-change-list"
+                  @click.prevent.stop="getOneInfo(item, index)"
+                >
                   <!-- 循环生成选项 -->
-                  <div class="listiconshow" v-for="list in item.option" :key="list.id">
+                  <div
+                    class="listiconshow"
+                    v-for="list in item.option"
+                    :key="list.id"
+                  >
                     <!-- 判断type类型 -->
                     <!-- 单选题 -->
-                    <div v-if="item.quesType==1">
-                      <el-radio :label="1">{{list.optContent}}</el-radio>
-                      <span v-if="list.optMedia==''"></span>
+                    <div v-if="item.quesType == 1">
+                      <el-radio :label="1">{{ list.optContent }}</el-radio>
+                      <span v-if="list.optMedia == ''"></span>
                       <span v-else>
                         <img class="chooseImages" :src="list.optMedia" />
                       </span>
-                      <span style="display:none">{{list.optLabel }}</span>
+                      <span style="display:none">{{ list.optLabel }}</span>
                     </div>
                     <!-- 多选题 -->
-                    <div class="listlabel" v-else-if="item.quesType==2">
-                      <el-checkbox style="margin-right:10px;">{{list.optContent}}</el-checkbox>
-                      <span class="listOptscore">( 分值：{{list.optScore}} )</span>
-                      <span v-if="list.optMedia==''"></span>
+                    <div class="listlabel" v-else-if="item.quesType == 2">
+                      <el-checkbox style="margin-right:10px;">{{
+                        list.optContent
+                      }}</el-checkbox>
+                      <span class="listOptscore"
+                        >( 分值：{{ list.optScore }} )</span
+                      >
+                      <span v-if="list.optMedia == ''"></span>
                       <span v-else>
                         <img class="chooseImages" :src="list.optMedia" />
                       </span>
-                      <span style="display:none">{{list.optLabel }}</span>
+                      <span style="display:none">{{ list.optLabel }}</span>
                     </div>
                     <!-- 文本题 -->
-                    <div v-else-if="item.quesType==3">
-                      <span v-if="list.optMedia==''"></span>
+                    <div v-else-if="item.quesType == 3">
+                      <span v-if="list.optMedia == ''"></span>
                       <span v-else>
                         <img class="chooseImages" :src="list.optMedia" />
                       </span>
-                      <span style="display:none">{{list.optLabel }}</span>
+                      <span style="display:none">{{ list.optLabel }}</span>
                     </div>
                     <!-- 分数题 -->
-                    <div v-if="item.quesType==4">
-                      <el-radio :label="2" style="margin-right:10px;">{{list.optContent}}</el-radio>
-                      <span class="listOptscore">( 分值：{{list.optScore}} )</span>
-                      <span v-if="list.optMedia==''"></span>
+                    <div v-if="item.quesType == 4">
+                      <el-radio :label="2" style="margin-right:10px;">{{
+                        list.optContent
+                      }}</el-radio>
+                      <span class="listOptscore"
+                        >( 分值：{{ list.optScore }} )</span
+                      >
+                      <span v-if="list.optMedia == ''"></span>
                       <span v-else>
                         <img class="chooseImages" :src="list.optMedia" />
                       </span>
-                      <span style="display:none">{{list.optLabel }}</span>
+                      <span style="display:none">{{ list.optLabel }}</span>
                     </div>
                   </div>
                 </div>
@@ -161,10 +183,15 @@
                       v-model="item.quesIsAnswer"
                       true-label="1"
                       false-label="0"
-                    >必答</el-checkbox>
+                      >必答</el-checkbox
+                    >
                     <!-- 填写提示 -->
                     <span class="writeTips">
-                      <a href="###" @click.prevent.stop="handleClickInstr(index)">填写提示</a>
+                      <a
+                        href="###"
+                        @click.prevent.stop="handleClickInstr(index)"
+                        >填写提示</a
+                      >
                     </span>
                   </div>
                   <div v-if="item.quesType != 3" v-show="true">
@@ -173,13 +200,27 @@
                       <span style="margin-left:20px;">选项文字</span>
                       <span style="margin-left:230px;">图片</span>
                       <span style="margin-left:40px;">说明</span>
-                      <span style="margin-left:40px;" v-if="item.quesType == 4 ||item.quesType == 2" v-show="true">分数</span>
-                      <span v-if="item.quesType == 4 || item.quesType == 2" style="margin-left:100px;">建议</span>
+                      <span
+                        style="margin-left:40px;"
+                        v-if="item.quesType == 4 || item.quesType == 2"
+                        >分数</span
+                      >
+                      <span
+                        v-if="item.quesType == 4 || item.quesType == 2"
+                        style="margin-left:100px;"
+                        >建议</span
+                      >
                       <span v-else style="margin-left:80px;">建议</span>
-                      <span v-if="item.quesType == 4" style="margin-left:120px;">上移下移</span>
+                      <span v-if="item.quesType == 4" style="margin-left:120px;"
+                        >上移下移</span
+                      >
                       <span v-else style="margin-left:160px;">上移下移</span>
                     </div>
-                    <div v-for="(subItem,i) in item.option" :key="subItem.id" style="display:flex">
+                    <div
+                      v-for="(subItem, i) in item.option"
+                      :key="subItem.id"
+                      style="display:flex"
+                    >
                       <!-- 题目输入框 -->
                       <el-input
                         v-if="item.quesType == 3"
@@ -200,12 +241,12 @@
                       <span
                         style="margin:4px 0 0 5px;"
                         class="quesPosAdd"
-                        @click.prevent.stop="quesPosAdd(item.option,index,i)"
+                        @click.prevent.stop="quesPosAdd(item.option, index, i)"
                       ></span>
                       <span
                         style="margin: 4px 0 0 3px;"
                         class="quesPosDel"
-                        @click.prevent.stop="quesPosDel(index,i)"
+                        @click.prevent.stop="quesPosDel(index, i)"
                       ></span>
                       <!-- 选项图片上传 -->
                       <el-upload
@@ -215,9 +256,17 @@
                         :on-success="handleAvatarSuccess"
                         :on-progress="uploadVideoProcess"
                         :before-upload="beforeAvatarUpload"
-                        :on-change="(file, fileList) => {handleChange(file, fileList, index,i)}"
+                        :on-change="
+                          (file, fileList) => {
+                            handleChange(file, fileList, index, i);
+                          }
+                        "
                       >
-                        <img v-if="subItem.optMedia" :src="subItem.optMedia" class="avatar" />
+                        <img
+                          v-if="subItem.optMedia"
+                          :src="subItem.optMedia"
+                          class="avatar"
+                        />
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                       </el-upload>
                       <!-- 选项说明 -->
@@ -234,36 +283,40 @@
                       <el-input
                         size="mini"
                         class="conContent"
-                        v-model="subItem.optLabel "
-                        @focus="chooseAdvice(index,i)"
+                        v-model="subItem.optLabel"
+                        @focus="chooseAdvice(index, i)"
                         style="margin-left:30px;"
+                        readonly
                       ></el-input>
                       <!-- 上移下移箭头 -->
                       <span
                         v-if="item.quesType == 4"
                         style="margin-left:50px;"
                         class="quesPosTop"
-                        @click.prevent.stop="quesPosTop(subItem,index,i)"
+                        @click.prevent.stop="quesPosTop(subItem, index, i)"
                       ></span>
                       <span
                         v-else
                         style="margin-left:93px;"
                         class="quesPosTop"
-                        @click.prevent.stop="quesPosTop(subItem,index,i)"
+                        @click.prevent.stop="quesPosTop(subItem, index, i)"
                       ></span>
                       <span
                         style="margin-left:7px;"
                         class="quesPosBottom"
-                        @click.prevent.stop="quesPosBottom(index,i)"
+                        @click.prevent.stop="quesPosBottom(index, i)"
                       ></span>
                     </div>
                     <!-- 添加选项按钮 -->
                     <el-button
-                      @click.prevent.stop="HandleClickAddList(item.option,index)"
+                      @click.prevent.stop="
+                        HandleClickAddList(item.option, index)
+                      "
                       size="mini"
                       class="addOption"
                       icon="el-icon-circle-plus-outline"
-                    >添加选项</el-button>
+                      >添加选项</el-button
+                    >
                   </div>
                   <!-- 逻辑设置： -->
                   <div class="logicSetting">
@@ -284,21 +337,29 @@
                     type="primary"
                     class="endEdit"
                     size="medium "
-                  >完成编辑</el-button>
+                    >完成编辑</el-button
+                  >
                 </div>
               </li>
             </ul>
           </transition-group>
         </vuedraggable>
         <div class="batchAdd">
-          <el-button type="info" plain @click.prevent.stop="batchAddQues()">批量添加题目</el-button>
+          <el-button type="info" plain @click.prevent.stop="batchAddQues()"
+            >批量添加题目</el-button
+          >
         </div>
       </div>
       <!-- 回到顶部 -->
       <el-backtop target=".main_right"></el-backtop>
     </el-card>
     <!-- 添加题目说明的弹框 -->
-    <el-dialog title="题目说明" :visible.sync="editDialogVisible" width="40%" v-dialogDrag>
+    <el-dialog
+      title="题目说明"
+      :visible.sync="editDialogVisible"
+      width="40%"
+      v-dialogDrag
+    >
       <el-form
         ref="loginFormRef"
         :model="editAddForm"
@@ -325,11 +386,13 @@
         <ul>
           <li
             class="batchAddCon"
-            v-for="(item,index) in bankList"
+            v-for="(item, index) in bankList"
             :key="index"
-            @click="batchAddCon(index,item.view)"
-            :class="{batchAddCla:Cla===index}"
-          >{{item.name}}</li>
+            @click="batchAddCon(index, item.view)"
+            :class="{ batchAddCla: Cla === index }"
+          >
+            {{ item.name }}
+          </li>
         </ul>
         <span slot="footer" class="dialog-footer">
           <keep-alive>
@@ -353,29 +416,47 @@
       >
         <el-row :gutter="20">
           <el-col :span="7">
-            <el-input placeholder="请输入关键词或内容" v-model="inputAdvice" @input="systemSearch" clearable></el-input>
+            <el-input
+              placeholder="请输入关键词或内容"
+              v-model="inputAdvice"
+              @input="systemSearch"
+              clearable
+            ></el-input>
           </el-col>
         </el-row>
         <!-- 调用公用表格组件 -->
-        <EleTable :data="adviceList" :header="tableHeaderBig" @row-click="handleCurrentChoose">
-          <el-table-column align="center" slot="fixed" fixed="left" label="选中" width="50">
+        <el-table
+          :data="adviceList"
+          tooltip-effect="dark"
+          ref="multipleTable"
+          @selection-change="handleSelect"
+        >
+          <el-table-column
+            align="center"
+            label="选中"
+            width="50"
+            type="selection"
+          ></el-table-column>
+          <el-table-column align="center" prop="advKind" label="建议库">
             <template slot-scope="scope">
-              <el-radio :label="scope.row.labelValue" v-model="radioId"></el-radio>
-            </template>
-          </el-table-column>
-          <el-table-column align="center" prop="advKind" slot="fixed" fixed="left" label="建议库">
-            <template slot-scope="scope">
-              <span v-if="scope.row.advKind=== '1'">{{ "心理类" }}</span>
+              <span v-if="scope.row.advKind === '1'">{{ "心理类" }}</span>
               <span v-else>{{ "疾病类" }}</span>
             </template>
           </el-table-column>
-        </EleTable>
+          <el-table-column label="标签名称" prop="advFlag"></el-table-column>
+          <el-table-column label="关键词" prop="advKeyWord"></el-table-column>
+          <el-table-column
+            label="建议内容"
+            prop="advContent"
+            show-overflow-tooltip
+          ></el-table-column>
+        </el-table>
         <!-- 分页 -->
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChangev"
           :current-page="pageNum"
-          :page-sizes="[10, 20,50]"
+          :page-sizes="[10, 20, 50]"
           :page-size="pageSize"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total"
@@ -450,6 +531,7 @@ export default {
       ],
       i: null,
       photoUrl: "",
+      multipleTable: "",
       editAddForm: {
         instrValue: ""
       },
@@ -677,7 +759,6 @@ export default {
     },
     // 调整选项位置
     quesPosTop(item, index, i) {
-
       var upArr = this.single[index].option;
       if (i != 0) {
         upArr[i].optOrder = upArr[i].optOrder - 1;
@@ -688,7 +769,6 @@ export default {
       }
     },
     quesPosBottom(index, i) {
-      
       var downArr = this.single[index].option;
       if (i + 1 != downArr.length) {
         downArr[i].optOrder += 1;
@@ -783,14 +863,19 @@ export default {
       this.chooseDialogVisible = true;
     },
     chooseEnter() {
-      console.log(this.single[this.advNum1].option[this.advNum2]);
-
-      this.single[this.advNum1].option[this.advNum2].optLabel = this.radioId;
+      this.single[this.advNum1].option[
+        this.advNum2
+      ].optLabel = this.multipleTable;
       this.chooseDialogVisible = false;
     },
     chooseDialogClosed() {},
-    handleCurrentChoose(val) {
-      this.radioId = val.labelValue;
+    handleSelect(val) {
+      var str = "";
+      val.forEach(item => {
+        str += item.labelValue + ",";
+      });
+      str = str.substr(0, str.length - 1);
+      this.multipleTable = str;
     },
     // 搜索建议
     systemSearch() {
@@ -840,7 +925,7 @@ export default {
   }
 };
 </script>
-<style lang='less'>
+<style lang="less">
 * {
   margin: 0;
   padding: 0;

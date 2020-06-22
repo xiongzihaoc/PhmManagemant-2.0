@@ -163,6 +163,8 @@ export default {
 
     // 删除
     async removeUserById(info) {
+      console.log(info);
+      
       const confirmResult = await this.$confirm(
         "你确定要执行此操作, 是否继续?",
         "提示",

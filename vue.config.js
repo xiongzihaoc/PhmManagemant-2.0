@@ -60,19 +60,21 @@ module.exports = {
       }
     }
   }),
-  //   devServer: {
-  //     proxy:{
-  //         '/api': {
-  //             target: 'http://xxx:20101/',
-  //             changeOrigin: true,
-  //             pathRewrite: {
-  //                 '^/api': ''
-  //             }
-  //         }
-  //     },
-  //     host: "localhost",
-  //     port: 8008
-  // },
+  
+  devServer: {
+    proxy: {
+      '/api': {
+        target: 'http://xxx:20101/',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': ''
+        }
+      }
+    },
+    // host: "localhost",
+    open: true,
+    port: 8088
+  },
   // gzip压缩
   // configureWebpack: () => {
   //   if (process.env.NODE_ENV === 'production') {
@@ -87,6 +89,4 @@ module.exports = {
   //     }
   //   }
   // }
-  // },
-
 }
