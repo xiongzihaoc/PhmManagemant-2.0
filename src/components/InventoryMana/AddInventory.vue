@@ -1245,11 +1245,11 @@ ul {
 .bgDv .el-checkbox__input.is-checked + .el-checkbox__label {
   color: #6a6a6a;
 }
-.bgDv .el-checkbox__input.is-checked .el-checkbox__inner,
-.el-checkbox__input.is-indeterminate .el-checkbox__inner {
-  background-color: #409eff !important;
-  border-color: #409eff !important;
-}
+// .bgDv .el-checkbox__input.is-checked .el-checkbox__inner,
+// .el-checkbox__input.is-indeterminate .el-checkbox__inner {
+//   background-color: #409eff !important;
+//   border-color: #409eff !important;
+// }
 /* 批量增加题目按钮 */
 .batchAdd {
   width: 100%;
