@@ -612,7 +612,6 @@ export default {
         }
       );
       console.log(res);
-
       if (res.code != 200) return this.$message.error("数获取失败");
       this.adviceList = res.rows;
       this.total = res.total;
