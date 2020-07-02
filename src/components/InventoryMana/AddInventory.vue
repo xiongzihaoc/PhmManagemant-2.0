@@ -429,6 +429,7 @@
           :data="adviceList"
           tooltip-effect="dark"
           ref="multipleTable"
+          :row-key="handleSave"
           @selection-change="handleSelect"
         >
           <el-table-column
@@ -436,6 +437,7 @@
             label="选中"
             width="50"
             type="selection"
+            reserve-selection
           ></el-table-column>
           <el-table-column align="center" prop="advKind" label="建议库">
             <template slot-scope="scope">
@@ -867,7 +869,9 @@ export default {
       ].optLabel = this.multipleTable;
       this.chooseDialogVisible = false;
     },
-    chooseDialogClosed() {},
+    chooseDialogClosed() {
+      this.$refs.multipleTable.clearSelection();
+    },
     handleSelect(val) {
       var str = "";
       val.forEach(item => {
@@ -875,6 +879,9 @@ export default {
       });
       str = str.substr(0, str.length - 1);
       this.multipleTable = str;
+    },
+    handleSave(row) {
+      return row.id;
     },
     // 搜索建议
     systemSearch() {
