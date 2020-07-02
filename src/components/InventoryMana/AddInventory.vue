@@ -873,9 +873,10 @@ export default {
       this.$refs.multipleTable.clearSelection();
     },
     handleSelect(val) {
+      console.log(val)
       var str = "";
       val.forEach(item => {
-        str += item.labelValue + ",";
+        str += item.id + ",";
       });
       str = str.substr(0, str.length - 1);
       this.multipleTable = str;
