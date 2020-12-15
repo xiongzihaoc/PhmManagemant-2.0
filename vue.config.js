@@ -60,7 +60,7 @@ module.exports = {
       }
     }
   }),
-  
+
   devServer: {
     proxy: {
       '/api': {
@@ -73,7 +73,7 @@ module.exports = {
     },
     // host: "localhost",
     open: true,
-    port: 8088
+    port: 8081
   },
   // gzip压缩
   // configureWebpack: () => {

@@ -35,7 +35,7 @@ import axios from 'axios'
 
 // 配置axios
 // 测试地址
-axios.defaults.baseURL = 'http://192.168.0.117:8085/zhuoya-web/'
+axios.defaults.baseURL = 'http://192.168.0.107:8085/zhuoya-web/'
 // 正式地址
 // axios.defaults.baseURL = 'http://www.phmzykj.com/zhuoya-web/'
 axios.defaults.timeout = 30000
@@ -58,7 +58,7 @@ axios.interceptors.response.use(function (config) {
 // 全局挂载axios this.$http调用即可
 Vue.prototype.$http = axios
 // 测试地址
-Vue.prototype.$ajax = 'http://192.168.0.117:8086/zhuoya-sheet/'
+Vue.prototype.$ajax = 'http://192.168.0.107:8086/zhuoya-sheet/'
 // 正式地址
 // Vue.prototype.$ajax = 'http://www.phmzykj.com/zhuoya-sheet/'
 // 文件上传地址

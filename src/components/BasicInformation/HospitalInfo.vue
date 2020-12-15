@@ -607,6 +607,7 @@ export default {
     },
     // 级联选择地址
     handleChange(val) {
+      console.log(val.toString());
       this.newStr = val.toString();
     },
     // 部门新增
